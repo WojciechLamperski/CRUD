@@ -41,6 +41,8 @@ public class YearRestController {
         theYear.setYearId(0);
         return yearService.save(theYear);
     }
+
+    // is put mapping correct?
     @PutMapping("/years")
     public int updateYear(@RequestBody Year theYear) {
         validator.validateObject(theYear);
@@ -50,7 +52,7 @@ public class YearRestController {
         return yearService.update(theYear);
     }
 
-    @PutMapping("/years/{yearId}")
+    @DeleteMapping("/years/{yearId}")
     public int deleteYear(@PathVariable int yearId) {
         validator.validateId(yearId);
 
