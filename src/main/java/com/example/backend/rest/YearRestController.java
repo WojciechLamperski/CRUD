@@ -2,7 +2,6 @@ package com.example.backend.rest;
 
 import com.example.backend.POJO.Year;
 import com.example.backend.service.YearService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,9 +10,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class YearRestController {
-
-    // TODO
-    // Add input validation ie. year can't be null
 
     private YearService yearService;
 

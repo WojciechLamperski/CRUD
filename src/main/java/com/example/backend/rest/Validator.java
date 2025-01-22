@@ -16,7 +16,7 @@ public class Validator {
     }
     public static void validateYear(int year) {
         if (year < 0) {
-            throw new ValidationException("Year can't be a negative number");
+            throw new ValidationException("Year has to be a non-negative number");
         }
     }
 
