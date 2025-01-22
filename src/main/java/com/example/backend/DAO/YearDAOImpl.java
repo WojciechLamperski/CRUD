@@ -47,7 +47,7 @@ public class YearDAOImpl implements YearDAO {
     // Update
     @Override
     public int update(Year year) {
-        String sql = "UPDATE years SET year = ?, WHERE year_id = ?";
+        String sql = "UPDATE years SET year = ? WHERE year_id = ?";
         return jdbcTemplate.update(sql, year.getYear(), year.getYearId());
     }
 

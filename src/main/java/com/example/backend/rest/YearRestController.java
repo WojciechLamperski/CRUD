@@ -42,7 +42,6 @@ public class YearRestController {
         return yearService.save(theYear);
     }
 
-    // is put mapping correct?
     @PutMapping("/years")
     public int updateYear(@RequestBody Year theYear) {
         validator.validateObject(theYear);
