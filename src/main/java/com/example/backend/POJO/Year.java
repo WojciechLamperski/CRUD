@@ -1,24 +1,21 @@
 package com.example.backend.POJO;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name="year")
-@JsonRootName("year")
+@Table(name="years")
 public class Year {
 
-    @NotNull
-    @Min(value = 1, message = "Year must be a positive number")
+    @Min(value = 1, message = "Year Id must be greater than 0")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="year_id")
     private int yearId;
 
     @NotNull
+    @Min(value = 1, message = "Year must be greater than 0")
     @Column(name="year")
     private int year;
 

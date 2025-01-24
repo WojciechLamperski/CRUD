@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -15,8 +14,6 @@ import java.util.Optional;
 public class YearRestController {
 
     private YearService yearService;
-
-    Validator validator = new Validator();
 
     public YearRestController(YearService theYearService) {
         yearService = theYearService;
@@ -28,18 +25,13 @@ public class YearRestController {
     }
 
     @GetMapping("/years/{yearId}")
-    public ResponseEntity<Year> findById(@Valid @RequestBody @PathVariable  int yearId) {
-        validator.validateId(yearId);
-
+    public ResponseEntity<Year> findById(@PathVariable int yearId) {
         return ResponseEntity.ok(yearService.findById(yearId));
     }
 
 
     @PostMapping("/years")
     public int save(@Valid @RequestBody Year theYear) {
-        validator.validateObject(theYear);
-        validator.validateYear(theYear.getYearId());
-
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         theYear.setYearId(0);
@@ -48,17 +40,12 @@ public class YearRestController {
 
     @PutMapping("/years")
     public int updateYear(@Valid @RequestBody Year theYear) {
-        validator.validateObject(theYear);
-        validator.validateYear(theYear.getYear());
-        validator.validateId(theYear.getYearId());
-
+        System.out.println(theYear);
         return yearService.update(theYear);
     }
 
     @DeleteMapping("/years/{yearId}")
-    public int deleteYear(@Valid @RequestBody @PathVariable int yearId) {
-        validator.validateId(yearId);
-
+    public int deleteYear(@PathVariable int yearId) {
         return yearService.delete(yearId);
     }
 
