@@ -45,7 +45,7 @@ public class YearRestController {
     @PutMapping("/years")
     public int updateYear(@RequestBody Year theYear) {
         validator.validateObject(theYear);
-        validator.validateYear(theYear.getYearId());
+        validator.validateYear(theYear.getYear());
         validator.validateId(theYear.getYearId());
 
         return yearService.update(theYear);
