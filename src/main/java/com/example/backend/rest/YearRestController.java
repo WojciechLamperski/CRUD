@@ -2,9 +2,12 @@ package com.example.backend.rest;
 
 import com.example.backend.POJO.Year;
 import com.example.backend.service.YearService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -25,14 +28,15 @@ public class YearRestController {
     }
 
     @GetMapping("/years/{yearId}")
-    public Year findById(@PathVariable int yearId) {
+    public ResponseEntity<Year> findById(@Valid @RequestBody @PathVariable  int yearId) {
         validator.validateId(yearId);
 
-        return yearService.findById(yearId);
+        return ResponseEntity.ok(yearService.findById(yearId));
     }
 
+
     @PostMapping("/years")
-    public int save(@RequestBody Year theYear) {
+    public int save(@Valid @RequestBody Year theYear) {
         validator.validateObject(theYear);
         validator.validateYear(theYear.getYearId());
 
@@ -43,7 +47,7 @@ public class YearRestController {
     }
 
     @PutMapping("/years")
-    public int updateYear(@RequestBody Year theYear) {
+    public int updateYear(@Valid @RequestBody Year theYear) {
         validator.validateObject(theYear);
         validator.validateYear(theYear.getYear());
         validator.validateId(theYear.getYearId());
@@ -52,7 +56,7 @@ public class YearRestController {
     }
 
     @DeleteMapping("/years/{yearId}")
-    public int deleteYear(@PathVariable int yearId) {
+    public int deleteYear(@Valid @RequestBody @PathVariable int yearId) {
         validator.validateId(yearId);
 
         return yearService.delete(yearId);

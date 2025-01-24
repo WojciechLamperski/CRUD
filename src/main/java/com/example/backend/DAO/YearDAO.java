@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface YearDAO {
     int save(Year year);
-    Optional<Year> findById(int id);
+    Year findById(int id);
     List<Year> findAll();
     int update(Year year);
     int delete(int id);
