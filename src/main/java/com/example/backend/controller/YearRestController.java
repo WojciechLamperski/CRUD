@@ -21,13 +21,13 @@ public class YearRestController {
     }
 
     @GetMapping("/years")
-    public ResponseEntity<List<Year>> findAll() {
-        return ResponseEntity.ok(yearService.findAll());
+    public List<Year> findAll() {
+        return yearService.findAll();
     }
 
     @GetMapping("/years/{yearId}")
-    public ResponseEntity<Year> findById(@PathVariable int yearId) {
-        return ResponseEntity.ok(yearService.findById(yearId));
+    public Year findById(@PathVariable int yearId) {
+        return yearService.findById(yearId);
     }
 
     @PostMapping("/years")
@@ -40,12 +40,12 @@ public class YearRestController {
     }
 
     @PutMapping("/years")
-    public String updateYear(@Valid @RequestBody Year theYear) {
+    public String update(@Valid @RequestBody Year theYear) {
         return yearService.save(theYear);
     }
 
     @DeleteMapping("/years/{yearId}")
-    public String deleteYear(@PathVariable int yearId) {
+    public String delete(@PathVariable int yearId) {
         return yearService.delete(yearId);
     }
 
