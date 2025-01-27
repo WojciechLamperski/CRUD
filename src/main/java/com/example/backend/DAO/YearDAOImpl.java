@@ -35,7 +35,6 @@ public class YearDAOImpl implements YearDAO {
 
     @Override
     public int update(Year theYear) {
-        System.out.println("YEAR ID IN DAO: " + theYear.getYearId());
         Year dbyYear = entityManager.merge(theYear);
         return dbyYear.getYearId();
     }

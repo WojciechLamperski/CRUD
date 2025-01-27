@@ -1,4 +1,4 @@
-package com.example.backend.rest;
+package com.example.backend.controller;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;

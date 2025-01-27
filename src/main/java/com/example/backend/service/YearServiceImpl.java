@@ -2,15 +2,12 @@ package com.example.backend.service;
 
 import com.example.backend.DAO.YearDAO;
 import com.example.backend.POJO.Year;
-import com.example.backend.exception.DatabaseException;
-import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.YearNotFoundException;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class YearServiceImpl implements YearService {

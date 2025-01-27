@@ -1,8 +1,9 @@
-package com.example.backend.rest;
+package com.example.backend.controller;
 
 import com.example.backend.POJO.Year;
 import com.example.backend.service.YearService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,8 @@ public class YearRestController {
     }
 
     @GetMapping("/years")
-    public List<Year> findAll() {
-        return yearService.findAll();
+    public ResponseEntity<List<Year>> findAll() {
+        return ResponseEntity.ok(yearService.findAll());
     }
 
     @GetMapping("/years/{yearId}")
@@ -31,6 +32,7 @@ public class YearRestController {
 
 
     @PostMapping("/years")
+    @ResponseStatus(HttpStatus.CREATED)
     public int save(@Valid @RequestBody Year theYear) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
