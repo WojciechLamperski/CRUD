@@ -30,10 +30,9 @@ public class YearRestController {
         return ResponseEntity.ok(yearService.findById(yearId));
     }
 
-
     @PostMapping("/years")
     @ResponseStatus(HttpStatus.CREATED)
-    public int save(@Valid @RequestBody Year theYear) {
+    public String save(@Valid @RequestBody Year theYear) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         theYear.setYearId(0);
@@ -41,13 +40,12 @@ public class YearRestController {
     }
 
     @PutMapping("/years")
-    public int updateYear(@Valid @RequestBody Year theYear) {
-        System.out.println(theYear);
-        return yearService.update(theYear);
+    public String updateYear(@Valid @RequestBody Year theYear) {
+        return yearService.save(theYear);
     }
 
     @DeleteMapping("/years/{yearId}")
-    public int deleteYear(@PathVariable int yearId) {
+    public String deleteYear(@PathVariable int yearId) {
         return yearService.delete(yearId);
     }
 

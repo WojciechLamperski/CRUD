@@ -6,9 +6,8 @@ import java.util.List;
 
 
 public interface YearDAO {
-    int save(Year year);
+    String save(Year year);
     Year findById(int id);
     List<Year> findAll();
-    int update(Year year);
-    int delete(int id);
+    String delete(int id);
 }

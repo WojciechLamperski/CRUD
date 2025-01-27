@@ -17,9 +17,9 @@ public class YearDAOImpl implements YearDAO {
     }
 
     @Override
-    public int save(Year theYear) {
+    public String save(Year theYear) {
         Year dbyYear = entityManager.merge(theYear);
-        return dbyYear.getYearId();
+        return ("object with id:" + dbyYear.getYearId() + " saved successfully");
     }
 
     @Override
@@ -34,18 +34,12 @@ public class YearDAOImpl implements YearDAO {
     }
 
     @Override
-    public int update(Year theYear) {
-        Year dbyYear = entityManager.merge(theYear);
-        return dbyYear.getYearId();
-    }
-
-    @Override
-    public int delete(int year_id) {
+    public String delete(int year_id) {
         Year year = entityManager.find(Year.class, year_id);
         if (year != null) {
             entityManager.remove(year);
-            return 1; // Indicating success
+            return "Year successfully deleted"; // Indicating success
         }
-        return 0; // Indicating failure
+        return "Couldn't delete this year";
     }
 }

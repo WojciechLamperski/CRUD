@@ -20,7 +20,7 @@ public class YearServiceImpl implements YearService {
 
     @Override
     @Transactional
-    public int save(Year year) {
+    public String save(Year year) {
 //        try {
             return yearDAO.save(year);
 //        } catch (DataAccessException e) {
@@ -48,17 +48,7 @@ public class YearServiceImpl implements YearService {
 
     @Override
     @Transactional
-    public int update(Year year) {
-//        try {
-            return yearDAO.update(year);
-//        } catch (DataAccessException e) {
-//            throw new DatabaseException("Error updating Year entity", e);
-//        }
-    }
-
-    @Override
-    @Transactional
-    public int delete(int id) {
+    public String delete(int id) {
         try {
             return yearDAO.delete(id);
         } catch (RuntimeException e) {
