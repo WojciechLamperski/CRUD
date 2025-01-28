@@ -1,11 +1,10 @@
-package com.example.backend.DAO;
+package com.example.backend.service;
 
 import com.example.backend.POJO.Voivodeship;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface VoivodeshipDAO {
+public interface VoivodeshipService {
     String save(Voivodeship voivodeship);
     Voivodeship findById(int id);
     List<Voivodeship> findAll();

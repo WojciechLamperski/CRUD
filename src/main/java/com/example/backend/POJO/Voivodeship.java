@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 
 @Entity
-@Table(name="voivodeship")
+@Table(name="voivodeships")
 public class Voivodeship {
 
     @Min(value = 1, message = "voivodeshipId must be greater than 0")

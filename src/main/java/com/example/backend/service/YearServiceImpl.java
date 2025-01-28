@@ -2,7 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.DAO.YearDAO;
 import com.example.backend.POJO.Year;
-import com.example.backend.exception.YearNotFoundException;
+import com.example.backend.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +33,7 @@ public class YearServiceImpl implements YearService {
         try {
             return yearDAO.findById(id);
         } catch (RuntimeException e) {
-            throw new YearNotFoundException("Year with id " + id + " not found");
+            throw new EntityNotFoundException("Year with id " + id + " not found");
         }
     }
 
@@ -52,7 +52,7 @@ public class YearServiceImpl implements YearService {
         try {
             return yearDAO.delete(id);
         } catch (RuntimeException e) {
-            throw new YearNotFoundException("Year with id " + id + " not found");
+            throw new EntityNotFoundException("Year with id " + id + " not found");
         }
     }
 }
