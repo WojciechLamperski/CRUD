@@ -1,10 +1,10 @@
-package com.example.backend.DAO;
+package com.example.backend.service;
 
 import com.example.backend.POJO.District;
 
 import java.util.List;
 
-public interface DistrictDAO {
+public interface DistrictService {
     String save(District district);
     District findById(int id);
     List<District> findAll();
