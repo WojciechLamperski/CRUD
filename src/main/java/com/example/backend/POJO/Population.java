@@ -6,16 +6,14 @@ public class Population {
     private int districtId;    // district_id
     private int men;           // men (number of men)
     private int women;         // women (number of women)
-    private int age;           // age (age of men and women)
 
     public Population() {}
 
-    public Population(int yearId, int districtId, int men, int women, int age) {
+    public Population(int yearId, int districtId, int men, int women) {
         this.yearId = yearId;
         this.districtId = districtId;
         this.men = men;
         this.women = women;
-        this.age = age;
     }
 
     public int getPopulationId() {
@@ -50,14 +48,6 @@ public class Population {
         this.men = men;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     public int getWomen() {
         return women;
     }
@@ -74,7 +64,6 @@ public class Population {
                 ", districtId=" + districtId +
                 ", men=" + men +
                 ", women=" + women +
-                ", age=" + age +
                 '}';
     }
 }
