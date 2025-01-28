@@ -2,6 +2,9 @@ package com.example.backend.POJO;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 
 @Entity
 @Table(name="districts")
@@ -12,7 +15,13 @@ public class District {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="district_id")
     private int districtId;       // district_id
+
+    @NotEmpty
+    @Column(name="district")
     private String district;      // district
+
+    @NotNull
+    @Column(name="voivodeship_id")
     private int voivodeshipId;    // voivodeship_id
 
     public District() {}
