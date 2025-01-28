@@ -1,6 +1,17 @@
 package com.example.backend.POJO;
 
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+
+@Entity
+@Table(name="population")
 public class Population {
+
+    @Min(value = 1, message = "populationId must be greater than 0")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="population_id")
     private int populationId;  // population_id
     private int yearId;        // year_id
     private int districtId;    // district_id
