@@ -20,8 +20,8 @@ public class DistrictDAOImpl implements DistrictDAO {
 
     @Override
     public String save(District theDistrict) {
-        District dbyDistrict = entityManager.merge(theDistrict);
-        return ("object with id:" + dbyDistrict.getDistrictId() + " saved successfully");
+        District dbDistrict = entityManager.merge(theDistrict);
+        return ("object with id:" + dbDistrict.getDistrictId() + " saved successfully");
     }
 
 //    @Override
