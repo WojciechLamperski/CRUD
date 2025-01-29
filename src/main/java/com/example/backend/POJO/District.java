@@ -21,13 +21,12 @@ public class District {
     private String district;      // district
 
     @NotNull
-    @Column(name="voivodeship_id", insertable = false, updatable = false)
-    private int voivodeshipId;    // voivodeship_id
+    @Column(name="voivodeship_id")
+    private int voivodeshipId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "voivodeship_id", nullable = false) // Foreign key
-    private Voivodeship voivodeship; // Relationship (for fetching voivodeship name)
-
+    @JoinColumn(name = "voivodeship_id", referencedColumnName = "voivodeship_id", insertable = false, updatable = false)
+    private Voivodeship voivodeship; // Voivodeship name stored in secondary table
 
     public District() {}
 
@@ -36,12 +35,20 @@ public class District {
         this.voivodeshipId = voivodeshipId;
     }
 
-    public Voivodeship getVoivodeship() {
-        return voivodeship;
+//    public Voivodeship getVoivodeship() {
+//        return voivodeship;
+//    }
+//
+//    public void setVoivodeship(Voivodeship voivodeship) {
+//        this.voivodeship = voivodeship;
+//    }
+
+    public void setVoivodeship(int voivodeshipId) {
+        this.voivodeshipId = voivodeshipId;
     }
 
-    public void setVoivodeship(Voivodeship voivodeship) {
-        this.voivodeship = voivodeship;
+    public Voivodeship getVoivodeship() {
+        return voivodeship;
     }
 
     public int getDistrictId() {
