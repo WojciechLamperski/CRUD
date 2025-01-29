@@ -4,6 +4,8 @@ package com.example.backend.POJO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 
+import java.util.List;
+
 @Entity
 @Table(name="voivodeships")
 public class Voivodeship {
@@ -13,7 +15,12 @@ public class Voivodeship {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="voivodeship_id")
     private int voivodeshipId; // voivodeship_id
+
     private String voivodeship; // voivodeship
+
+    @OneToMany(mappedBy = "voivodeship")
+    private List<District> districts;
+
 
     public Voivodeship() {}
 

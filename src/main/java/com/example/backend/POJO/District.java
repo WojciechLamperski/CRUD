@@ -21,14 +21,27 @@ public class District {
     private String district;      // district
 
     @NotNull
-    @Column(name="voivodeship_id")
+    @Column(name="voivodeship_id", insertable = false, updatable = false)
     private int voivodeshipId;    // voivodeship_id
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voivodeship_id", nullable = false) // Foreign key
+    private Voivodeship voivodeship; // Relationship (for fetching voivodeship name)
+
 
     public District() {}
 
     public District(String district, int voivodeshipId) {
         this.district = district;
         this.voivodeshipId = voivodeshipId;
+    }
+
+    public Voivodeship getVoivodeship() {
+        return voivodeship;
+    }
+
+    public void setVoivodeship(Voivodeship voivodeship) {
+        this.voivodeship = voivodeship;
     }
 
     public int getDistrictId() {

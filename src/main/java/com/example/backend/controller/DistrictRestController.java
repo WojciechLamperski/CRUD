@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.DTO.DistrictDTO;
 import com.example.backend.POJO.District;
 import com.example.backend.service.DistrictService;
 import jakarta.validation.Valid;
@@ -19,12 +20,12 @@ public class DistrictRestController {
     }
 
     @GetMapping("/districts")
-    public List<District> findAll() {
+    public List<DistrictDTO> findAll() {
         return districtService.findAll();
     }
 
     @GetMapping("/districts/{districtId}")
-    public District findById(@PathVariable int districtId) {
+    public DistrictDTO findById(@PathVariable int districtId) {
         return districtService.findById(districtId);
     }
 

@@ -1,7 +1,9 @@
 package com.example.backend.DAO;
 
+import com.example.backend.DTO.DistrictDTO;
 import com.example.backend.POJO.District;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,14 +24,32 @@ public class DistrictDAOImpl implements DistrictDAO {
         return ("object with id:" + dbyDistrict.getDistrictId() + " saved successfully");
     }
 
+//    @Override
+//    public District findById(int district_id) {
+//        return entityManager.find(District.class, district_id);
+//    }
+
     @Override
     public District findById(int district_id) {
-        return entityManager.find(District.class, district_id);
+        String jpql = "SELECT d FROM District d JOIN FETCH d.voivodeship WHERE d.districtId = :district_id";
+        try {
+            return entityManager.createQuery(jpql, District.class)
+                    .setParameter("district_id", district_id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Return null if district not found
+        }
     }
+
+//    @Override
+//    public List<District> findAll() {
+//        String jpql = "SELECT d FROM District d";
+//        return entityManager.createQuery(jpql, District.class).getResultList();
+//    }
 
     @Override
     public List<District> findAll() {
-        String jpql = "SELECT d FROM District d";
+        String jpql = "SELECT d FROM District d JOIN FETCH d.voivodeship";
         return entityManager.createQuery(jpql, District.class).getResultList();
     }
 
@@ -42,5 +62,4 @@ public class DistrictDAOImpl implements DistrictDAO {
         }
         return "Couldn't delete this district";
     }
-
 }
