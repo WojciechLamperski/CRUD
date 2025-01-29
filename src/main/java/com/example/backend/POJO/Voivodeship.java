@@ -3,6 +3,7 @@ package com.example.backend.POJO;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -10,12 +11,13 @@ import java.util.List;
 @Table(name="voivodeships")
 public class Voivodeship {
 
-    @Min(value = 1, message = "voivodeshipId must be greater than 0")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="voivodeship_id")
     private int voivodeshipId; // voivodeship_id
 
+    @NotEmpty()
+    @Column(name="voivodeship")
     private String voivodeship; // voivodeship
 
     @OneToMany(mappedBy = "voivodeship")

@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotNull;
 @Table(name="years")
 public class Year {
 
-    @Min(value = 1, message = "yearId must be greater than 0")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="year_id")

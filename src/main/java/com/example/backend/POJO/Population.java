@@ -3,19 +3,31 @@ package com.example.backend.POJO;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="population")
 public class Population {
 
-    @Min(value = 1, message = "populationId must be greater than 0")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="population_id")
     private int populationId;  // population_id
+
+    @NotNull
+    @Min(value = 1, message = "yearId must be greater than 0")
     private int yearId;        // year_id
+
+    @NotNull
+    @Min(value = 1, message = "districtId must be greater than 0")
     private int districtId;    // district_id
+
+    @NotNull
+    @Min(value = 0, message = "number of men can't be negative")
     private int men;           // men (number of men)
+
+    @NotNull
+    @Min(value = 0, message = "number of women can't be negative")
     private int women;         // women (number of women)
 
     public Population() {}

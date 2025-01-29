@@ -10,17 +10,17 @@ import jakarta.validation.constraints.NotNull;
 @Table(name="districts")
 public class District {
 
-    @Min(value = 1, message = "districtId must be greater than 0")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="district_id")
     private int districtId;       // district_id
 
-    @NotEmpty
+    @NotEmpty()
     @Column(name="district")
     private String district;      // district
 
     @NotNull
+    @Min(value = 1, message = "voivodeshipId must be greater than 0")
     @Column(name="voivodeship_id")
     private int voivodeshipId;
 
