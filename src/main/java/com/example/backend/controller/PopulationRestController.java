@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.DTO.PopulationDTO;
+import com.example.backend.DTO.PopulationResponse;
 import com.example.backend.POJO.Population;
 import com.example.backend.service.PopulationService;
 import jakarta.validation.Valid;
@@ -20,10 +21,13 @@ public class PopulationRestController {
     }
 
 //    TODO add Pagination, DTO, & un-comment
-//    @GetMapping("/populations")
-//    public List<PopulationDTO> findAll() {
-//        return populationService.findAll();
-//    }
+    @GetMapping("/populations")
+    public PopulationResponse findAll(
+            @RequestParam(value = "PageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "PageSize", defaultValue = "30", required = false) int pageSize
+            ) {
+        return populationService.findAll(pageNumber, pageSize);
+    }
 
     @GetMapping("/populations/{populationId}")
     public PopulationDTO findById(@PathVariable int populationId) {

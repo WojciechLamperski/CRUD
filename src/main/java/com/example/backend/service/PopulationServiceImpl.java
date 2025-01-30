@@ -1,11 +1,13 @@
 package com.example.backend.service;
 
 import com.example.backend.DAO.PopulationDAO;
-import com.example.backend.DTO.DistrictDTO;
+import com.example.backend.DTO.PopulationResponse;
 import com.example.backend.DTO.PopulationDTO;
-import com.example.backend.POJO.District;
 import com.example.backend.POJO.Population;
 import com.example.backend.exception.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,14 +44,33 @@ public class PopulationServiceImpl implements PopulationService {
     }
 
     @Override
-    public List<PopulationDTO> findAll() {
-//        try {
-        List<Population> populations = populationDAO.findAll();
-        return populations.stream().map(this::convertToDTO).collect(Collectors.toList());
+    public PopulationResponse findAll(int pageNumber, int pageSize) {
+        System.out.println("pageNumber: " + pageNumber + " pageSize: " + pageSize);
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+        System.out.println("pageNumber: " + pageNumber + " New pageSize: " + pageSize);
 
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        System.out.println("pageable: " + pageable);
+
+//        try {
+        Page<Population> populations = populationDAO.findAll(pageable);
+        List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        PopulationResponse populationResponse = new PopulationResponse();
+        populationResponse.setContent(content);
+        populationResponse.setPageNumber(populations.getNumber());
+        populationResponse.setPageSize(populations.getSize());
+        populationResponse.setTotalElements(populations.getTotalElements());
+        populationResponse.setTotalPages(populations.getTotalPages());
+        populationResponse.setLast(populations.isLast());
 //        } catch (DataAccessException e) {
 //            throw new DatabaseException("Error retrieving all Population entities", e);
 //        }
+
+        return populationResponse;
     }
 
     @Override
