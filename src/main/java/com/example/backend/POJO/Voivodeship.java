@@ -11,6 +11,10 @@ import java.util.List;
 @Table(name="voivodeships")
 public class Voivodeship {
 
+    // TODO: test if you can create an id that equals to something like 100? Should that be the case?
+    // TODO: test here and in all POJOs edge-cases in Postman.
+    // TODO: see if you need getters and setters for all methods? and what about the toString?
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="voivodeship_id")
