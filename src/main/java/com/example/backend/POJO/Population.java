@@ -20,19 +20,31 @@ public class Population {
 
     @NotNull
     @Min(value = 1, message = "yearId must be greater than 0")
+    @Column(name="year_id")
     private int yearId;        // year_id
 
     @NotNull
     @Min(value = 1, message = "districtId must be greater than 0")
+    @Column(name="district_id")
     private int districtId;    // district_id
 
     @NotNull
     @Min(value = 0, message = "number of men can't be negative")
+    @Column(name="men")
     private int men;           // men (number of men)
 
     @NotNull
     @Min(value = 0, message = "number of women can't be negative")
+    @Column(name="women")
     private int women;         // women (number of women)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "district_id", referencedColumnName = "district_id", insertable = false, updatable = false)
+    private District district; // Voivodeship name stored in secondary table
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "year_id", referencedColumnName = "year_id", insertable = false, updatable = false)
+    private Year year; // Voivodeship name stored in secondary table
 
     public Population() {}
 
@@ -41,6 +53,22 @@ public class Population {
         this.districtId = districtId;
         this.men = men;
         this.women = women;
+    }
+
+    public District getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(District district) {
+        this.district = district;
+    }
+
+    public Year getYear() {
+        return year;
+    }
+
+    public void setYear(Year year) {
+        this.year = year;
     }
 
     public int getPopulationId() {

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 @Entity
 @Table(name="years")
 public class Year {
@@ -21,6 +23,9 @@ public class Year {
     @Min(value = 1, message = "year must be greater than 0")
     @Column(name="year")
     private int year;
+
+    @OneToMany(mappedBy = "year")
+    private List<Population> populations;
 
     public Year() {
     }

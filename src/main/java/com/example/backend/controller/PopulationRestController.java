@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.DTO.PopulationDTO;
 import com.example.backend.POJO.Population;
 import com.example.backend.service.PopulationService;
 import jakarta.validation.Valid;
@@ -20,12 +21,12 @@ public class PopulationRestController {
 
 //    TODO add Pagination, DTO, & un-comment
 //    @GetMapping("/populations")
-//    public List<Population> findAll() {
+//    public List<PopulationDTO> findAll() {
 //        return populationService.findAll();
 //    }
 
     @GetMapping("/populations/{populationId}")
-    public Population findById(@PathVariable int populationId) {
+    public PopulationDTO findById(@PathVariable int populationId) {
         return populationService.findById(populationId);
     }
 

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 
 @Entity
 @Table(name="districts")
@@ -31,6 +33,9 @@ public class District {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voivodeship_id", referencedColumnName = "voivodeship_id", insertable = false, updatable = false)
     private Voivodeship voivodeship; // Voivodeship name stored in secondary table
+
+    @OneToMany(mappedBy = "district")
+    private List<Population> populations;
 
     public District() {}
 

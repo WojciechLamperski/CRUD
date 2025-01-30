@@ -1,19 +1,18 @@
 package com.example.backend.DTO;
 
-import com.example.backend.POJO.Year;
 
 public class PopulationDTO {
     private int populationId;  // population_id
-    private Year year;        // year_id
-    private DistrictDTO district;    // district_id
+    private int year;        // year_id
+    private String district;    // district_id
     private int men;           // number of men
     private int women;         // number of women
 
-    public PopulationDTO(int populationId, Year year, int men, DistrictDTO district, int women) {
+    public PopulationDTO(int populationId, int year, String district, int men, int women) {
         this.populationId = populationId;
         this.year = year;
-        this.men = men;
         this.district = district;
+        this.men = men;
         this.women = women;
     }
 
@@ -29,19 +28,19 @@ public class PopulationDTO {
         this.populationId = populationId;
     }
 
-    public Year getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(Year year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
-    public DistrictDTO getDistrict() {
+    public String getDistrict() {
         return district;
     }
 
-    public void setDistrict(DistrictDTO district) {
+    public void setDistrict(String district) {
         this.district = district;
     }
 
