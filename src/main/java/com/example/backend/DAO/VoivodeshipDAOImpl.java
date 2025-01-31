@@ -41,7 +41,7 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
     @Override
     public Page<Voivodeship> findAll(Pageable pageable) {
         System.out.println(pageable);
-        String jpql = "SELECT p FROM Voivodeship p";
+        String jpql = "SELECT v FROM Voivodeship v";
         TypedQuery<Voivodeship> query = entityManager.createQuery(jpql, Voivodeship.class);
 
         int totalRows = query.getResultList().size();

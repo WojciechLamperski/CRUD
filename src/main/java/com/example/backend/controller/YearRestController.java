@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.DTO.YearResponse;
 import com.example.backend.POJO.Year;
 import com.example.backend.service.YearService;
 import jakarta.validation.Valid;
@@ -20,8 +21,11 @@ public class YearRestController {
     }
 
     @GetMapping("/years")
-    public List<Year> findAll() {
-        return yearService.findAll();
+    public YearResponse findAll(
+            @RequestParam(value = "PageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "PageSize", defaultValue = "30", required = false) int pageSize
+    ) {
+        return yearService.findAll(pageNumber, pageSize);
     }
 
     @GetMapping("/years/{yearId}")
