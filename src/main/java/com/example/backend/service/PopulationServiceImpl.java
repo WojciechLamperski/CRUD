@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.DAO.PopulationDAO;
+import com.example.backend.DTO.DistrictDTO;
 import com.example.backend.DTO.PopulationResponse;
 import com.example.backend.DTO.PopulationDTO;
 import com.example.backend.POJO.Population;
@@ -78,10 +79,17 @@ public class PopulationServiceImpl implements PopulationService {
     }
 
     public PopulationDTO convertToDTO(Population population) {
+
+        DistrictDTO districtDTO = new DistrictDTO(
+                population.getDistrict().getDistrictId(),
+                population.getDistrict().getDistrict(),
+                population.getDistrict().getVoivodeship().getVoivodeship()
+        );
+
         return new PopulationDTO(
                 population.getPopulationId(),
                 population.getYear().getYear(),
-                population.getDistrict().getDistrict(),
+                districtDTO,
                 population.getMen(),
                 population.getWomen()
         );

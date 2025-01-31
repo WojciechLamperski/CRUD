@@ -4,11 +4,11 @@ package com.example.backend.DTO;
 public class PopulationDTO {
     private int populationId;  // population_id
     private int year;        // year_id
-    private String district;    // district_id
+    private DistrictDTO district;    // district_id
     private int men;           // number of men
     private int women;         // number of women
 
-    public PopulationDTO(int populationId, int year, String district, int men, int women) {
+    public PopulationDTO(int populationId, int year, DistrictDTO district, int men, int women) {
         this.populationId = populationId;
         this.year = year;
         this.district = district;
@@ -36,11 +36,11 @@ public class PopulationDTO {
         this.year = year;
     }
 
-    public String getDistrict() {
+    public DistrictDTO getDistrict() {
         return district;
     }
 
-    public void setDistrict(String district) {
+    public void setDistrict(DistrictDTO district) {
         this.district = district;
     }
 
