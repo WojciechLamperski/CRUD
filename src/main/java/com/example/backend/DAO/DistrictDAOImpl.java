@@ -7,6 +7,7 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -46,8 +47,16 @@ public class DistrictDAOImpl implements DistrictDAO {
     }
 
     @Override
-    public Page<District> findAll(Pageable pageable) {
+    public Page<District> findAll(Pageable pageable, Sort sort) {
         String jpql = "SELECT d FROM District d";
+
+        // Sorting
+        if (sort != null && sort.isSorted()) {
+            String orderBy = sort.get().map(order -> "d." + order.getProperty() + " " + order.getDirection())
+                    .reduce((a, b) -> a + ", " + b).orElse("");
+            jpql += " ORDER BY " + orderBy;  // ✅ Now, ORDER BY is part of the query BEFORE execution
+        }
+
         TypedQuery<District> query = entityManager.createQuery(jpql, District.class);
 
         int totalRows = query.getResultList().size();

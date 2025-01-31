@@ -23,9 +23,11 @@ public class VoivodeshipRestController {
     @GetMapping("/voivodeships")
     public VoivodeshipResponse findAll(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "voivodeshipId", required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
     ) {
-        return voivodeshipService.findAll(pageNumber, pageSize);
+        return voivodeshipService.findAll(pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @GetMapping("/voivodeships/{voivodeshipId}")

@@ -6,6 +6,7 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,8 +39,17 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
     }
 
     @Override
-    public Page<Voivodeship> findAll(Pageable pageable) {
+    public Page<Voivodeship> findAll(Pageable pageable, Sort sort) {
+
         String jpql = "SELECT v FROM Voivodeship v";
+
+        // Sorting
+        if (sort != null && sort.isSorted()) {
+            String orderBy = sort.get().map(order -> "v." + order.getProperty() + " " + order.getDirection())
+                    .reduce((a, b) -> a + ", " + b).orElse("");
+            jpql += " ORDER BY " + orderBy;  // ✅ Now, ORDER BY is part of the query BEFORE execution
+        }
+
         TypedQuery<Voivodeship> query = entityManager.createQuery(jpql, Voivodeship.class);
 
         int totalRows = query.getResultList().size();

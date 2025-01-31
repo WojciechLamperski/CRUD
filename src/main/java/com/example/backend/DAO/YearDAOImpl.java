@@ -6,6 +6,7 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,8 +39,16 @@ public class YearDAOImpl implements YearDAO {
     }
 
     @Override
-    public Page<Year> findAll(Pageable pageable) {
+    public Page<Year> findAll(Pageable pageable, Sort sort) {
         String jpql = "SELECT y FROM Year y";
+
+        // Sorting
+        if (sort != null && sort.isSorted()) {
+            String orderBy = sort.get().map(order -> "y." + order.getProperty() + " " + order.getDirection())
+                    .reduce((a, b) -> a + ", " + b).orElse("");
+            jpql += " ORDER BY " + orderBy;  // ✅ Now, ORDER BY is part of the query BEFORE execution
+        }
+
         TypedQuery<Year> query = entityManager.createQuery(jpql, Year.class);
 
         int totalRows = query.getResultList().size();

@@ -21,9 +21,11 @@ public class YearRestController {
     @GetMapping("/years")
     public YearResponse findAll(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "yearId", required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
     ) {
-        return yearService.findAll(pageNumber, pageSize);
+        return yearService.findAll(pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @GetMapping("/years/{yearId}")

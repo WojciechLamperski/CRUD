@@ -22,9 +22,11 @@ public class DistrictRestController {
     @GetMapping("/districts")
     public DistrictResponse findAll(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "districtId", required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
     ) {
-        return districtService.findAll(pageNumber, pageSize);
+        return districtService.findAll(pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @GetMapping("/districts/{districtId}")
