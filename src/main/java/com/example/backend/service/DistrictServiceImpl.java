@@ -2,8 +2,15 @@ package com.example.backend.service;
 
 import com.example.backend.DAO.DistrictDAO;
 import com.example.backend.DTO.DistrictDTO;
+import com.example.backend.DTO.DistrictResponse;
+import com.example.backend.DTO.PopulationDTO;
+import com.example.backend.DTO.DistrictResponse;
 import com.example.backend.POJO.District;
+import com.example.backend.POJO.Population;
 import com.example.backend.exception.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +45,7 @@ public class DistrictServiceImpl implements DistrictService {
 //        }
 //    }
 
+    @Override
     public DistrictDTO findById(int id) {
         District district = districtDAO.findById(id);
         return (district != null) ? convertToDTO(district) : null;
@@ -55,6 +63,34 @@ public class DistrictServiceImpl implements DistrictService {
     public List<DistrictDTO> findAll() {
         List<District> districts = districtDAO.findAll();
         return districts.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public DistrictResponse findAll(int pageNumber, int pageSize) {
+        System.out.println("pageNumber: " + pageNumber + " pageSize: " + pageSize);
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+        System.out.println("pageNumber: " + pageNumber + " New pageSize: " + pageSize);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        System.out.println("pageable: " + pageable);
+
+//        try {
+        Page<District> districts = districtDAO.findAll(pageable);
+        List<DistrictDTO> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        DistrictResponse districtResponse = new DistrictResponse();
+        districtResponse.setContent(content);
+        districtResponse.setPageNumber(districts.getNumber());
+        districtResponse.setPageSize(districts.getSize());
+        districtResponse.setTotalElements(districts.getTotalElements());
+        districtResponse.setTotalPages(districts.getTotalPages());
+        districtResponse.setLast(districts.isLast());
+//        } catch (DataAccessException e) {
+//            throw new DatabaseException("Error retrieving all Population entities", e);
+//        }
+
+        return districtResponse;
     }
 
 
