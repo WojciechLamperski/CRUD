@@ -1,6 +1,5 @@
 package com.example.backend.DTO;
 
-import com.example.backend.POJO.Voivodeship;
 import com.example.backend.POJO.Year;
 
 import java.util.List;

@@ -26,11 +26,11 @@ public class YearServiceImpl implements YearService {
     @Override
     @Transactional
     public String save(Year year) {
-//        try {
+        // try {
             return yearDAO.save(year);
-//        } catch (DataAccessException e) {
-//            throw new DatabaseException("Error saving Year entity", e);
-//        }
+        // } catch (DataAccessException e) {
+            // throw new DatabaseException("Error saving Year entity", e);
+        // }
     }
 
     @Override
@@ -44,17 +44,12 @@ public class YearServiceImpl implements YearService {
 
     @Override
     public YearResponse findAll(int pageNumber, int pageSize) {
-        System.out.println("pageNumber: " + pageNumber + " pageSize: " + pageSize);
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
-        System.out.println("pageNumber: " + pageNumber + " New pageSize: " + pageSize);
-
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        System.out.println("pageable: " + pageable);
-
-//        try {
+        // try {
         Page<Year> year = yearDAO.findAll(pageable);
         List<Year> content = yearDAO.findAll();
 
@@ -65,10 +60,9 @@ public class YearServiceImpl implements YearService {
         voivodeshipResponse.setTotalElements(year.getTotalElements());
         voivodeshipResponse.setTotalPages(year.getTotalPages());
         voivodeshipResponse.setLast(year.isLast());
-//        } catch (DataAccessException e) {
-//            throw new DatabaseException("Error retrieving all Year entities", e);
-//        }
-
+        // } catch (DataAccessException e) {
+            // throw new DatabaseException("Error retrieving all Year entities", e);
+        // }
         return voivodeshipResponse;
     }
 

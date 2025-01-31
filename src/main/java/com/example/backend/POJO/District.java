@@ -44,14 +44,6 @@ public class District {
         this.voivodeshipId = voivodeshipId;
     }
 
-//    public Voivodeship getVoivodeship() {
-//        return voivodeship;
-//    }
-//
-//    public void setVoivodeship(Voivodeship voivodeship) {
-//        this.voivodeship = voivodeship;
-//    }
-
     public void setVoivodeship(int voivodeshipId) {
         this.voivodeshipId = voivodeshipId;
     }

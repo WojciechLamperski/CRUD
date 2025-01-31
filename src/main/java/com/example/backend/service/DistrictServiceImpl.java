@@ -3,10 +3,7 @@ package com.example.backend.service;
 import com.example.backend.DAO.DistrictDAO;
 import com.example.backend.DTO.DistrictDTO;
 import com.example.backend.DTO.DistrictResponse;
-import com.example.backend.DTO.PopulationDTO;
-import com.example.backend.DTO.DistrictResponse;
 import com.example.backend.POJO.District;
-import com.example.backend.POJO.Population;
 import com.example.backend.exception.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,46 +33,30 @@ public class DistrictServiceImpl implements DistrictService {
 //        }
     }
 
-//    @Override
-//    public District findById(int id) {
-//        try {
-//            return districtDAO.findById(id);
-//        } catch (RuntimeException e) {
-//            throw new EntityNotFoundException("District with id " + id + " not found");
-//        }
-//    }
-
     @Override
     public DistrictDTO findById(int id) {
         District district = districtDAO.findById(id);
         return (district != null) ? convertToDTO(district) : null;
     }
 
-//    @Override
-//    public List<District> findAll() {
-////        try {
-//        return districtDAO.findAll();
-////        } catch (DataAccessException e) {
-////            throw new DatabaseException("Error retrieving all District entities", e);
-////        }
-//    }
 
     public List<DistrictDTO> findAll() {
+        // try {
         List<District> districts = districtDAO.findAll();
         return districts.stream().map(this::convertToDTO).collect(Collectors.toList());
+        // } catch (DataAccessException e) {
+            // throw new DatabaseException("Error retrieving all District entities", e);
+        // }
     }
 
     @Override
     public DistrictResponse findAll(int pageNumber, int pageSize) {
-        System.out.println("pageNumber: " + pageNumber + " pageSize: " + pageSize);
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
-        System.out.println("pageNumber: " + pageNumber + " New pageSize: " + pageSize);
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        System.out.println("pageable: " + pageable);
 
-//        try {
+        // try {
         Page<District> districts = districtDAO.findAll(pageable);
         List<DistrictDTO> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
 
@@ -86,10 +67,9 @@ public class DistrictServiceImpl implements DistrictService {
         districtResponse.setTotalElements(districts.getTotalElements());
         districtResponse.setTotalPages(districts.getTotalPages());
         districtResponse.setLast(districts.isLast());
-//        } catch (DataAccessException e) {
-//            throw new DatabaseException("Error retrieving all Population entities", e);
-//        }
-
+        // } catch (DataAccessException e) {
+            // throw new DatabaseException("Error retrieving all Population entities", e);
+        // }
         return districtResponse;
     }
 

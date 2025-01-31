@@ -2,7 +2,6 @@ package com.example.backend.POJO;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;

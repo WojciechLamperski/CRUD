@@ -45,17 +45,12 @@ public class PopulationServiceImpl implements PopulationService {
 
     @Override
     public PopulationResponse findAll(int pageNumber, int pageSize) {
-        System.out.println("pageNumber: " + pageNumber + " pageSize: " + pageSize);
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
-        System.out.println("pageNumber: " + pageNumber + " New pageSize: " + pageSize);
-
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        System.out.println("pageable: " + pageable);
-
-//        try {
+        // try {
         Page<Population> populations = populationDAO.findAll(pageable);
         List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
 
@@ -66,10 +61,9 @@ public class PopulationServiceImpl implements PopulationService {
         populationResponse.setTotalElements(populations.getTotalElements());
         populationResponse.setTotalPages(populations.getTotalPages());
         populationResponse.setLast(populations.isLast());
-//        } catch (DataAccessException e) {
-//            throw new DatabaseException("Error retrieving all Population entities", e);
-//        }
-
+        // } catch (DataAccessException e) {
+            // throw new DatabaseException("Error retrieving all Population entities", e);
+        // }
         return populationResponse;
     }
 

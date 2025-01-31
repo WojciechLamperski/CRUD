@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -26,11 +25,11 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
     @Override
     @Transactional
     public String save(Voivodeship voivodeship) {
-//        try {
+        // try {
         return voivodeshipDAO.save(voivodeship);
-//        } catch (DataAccessException e) {
-//            throw new DatabaseException("Error saving Voivodeship entity", e);
-//        }
+        // } catch (DataAccessException e) {
+            // throw new DatabaseException("Error saving Voivodeship entity", e);
+        // }
     }
 
     @Override
@@ -44,17 +43,12 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
 
     @Override
     public VoivodeshipResponse findAll(int pageNumber, int pageSize) {
-        System.out.println("pageNumber: " + pageNumber + " pageSize: " + pageSize);
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
-        System.out.println("pageNumber: " + pageNumber + " New pageSize: " + pageSize);
-
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        System.out.println("pageable: " + pageable);
-
-//        try {
+        // try {
         Page<Voivodeship> voivodeships = voivodeshipDAO.findAll(pageable);
         List<Voivodeship> content = voivodeshipDAO.findAll();
 
@@ -65,10 +59,9 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
         voivodeshipResponse.setTotalElements(voivodeships.getTotalElements());
         voivodeshipResponse.setTotalPages(voivodeships.getTotalPages());
         voivodeshipResponse.setLast(voivodeships.isLast());
-//        } catch (DataAccessException e) {
-//            throw new DatabaseException("Error retrieving all Voivodeship entities", e);
-//        }
-
+        // } catch (DataAccessException e) {
+            // throw new DatabaseException("Error retrieving all Voivodeship entities", e);
+        // }
         return voivodeshipResponse;
     }
 
