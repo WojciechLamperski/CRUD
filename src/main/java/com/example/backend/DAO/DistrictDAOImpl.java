@@ -47,7 +47,6 @@ public class DistrictDAOImpl implements DistrictDAO {
 
     @Override
     public Page<District> findAll(Pageable pageable) {
-        System.out.println(pageable);
         String jpql = "SELECT d FROM District d";
         TypedQuery<District> query = entityManager.createQuery(jpql, District.class);
 

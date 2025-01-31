@@ -39,7 +39,6 @@ public class PopulationDAOImpl implements PopulationDAO {
 
     @Override
     public Page<Population> findAll(Pageable pageable) {
-        System.out.println(pageable);
         String jpql = "SELECT p FROM Population p";
         TypedQuery<Population> query = entityManager.createQuery(jpql, Population.class);
 

@@ -39,7 +39,6 @@ public class YearDAOImpl implements YearDAO {
 
     @Override
     public Page<Year> findAll(Pageable pageable) {
-        System.out.println(pageable);
         String jpql = "SELECT y FROM Year y";
         TypedQuery<Year> query = entityManager.createQuery(jpql, Year.class);
 
