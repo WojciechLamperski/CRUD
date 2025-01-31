@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 
+import com.example.backend.DTO.VoivodeshipResponse;
 import com.example.backend.POJO.Voivodeship;
 import com.example.backend.service.VoivodeshipService;
 import jakarta.validation.Valid;
@@ -19,9 +20,13 @@ public class VoivodeshipRestController {
         voivodeshipService = theVoivodeshipService;
     }
 
+
     @GetMapping("/voivodeships")
-    public List<Voivodeship> findAll() {
-        return voivodeshipService.findAll();
+    public VoivodeshipResponse findAll(
+            @RequestParam(value = "PageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "PageSize", defaultValue = "30", required = false) int pageSize
+    ) {
+        return voivodeshipService.findAll(pageNumber, pageSize);
     }
 
     @GetMapping("/voivodeships/{voivodeshipId}")

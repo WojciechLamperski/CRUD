@@ -1,7 +1,12 @@
 package com.example.backend.DAO;
 
 import com.example.backend.POJO.Voivodeship;
+import com.example.backend.POJO.Voivodeship;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,6 +36,21 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
     public List<Voivodeship> findAll() {
         String jpql = "SELECT v FROM Voivodeship v";
         return entityManager.createQuery(jpql, Voivodeship.class).getResultList();
+    }
+
+    @Override
+    public Page<Voivodeship> findAll(Pageable pageable) {
+        System.out.println(pageable);
+        String jpql = "SELECT p FROM Voivodeship p";
+        TypedQuery<Voivodeship> query = entityManager.createQuery(jpql, Voivodeship.class);
+
+        int totalRows = query.getResultList().size();
+        List<Voivodeship> voivodeship = query
+                .setFirstResult((int) pageable.getOffset()) // Offset for pagination
+                .setMaxResults(pageable.getPageSize()) // Limit for pagination
+                .getResultList();
+
+        return new PageImpl<>(voivodeship, pageable, totalRows);
     }
 
     @Override
