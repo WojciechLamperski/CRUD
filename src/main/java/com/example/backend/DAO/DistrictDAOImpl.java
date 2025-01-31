@@ -1,7 +1,5 @@
 package com.example.backend.DAO;
 
-import com.example.backend.DTO.DistrictDTO;
-import com.example.backend.POJO.District;
 import com.example.backend.POJO.District;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -29,11 +27,6 @@ public class DistrictDAOImpl implements DistrictDAO {
         return ("object with id:" + dbDistrict.getDistrictId() + " saved successfully");
     }
 
-//    @Override
-//    public District findById(int district_id) {
-//        return entityManager.find(District.class, district_id);
-//    }
-
     @Override
     public District findById(int district_id) {
         String jpql = "SELECT d FROM District d JOIN FETCH d.voivodeship WHERE d.districtId = :district_id";
@@ -45,12 +38,6 @@ public class DistrictDAOImpl implements DistrictDAO {
             return null; // Return null if district not found
         }
     }
-
-//    @Override
-//    public List<District> findAll() {
-//        String jpql = "SELECT d FROM District d";
-//        return entityManager.createQuery(jpql, District.class).getResultList();
-//    }
 
     @Override
     public List<District> findAll() {

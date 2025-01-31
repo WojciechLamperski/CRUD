@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -24,7 +23,7 @@ public class VoivodeshipRestController {
     @GetMapping("/voivodeships")
     public VoivodeshipResponse findAll(
             @RequestParam(value = "PageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "PageSize", defaultValue = "30", required = false) int pageSize
+            @RequestParam(value = "PageSize", defaultValue = "20", required = false) int pageSize
     ) {
         return voivodeshipService.findAll(pageNumber, pageSize);
     }

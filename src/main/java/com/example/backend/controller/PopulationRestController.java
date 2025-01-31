@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -20,11 +19,10 @@ public class PopulationRestController {
         populationService = thePopulationService;
     }
 
-//    TODO add Pagination, DTO, & un-comment
     @GetMapping("/populations")
     public PopulationResponse findAll(
             @RequestParam(value = "PageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "PageSize", defaultValue = "30", required = false) int pageSize
+            @RequestParam(value = "PageSize", defaultValue = "20", required = false) int pageSize
             ) {
         return populationService.findAll(pageNumber, pageSize);
     }

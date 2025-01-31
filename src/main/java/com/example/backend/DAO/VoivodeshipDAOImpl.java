@@ -1,7 +1,6 @@
 package com.example.backend.DAO;
 
 import com.example.backend.POJO.Voivodeship;
-import com.example.backend.POJO.Voivodeship;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.data.domain.Page;

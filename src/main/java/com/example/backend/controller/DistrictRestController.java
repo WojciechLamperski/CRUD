@@ -22,7 +22,7 @@ public class DistrictRestController {
     @GetMapping("/districts")
     public DistrictResponse findAll(
             @RequestParam(value = "PageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "PageSize", defaultValue = "30", required = false) int pageSize
+            @RequestParam(value = "PageSize", defaultValue = "20", required = false) int pageSize
     ) {
         return districtService.findAll(pageNumber, pageSize);
     }

@@ -23,7 +23,7 @@ public class YearRestController {
     @GetMapping("/years")
     public YearResponse findAll(
             @RequestParam(value = "PageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "PageSize", defaultValue = "30", required = false) int pageSize
+            @RequestParam(value = "PageSize", defaultValue = "20", required = false) int pageSize
     ) {
         return yearService.findAll(pageNumber, pageSize);
     }
