@@ -22,8 +22,8 @@ public class VoivodeshipRestController {
 
     @GetMapping("/voivodeships")
     public VoivodeshipResponse findAll(
-            @RequestParam(value = "PageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "PageSize", defaultValue = "20", required = false) int pageSize
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
     ) {
         return voivodeshipService.findAll(pageNumber, pageSize);
     }

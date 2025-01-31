@@ -9,6 +9,7 @@ import com.example.backend.exception.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,14 +46,18 @@ public class PopulationServiceImpl implements PopulationService {
     }
 
     @Override
-    public PopulationResponse findAll(int pageNumber, int pageSize) {
+    public PopulationResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
+
+        // Determine sorting direction
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         // try {
-        Page<Population> populations = populationDAO.findAll(pageable);
+        Page<Population> populations = populationDAO.findAll(pageable, sort);
         List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
 
         PopulationResponse populationResponse = new PopulationResponse();

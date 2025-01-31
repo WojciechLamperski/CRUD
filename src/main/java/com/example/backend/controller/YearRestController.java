@@ -7,8 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/api")
@@ -22,8 +20,8 @@ public class YearRestController {
 
     @GetMapping("/years")
     public YearResponse findAll(
-            @RequestParam(value = "PageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "PageSize", defaultValue = "20", required = false) int pageSize
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
     ) {
         return yearService.findAll(pageNumber, pageSize);
     }

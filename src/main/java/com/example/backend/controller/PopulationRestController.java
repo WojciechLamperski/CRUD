@@ -21,10 +21,12 @@ public class PopulationRestController {
 
     @GetMapping("/populations")
     public PopulationResponse findAll(
-            @RequestParam(value = "PageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "PageSize", defaultValue = "20", required = false) int pageSize
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "populationId", required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
             ) {
-        return populationService.findAll(pageNumber, pageSize);
+        return populationService.findAll(pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @GetMapping("/populations/{populationId}")
