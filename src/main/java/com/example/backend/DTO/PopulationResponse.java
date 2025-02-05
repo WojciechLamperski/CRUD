@@ -12,15 +12,6 @@ public class PopulationResponse {
 
     public PopulationResponse(){}
 
-    public PopulationResponse(List<PopulationDTO> content, int pageNumber, int pageSize, long totalElements, boolean last, int totalPages) {
-        this.content = content;
-        this.pageNumber = pageNumber;
-        this.pageSize = pageSize;
-        this.totalElements = totalElements;
-        this.last = last;
-        this.totalPages = totalPages;
-    }
-
     public List<PopulationDTO> getContent() {
         return content;
     }

@@ -2,8 +2,6 @@ package com.example.backend.service;
 
 import com.example.backend.DAO.YearDAO;
 import com.example.backend.DTO.YearResponse;
-import com.example.backend.POJO.Voivodeship;
-import com.example.backend.POJO.Year;
 import com.example.backend.POJO.Year;
 import com.example.backend.exception.EntityNotFoundException;
 import org.springframework.data.domain.Page;

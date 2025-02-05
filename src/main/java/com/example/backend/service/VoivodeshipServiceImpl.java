@@ -1,7 +1,6 @@
 package com.example.backend.service;
 
 import com.example.backend.DAO.VoivodeshipDAO;
-import com.example.backend.DTO.PopulationDTO;
 import com.example.backend.DTO.VoivodeshipResponse;
 import com.example.backend.POJO.Voivodeship;
 import com.example.backend.exception.EntityNotFoundException;

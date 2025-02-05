@@ -8,14 +8,6 @@ public class PopulationDTO {
     private int men;           // number of men
     private int women;         // number of women
 
-    public PopulationDTO(int populationId, int year, DistrictDTO district, int men, int women) {
-        this.populationId = populationId;
-        this.year = year;
-        this.district = district;
-        this.men = men;
-        this.women = women;
-    }
-
     public PopulationDTO(){
 
     }

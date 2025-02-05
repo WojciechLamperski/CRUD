@@ -6,12 +6,6 @@ public class DistrictDTO {
     private String district;      // district
     private String voivodeship;    // voivodeship
 
-    public DistrictDTO(int districtId, String district, String voivodeship) {
-        this.districtId = districtId;
-        this.district = district;
-        this.voivodeship = voivodeship;
-    }
-
     public DistrictDTO() {}
 
     public int getDistrictId() {
