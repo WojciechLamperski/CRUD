@@ -39,11 +39,6 @@ public class District {
 
     public District() {}
 
-    public District(String district, int voivodeshipId) {
-        this.district = district;
-        this.voivodeshipId = voivodeshipId;
-    }
-
     public void setVoivodeship(int voivodeshipId) {
         this.voivodeshipId = voivodeshipId;
     }

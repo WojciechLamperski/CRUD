@@ -30,10 +30,6 @@ public class Year {
     public Year() {
     }
 
-    public Year(int year) {
-        this.year = year;
-    }
-
     public int getYearId() {
         return yearId;
     }

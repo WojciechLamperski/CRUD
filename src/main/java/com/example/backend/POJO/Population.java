@@ -48,13 +48,6 @@ public class Population {
 
     public Population() {}
 
-    public Population(int yearId, int districtId, int men, int women) {
-        this.yearId = yearId;
-        this.districtId = districtId;
-        this.men = men;
-        this.women = women;
-    }
-
     public District getDistrict() {
         return district;
     }
