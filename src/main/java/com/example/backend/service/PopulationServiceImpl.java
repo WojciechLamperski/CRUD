@@ -85,19 +85,19 @@ public class PopulationServiceImpl implements PopulationService {
 
     public PopulationDTO convertToDTO(Population population) {
 
-        DistrictDTO districtDTO = new DistrictDTO(
-                population.getDistrict().getDistrictId(),
-                population.getDistrict().getDistrict(),
-                population.getDistrict().getVoivodeship().getVoivodeship()
-        );
+        DistrictDTO districtDTO = new DistrictDTO();
+        districtDTO.setDistrictId(population.getDistrict().getDistrictId());
+        districtDTO.setDistrict(population.getDistrict().getDistrict());
+        districtDTO.setVoivodeship(population.getDistrict().getVoivodeship().getVoivodeship());
 
-        return new PopulationDTO(
-                population.getPopulationId(),
-                population.getYear().getYear(),
-                districtDTO,
-                population.getMen(),
-                population.getWomen()
-        );
+        PopulationDTO populationDTO = new PopulationDTO();
+        populationDTO.setPopulationId(population.getPopulationId());
+        populationDTO.setYear(population.getYear().getYear());
+        populationDTO.setDistrict(districtDTO);
+        populationDTO.setMen(population.getMen());
+        populationDTO.setWomen(population.getWomen());
+
+        return populationDTO;
     }
 
 }

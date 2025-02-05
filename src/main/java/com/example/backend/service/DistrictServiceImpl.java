@@ -90,11 +90,11 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     public DistrictDTO convertToDTO(District district) {
-        return new DistrictDTO(
-                district.getDistrictId(),
-                district.getDistrict(),
-                district.getVoivodeship().getVoivodeship()
-        );
+        DistrictDTO districtDTO = new DistrictDTO();
+        districtDTO.setDistrictId(district.getDistrictId());
+        districtDTO.setDistrict(district.getDistrict());
+        districtDTO.setVoivodeship(district.getVoivodeship().getVoivodeship());
+        return districtDTO;
     }
 
 }
