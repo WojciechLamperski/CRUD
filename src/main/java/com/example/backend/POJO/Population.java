@@ -4,7 +4,11 @@ package com.example.backend.POJO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name="population")
 public class Population {
@@ -46,72 +50,4 @@ public class Population {
     @JoinColumn(name = "year_id", referencedColumnName = "year_id", insertable = false, updatable = false)
     private Year year; // Voivodeship name stored in secondary table
 
-    public Population() {}
-
-    public District getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(District district) {
-        this.district = district;
-    }
-
-    public Year getYear() {
-        return year;
-    }
-
-    public void setYear(Year year) {
-        this.year = year;
-    }
-
-    public int getPopulationId() {
-        return populationId;
-    }
-
-    public void setPopulationId(int populationId) {
-        this.populationId = populationId;
-    }
-
-    public int getYearId() {
-        return yearId;
-    }
-
-    public void setYearId(int yearId) {
-        this.yearId = yearId;
-    }
-
-    public int getDistrictId() {
-        return districtId;
-    }
-
-    public void setDistrictId(int districtId) {
-        this.districtId = districtId;
-    }
-
-    public int getMen() {
-        return men;
-    }
-
-    public void setMen(int men) {
-        this.men = men;
-    }
-
-    public int getWomen() {
-        return women;
-    }
-
-    public void setWomen(int women) {
-        this.women = women;
-    }
-
-    @Override
-    public String toString() {
-        return "Population{" +
-                "populationId=" + populationId +
-                ", yearId=" + yearId +
-                ", districtId=" + districtId +
-                ", men=" + men +
-                ", women=" + women +
-                '}';
-    }
 }

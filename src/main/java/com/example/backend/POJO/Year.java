@@ -3,9 +3,12 @@ package com.example.backend.POJO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.util.List;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name="years")
 public class Year {
@@ -24,33 +27,9 @@ public class Year {
     @Column(name="year")
     private int year;
 
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "year")
     private List<Population> populations;
 
-    public Year() {
-    }
-
-    public int getYearId() {
-        return yearId;
-    }
-
-    public void setYearId(int yearId) {
-        this.yearId = yearId;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    @Override
-    public String toString() {
-        return "Years{" +
-                "yearId=" + yearId +
-                ", year='" + year + '\'' +
-                '}';
-    }
 }
