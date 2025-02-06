@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.DAO.VoivodeshipDAO;
 import com.example.backend.DTO.VoivodeshipResponse;
+import com.example.backend.POJO.District;
 import com.example.backend.POJO.Voivodeship;
 import com.example.backend.exception.EntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -75,11 +76,12 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
     @Override
     @Transactional
     public String delete(int id) {
-        try {
-            return voivodeshipDAO.delete(id);
-        } catch (RuntimeException e) {
-            throw new EntityNotFoundException("Voivodeship with id " + id + " not found");
+        Voivodeship voivodeship = voivodeshipDAO.findById(id);
+        if (voivodeship == null) {
+            throw new EntityNotFoundException("Voivodeship not found");
         }
+        return voivodeshipDAO.delete(id);
+
     }
 
 }

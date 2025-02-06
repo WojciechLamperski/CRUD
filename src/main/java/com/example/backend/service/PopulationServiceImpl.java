@@ -4,6 +4,7 @@ import com.example.backend.DAO.PopulationDAO;
 import com.example.backend.DTO.DistrictDTO;
 import com.example.backend.DTO.PopulationResponse;
 import com.example.backend.DTO.PopulationDTO;
+import com.example.backend.POJO.District;
 import com.example.backend.POJO.Population;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.ReferencedEntityNotFoundException;
@@ -82,11 +83,12 @@ public class PopulationServiceImpl implements PopulationService {
     @Override
     @Transactional
     public String delete(int id) {
-        try {
-            return populationDAO.delete(id);
-        } catch (RuntimeException e) {
-            throw new EntityNotFoundException("Population with id " + id + " not found");
+
+        Population population = populationDAO.findById(id);
+        if (population == null) {
+            throw new EntityNotFoundException("District not found");
         }
+        return populationDAO.delete(id);
     }
 
     public PopulationDTO convertToDTO(Population population) {

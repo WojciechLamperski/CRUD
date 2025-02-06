@@ -2,7 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.DAO.YearDAO;
 import com.example.backend.DTO.YearResponse;
-import com.example.backend.POJO.Population;
+import com.example.backend.POJO.District;
 import com.example.backend.POJO.Year;
 import com.example.backend.exception.EntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -76,10 +76,11 @@ public class YearServiceImpl implements YearService {
     @Override
     @Transactional
     public String delete(int id) {
-        try {
-            return yearDAO.delete(id);
-        } catch (RuntimeException e) {
-            throw new EntityNotFoundException("Year with id " + id + " not found");
+
+        Year year = yearDAO.findById(id);
+        if (year == null) {
+            throw new EntityNotFoundException("Year not found");
         }
+        return yearDAO.delete(id);
     }
 }

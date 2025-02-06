@@ -88,15 +88,15 @@ public class DistrictServiceImpl implements DistrictService {
         return districtResponse;
     }
 
-
     @Override
     @Transactional
     public String delete(int id) {
-        try {
-            return districtDAO.delete(id);
-        } catch (RuntimeException e) {
-            throw new EntityNotFoundException("District with id " + id + " not found");
+
+        District district = districtDAO.findById(id);
+        if (district == null) {
+            throw new EntityNotFoundException("District not found");
         }
+        return districtDAO.delete(id);
     }
 
     public DistrictDTO convertToDTO(District district) {

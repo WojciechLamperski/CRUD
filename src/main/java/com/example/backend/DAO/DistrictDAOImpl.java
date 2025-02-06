@@ -1,10 +1,10 @@
 package com.example.backend.DAO;
 
 import com.example.backend.POJO.District;
-import com.example.backend.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,26 +25,36 @@ public class DistrictDAOImpl implements DistrictDAO {
 
     @Override
     public String save(District theDistrict) {
-        District dbDistrict = entityManager.merge(theDistrict);
-        return ("object with id:" + dbDistrict.getDistrictId() + " saved successfully");
+        try {
+            District dbDistrict = entityManager.merge(theDistrict);
+            return ("object with id:" + dbDistrict.getDistrictId() + " saved successfully");
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Data integrity violation: Unable to save District due to database constraints.");
+        } catch (Exception e) {
+            // Catch any other exceptions and provide a more generic error message
+            throw new RuntimeException("An error occurred while saving the district. Please try again later.");
+        }
     }
 
     @Override
     public District findById(int district_id) {
-        String jpql = "SELECT d FROM District d JOIN FETCH d.voivodeship WHERE d.districtId = :district_id";
         try {
-            return entityManager.createQuery(jpql, District.class)
-                    .setParameter("district_id", district_id)
-                    .getSingleResult();
+            return entityManager.find(District.class, district_id);
         } catch (NoResultException e) {
             return null; // Return null if district not found
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while retrieving the district. Please try again later.");
         }
     }
 
     @Override
     public List<District> findAll() {
-        String jpql = "SELECT d FROM District d JOIN FETCH d.voivodeship";
-        return entityManager.createQuery(jpql, District.class).getResultList();
+        String jpql = "SELECT d FROM District d";
+        try {
+            return entityManager.createQuery(jpql, District.class).getResultList();
+        } catch (Exception e){
+            throw new RuntimeException("An error occurred while retrieving the districts. Please try again later.");
+        }
     }
 
     @Override
@@ -58,24 +68,34 @@ public class DistrictDAOImpl implements DistrictDAO {
             jpql += " ORDER BY " + orderBy;  // ✅ Now, ORDER BY is part of the query BEFORE execution
         }
 
-        TypedQuery<District> query = entityManager.createQuery(jpql, District.class);
+        try {
+            TypedQuery<District> query = entityManager.createQuery(jpql, District.class);
 
-        int totalRows = query.getResultList().size();
-        List<District> districts = query
-                .setFirstResult((int) pageable.getOffset()) // Offset for pagination
-                .setMaxResults(pageable.getPageSize()) // Limit for pagination
-                .getResultList();
+            int totalRows = query.getResultList().size();
+            List<District> districts = query
+                    .setFirstResult((int) pageable.getOffset()) // Offset for pagination
+                    .setMaxResults(pageable.getPageSize()) // Limit for pagination
+                    .getResultList();
 
-        return new PageImpl<>(districts, pageable, totalRows);
+            return new PageImpl<>(districts, pageable, totalRows);
+
+        } catch (Error e){
+            throw new RuntimeException("An error occurred while retrieving the districts. Please try again later.");
+        }
+
     }
 
     @Override
     public String delete(int district_id) {
-        District district = entityManager.find(District.class, district_id);
-        if (district == null) {
-            throw new EntityNotFoundException("Voivodeship with this id not found");
+        try{
+            District district = entityManager.find(District.class, district_id);
+            entityManager.remove(district);
+            return "District successfully deleted"; // Indicating success
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Data integrity violation: Unable to delete District due to database constraints.");
+        } catch (Exception e) {
+            // Catch any other exceptions and provide a more generic error message
+            throw new RuntimeException("An error occurred while deleting the district. Please try again later.");
         }
-        entityManager.remove(district);
-        return "District successfully deleted"; // Indicating success
     }
 }

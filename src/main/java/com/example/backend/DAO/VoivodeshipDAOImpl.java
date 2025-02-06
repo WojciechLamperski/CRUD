@@ -1,9 +1,10 @@
 package com.example.backend.DAO;
 
 import com.example.backend.POJO.Voivodeship;
-import com.example.backend.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,19 +25,36 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
 
     @Override
     public String save(Voivodeship theVoivodeship) {
-        Voivodeship dbyVoivodeship = entityManager.merge(theVoivodeship);
-        return ("object with id:" + dbyVoivodeship.getVoivodeshipId() + " saved successfully");
+        try {
+            Voivodeship dbyVoivodeship = entityManager.merge(theVoivodeship);
+            return ("object with id:" + dbyVoivodeship.getVoivodeshipId() + " saved successfully");
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Data integrity violation: Unable to save Voivodeship due to database constraints.");
+        } catch (Exception e) {
+            // Catch any other exceptions and provide a more generic error message
+            throw new RuntimeException("An error occurred while saving the voivodeship. Please try again later.");
+        }
     }
 
     @Override
     public Voivodeship findById(int voivodeship_id) {
-        return entityManager.find(Voivodeship.class, voivodeship_id);
+        try{
+            return entityManager.find(Voivodeship.class, voivodeship_id);
+        } catch (NoResultException e) {
+            return null; // Return null if voivodeship not found
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while retrieving the voivodeship. Please try again later.");
+        }
     }
 
     @Override
     public List<Voivodeship> findAll() {
         String jpql = "SELECT v FROM Voivodeship v";
-        return entityManager.createQuery(jpql, Voivodeship.class).getResultList();
+        try {
+            return entityManager.createQuery(jpql, Voivodeship.class).getResultList();
+        } catch (Exception e){
+            throw new RuntimeException("An error occurred while retrieving the voivodeships. Please try again later.");
+        }
     }
 
     @Override
@@ -51,24 +69,32 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
             jpql += " ORDER BY " + orderBy;  // ✅ Now, ORDER BY is part of the query BEFORE execution
         }
 
-        TypedQuery<Voivodeship> query = entityManager.createQuery(jpql, Voivodeship.class);
+        try {
+            TypedQuery<Voivodeship> query = entityManager.createQuery(jpql, Voivodeship.class);
 
-        int totalRows = query.getResultList().size();
-        List<Voivodeship> voivodeship = query
-                .setFirstResult((int) pageable.getOffset()) // Offset for pagination
-                .setMaxResults(pageable.getPageSize()) // Limit for pagination
-                .getResultList();
+            int totalRows = query.getResultList().size();
+            List<Voivodeship> voivodeship = query
+                    .setFirstResult((int) pageable.getOffset()) // Offset for pagination
+                    .setMaxResults(pageable.getPageSize()) // Limit for pagination
+                    .getResultList();
 
-        return new PageImpl<>(voivodeship, pageable, totalRows);
+            return new PageImpl<>(voivodeship, pageable, totalRows);
+        } catch (Error e){
+            throw new RuntimeException("An error occurred while retrieving the voivodeships. Please try again later.");
+        }
     }
 
     @Override
     public String delete(int voivodeship_id) {
-        Voivodeship voivodeship = entityManager.find(Voivodeship.class, voivodeship_id);
-        if (voivodeship == null) {
-            throw new EntityNotFoundException("Voivodeship with this id not found");
+        try{
+            Voivodeship voivodeship = entityManager.find(Voivodeship.class, voivodeship_id);
+            entityManager.remove(voivodeship);
+            return "Voivodeship successfully deleted";
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Data integrity violation: Unable to delete Voivodeship due to database constraints.");
+        } catch (Exception e) {
+            // Catch any other exceptions and provide a more generic error message
+            throw new RuntimeException("An error occurred while deleting the voivodeship. Please try again later.");
         }
-        entityManager.remove(voivodeship);
-        return "Voivodeship successfully deleted";
     }
 }
