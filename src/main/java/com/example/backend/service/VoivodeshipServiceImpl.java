@@ -27,20 +27,21 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
     @Override
     @Transactional
     public String save(Voivodeship voivodeship) {
-        // try {
+
+        if(voivodeship.getVoivodeshipId() != 0 && voivodeshipDAO.findById(voivodeship.getVoivodeshipId()) == null){
+            throw new EntityNotFoundException("Voivodeship which you're trying to update was not found");
+        }
         return voivodeshipDAO.save(voivodeship);
-        // } catch (DataAccessException e) {
-            // throw new DatabaseException("Error saving Voivodeship entity", e);
-        // }
     }
 
     @Override
     public Voivodeship findById(int id) {
-        try {
-            return voivodeshipDAO.findById(id);
-        } catch (RuntimeException e) {
-            throw new EntityNotFoundException("Voivodeship with id " + id + " not found");
+
+        Voivodeship voivodeship = voivodeshipDAO.findById(id);
+        if (voivodeship == null) {
+            throw new EntityNotFoundException("Voivodeship not found");
         }
+        return voivodeshipDAO.findById(id);
     }
 
     @Override

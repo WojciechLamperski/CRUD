@@ -4,7 +4,9 @@ import com.example.backend.DAO.DistrictDAO;
 import com.example.backend.DTO.DistrictDTO;
 import com.example.backend.DTO.DistrictResponse;
 import com.example.backend.POJO.District;
+import com.example.backend.POJO.Voivodeship;
 import com.example.backend.exception.EntityNotFoundException;
+import com.example.backend.exception.ReferencedEntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,21 +29,29 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     @Transactional
     public String save(District district) {
-//        try {
+
+        if(district.getDistrictId() != 0 && districtDAO.findById(district.getDistrictId()) == null){
+            throw new EntityNotFoundException("District which you're trying to update was not found");
+        }
+        if(districtDAO.findById(district.getVoivodeshipId()) == null){
+            throw new ReferencedEntityNotFoundException("Voivodeship with this Id not found");
+        }
         return districtDAO.save(district);
-//        } catch (DataAccessException e) {
-//            throw new DatabaseException("Error saving District entity", e);
-//        }
     }
 
     @Override
     public DistrictDTO findById(int id) {
+
         District district = districtDAO.findById(id);
-        return (district != null) ? convertToDTO(district) : null;
+        if (district == null) {
+            throw new EntityNotFoundException("District not found");
+        }
+        return convertToDTO(district);
     }
 
 
     public List<DistrictDTO> findAll() {
+
         // try {
         List<District> districts = districtDAO.findAll();
         return districts.stream().map(this::convertToDTO).collect(Collectors.toList());
@@ -90,10 +100,17 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     public DistrictDTO convertToDTO(District district) {
+
+        Voivodeship voivodeship = district.getVoivodeship();
+
+        if(voivodeship == null) {
+            throw new EntityNotFoundException("Voivodeship with this id not found");
+        }
+
         DistrictDTO districtDTO = new DistrictDTO();
         districtDTO.setDistrictId(district.getDistrictId());
         districtDTO.setDistrict(district.getDistrict());
-        districtDTO.setVoivodeship(district.getVoivodeship().getVoivodeship());
+        districtDTO.setVoivodeship(voivodeship.getVoivodeship());
         return districtDTO;
     }
 

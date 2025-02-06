@@ -1,6 +1,7 @@
 package com.example.backend.DAO;
 
 import com.example.backend.POJO.Population;
+import com.example.backend.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.data.domain.Page;
@@ -63,11 +64,11 @@ public class PopulationDAOImpl implements PopulationDAO {
     @Override
     public String delete(int population_id) {
         Population population = entityManager.find(Population.class, population_id);
-        if (population != null) {
-            entityManager.remove(population);
-            return "Population successfully deleted"; // Indicating success
+        if (population == null) {
+            throw new EntityNotFoundException("Voivodeship with this id not found");
         }
-        return "Couldn't delete this population";
+        entityManager.remove(population);
+        return "Population successfully deleted"; // Indicating success
     }
 
 }

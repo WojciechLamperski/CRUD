@@ -6,6 +6,7 @@ import com.example.backend.DTO.PopulationResponse;
 import com.example.backend.DTO.PopulationDTO;
 import com.example.backend.POJO.Population;
 import com.example.backend.exception.EntityNotFoundException;
+import com.example.backend.exception.ReferencedEntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,21 +29,26 @@ public class PopulationServiceImpl implements PopulationService {
     @Override
     @Transactional
     public String save(Population population) {
-//        try {
+
+        if(population.getPopulationId() != 0 && populationDAO.findById(population.getPopulationId()) == null){
+            throw new EntityNotFoundException("Population which you're trying to update was not found");
+        }
+        if(populationDAO.findById(population.getYearId()) == null){
+            throw new ReferencedEntityNotFoundException("Year with this Id not found");
+        }
+        if(populationDAO.findById(population.getDistrictId()) == null){
+            throw new ReferencedEntityNotFoundException("District with this Id not found");
+        }
         return populationDAO.save(population);
-//        } catch (DataAccessException e) {
-//            throw new DatabaseException("Error saving Population entity", e);
-//        }
     }
 
     @Override
     public PopulationDTO findById(int id) {
-//        try {
-            Population population = populationDAO.findById(id);
-            return (population != null) ? convertToDTO(population) : null;
-//        } catch (RuntimeException e) {
-//            throw new EntityNotFoundException("Population with id " + id + " not found");
-//        }
+        Population population = populationDAO.findById(id);
+        if (population == null) {
+            throw new EntityNotFoundException("Population not found");
+        }
+        return convertToDTO(population);
     }
 
     @Override

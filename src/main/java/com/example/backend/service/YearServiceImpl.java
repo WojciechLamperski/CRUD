@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.DAO.YearDAO;
 import com.example.backend.DTO.YearResponse;
+import com.example.backend.POJO.Population;
 import com.example.backend.POJO.Year;
 import com.example.backend.exception.EntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -27,20 +28,21 @@ public class YearServiceImpl implements YearService {
     @Override
     @Transactional
     public String save(Year year) {
-        // try {
-            return yearDAO.save(year);
-        // } catch (DataAccessException e) {
-            // throw new DatabaseException("Error saving Year entity", e);
-        // }
+
+        if(year.getYearId() != 0 && yearDAO.findById(year.getYearId()) == null){
+            throw new EntityNotFoundException("Year which you're trying to update was not found");
+        }
+        return yearDAO.save(year);
     }
 
     @Override
     public Year findById(int id) {
-        try {
-            return yearDAO.findById(id);
-        } catch (RuntimeException e) {
-            throw new EntityNotFoundException("Year with id " + id + " not found");
+
+        Year year = yearDAO.findById(id);
+        if (year == null) {
+            throw new EntityNotFoundException("Year not found");
         }
+        return yearDAO.findById(id);
     }
 
     @Override

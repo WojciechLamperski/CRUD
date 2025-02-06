@@ -24,11 +24,11 @@ public class District {
     @Column(name="district_id")
     private int districtId;       // district_id
 
-    @NotEmpty()
+    @NotEmpty(message = "district can't be empty")
     @Column(name="district")
     private String district;      // district
 
-    @NotNull
+    @NotNull(message = "voivodeshipId can't be null")
     @Min(value = 1, message = "voivodeshipId must be greater than 0")
     @Column(name="voivodeship_id")
     private int voivodeshipId;

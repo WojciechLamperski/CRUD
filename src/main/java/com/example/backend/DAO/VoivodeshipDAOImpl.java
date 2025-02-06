@@ -1,6 +1,7 @@
 package com.example.backend.DAO;
 
 import com.example.backend.POJO.Voivodeship;
+import com.example.backend.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.data.domain.Page;
@@ -64,10 +65,10 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
     @Override
     public String delete(int voivodeship_id) {
         Voivodeship voivodeship = entityManager.find(Voivodeship.class, voivodeship_id);
-        if (voivodeship != null) {
-            entityManager.remove(voivodeship);
-            return "Voivodeship successfully deleted"; // Indicating success
+        if (voivodeship == null) {
+            throw new EntityNotFoundException("Voivodeship with this id not found");
         }
-        return "Couldn't delete this voivodeship";
+        entityManager.remove(voivodeship);
+        return "Voivodeship successfully deleted";
     }
 }

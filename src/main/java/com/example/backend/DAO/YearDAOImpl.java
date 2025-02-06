@@ -1,6 +1,7 @@
 package com.example.backend.DAO;
 
 import com.example.backend.POJO.Year;
+import com.example.backend.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.data.domain.Page;
@@ -63,10 +64,10 @@ public class YearDAOImpl implements YearDAO {
     @Override
     public String delete(int year_id) {
         Year year = entityManager.find(Year.class, year_id);
-        if (year != null) {
-            entityManager.remove(year);
-            return "Year successfully deleted"; // Indicating success
+        if (year == null) {
+            throw new EntityNotFoundException("Year with this id not found");
         }
-        return "Couldn't delete this year";
+        entityManager.remove(year);
+        return "Year successfully deleted"; // Indicating success
     }
 }

@@ -2,6 +2,7 @@ package com.example.backend.POJO;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class Year {
     @Column(name="year_id")
     private int yearId;
 
-    @NotNull
+    @NotNull(message = "year can't be null")
     @Min(value = 1, message = "year must be greater than 0")
     @Column(name="year")
     private int year;

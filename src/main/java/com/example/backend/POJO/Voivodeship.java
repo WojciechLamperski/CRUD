@@ -22,7 +22,7 @@ public class Voivodeship {
     @Column(name="voivodeship_id")
     private int voivodeshipId; // voivodeship_id
 
-    @NotEmpty()
+    @NotEmpty(message = "voivodeship can't be empty")
     @Column(name="voivodeship")
     private String voivodeship; // voivodeship
 

@@ -1,6 +1,7 @@
 package com.example.backend.DAO;
 
 import com.example.backend.POJO.District;
+import com.example.backend.exception.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
@@ -71,10 +72,10 @@ public class DistrictDAOImpl implements DistrictDAO {
     @Override
     public String delete(int district_id) {
         District district = entityManager.find(District.class, district_id);
-        if (district != null) {
-            entityManager.remove(district);
-            return "District successfully deleted"; // Indicating success
+        if (district == null) {
+            throw new EntityNotFoundException("Voivodeship with this id not found");
         }
-        return "Couldn't delete this district";
+        entityManager.remove(district);
+        return "District successfully deleted"; // Indicating success
     }
 }
