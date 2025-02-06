@@ -11,7 +11,6 @@ import java.util.List;
 public interface YearDAO {
     String save(Year year);
     Year findById(int id);
-    List<Year> findAll();
     Page<Year> findAll(Pageable pageable, Sort sort);
     String delete(int id);
 }

@@ -48,16 +48,6 @@ public class DistrictDAOImpl implements DistrictDAO {
     }
 
     @Override
-    public List<District> findAll() {
-        String jpql = "SELECT d FROM District d";
-        try {
-            return entityManager.createQuery(jpql, District.class).getResultList();
-        } catch (Exception e){
-            throw new RuntimeException("An error occurred while retrieving the districts. Please try again later.");
-        }
-    }
-
-    @Override
     public Page<District> findAll(Pageable pageable, Sort sort) {
         String jpql = "SELECT d FROM District d";
 

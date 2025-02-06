@@ -48,16 +48,6 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
     }
 
     @Override
-    public List<Voivodeship> findAll() {
-        String jpql = "SELECT v FROM Voivodeship v";
-        try {
-            return entityManager.createQuery(jpql, Voivodeship.class).getResultList();
-        } catch (Exception e){
-            throw new RuntimeException("An error occurred while retrieving the voivodeships. Please try again later.");
-        }
-    }
-
-    @Override
     public Page<Voivodeship> findAll(Pageable pageable, Sort sort) {
 
         String jpql = "SELECT v FROM Voivodeship v";

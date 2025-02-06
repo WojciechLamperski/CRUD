@@ -49,17 +49,6 @@ public class DistrictServiceImpl implements DistrictService {
         return convertToDTO(district);
     }
 
-
-    public List<DistrictDTO> findAll() {
-
-        // try {
-        List<District> districts = districtDAO.findAll();
-        return districts.stream().map(this::convertToDTO).collect(Collectors.toList());
-        // } catch (DataAccessException e) {
-            // throw new DatabaseException("Error retrieving all District entities", e);
-        // }
-    }
-
     @Override
     public DistrictResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
         int maxPageSize = 100;  // Prevent excessive page sizes

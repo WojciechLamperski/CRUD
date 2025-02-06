@@ -10,7 +10,6 @@ import java.util.List;
 public interface VoivodeshipDAO {
     String save(Voivodeship voivodeship);
     Voivodeship findById(int id);
-    List<Voivodeship> findAll();
     Page<Voivodeship> findAll(Pageable pageable, Sort sort);
     String delete(int id);
 }

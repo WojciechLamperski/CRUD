@@ -48,16 +48,6 @@ public class YearDAOImpl implements YearDAO {
     }
 
     @Override
-    public List<Year> findAll() {
-        String jpql = "SELECT y FROM Year y";
-        try {
-            return entityManager.createQuery(jpql, Year.class).getResultList();
-        } catch (Exception e){
-            throw new RuntimeException("An error occurred while retrieving the years. Please try again later.");
-        }
-    }
-
-    @Override
     public Page<Year> findAll(Pageable pageable, Sort sort) {
         String jpql = "SELECT y FROM Year y";
 

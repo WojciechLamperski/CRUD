@@ -49,16 +49,6 @@ public class PopulationDAOImpl implements PopulationDAO {
     }
 
     @Override
-    public List<Population> findAll() {
-        String jpql = "SELECT p FROM Population p";
-        try {
-            return entityManager.createQuery(jpql, Population.class).getResultList();
-        } catch (Exception e){
-            throw new RuntimeException("An error occurred while retrieving the populations. Please try again later.");
-        }
-    }
-
-    @Override
     public Page<Population> findAll(Pageable pageable, Sort sort) {
         String jpql = "SELECT p FROM Population p";
 
