@@ -77,14 +77,22 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
     @Override
     public String delete(int voivodeship_id) {
         try{
+
+            // Nullify the insertable = false, updatable = false constraints in District POJO
+            entityManager.createNativeQuery("UPDATE districts SET voivodeship_id = NULL WHERE voivodeship_id = ?1")
+                    .setParameter(1, voivodeship_id)  // Positional parameter (index starts from 1)
+                    .executeUpdate();
+
+            // Now fetch and remove the voivodeship
             Voivodeship voivodeship = entityManager.find(Voivodeship.class, voivodeship_id);
             entityManager.remove(voivodeship);
             return "Voivodeship successfully deleted";
+
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Data integrity violation: Unable to delete Voivodeship due to database constraints.");
         } catch (Exception e) {
             // Catch any other exceptions and provide a more generic error message
-            throw new RuntimeException("An error occurred while deleting the voivodeship. Please try again later.");
+            throw new RuntimeException("An error occurred while deleting the voivodeship:" + e.getMessage(), e);
         }
     }
 }

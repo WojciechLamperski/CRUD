@@ -1,5 +1,6 @@
 package com.example.backend.DAO;
 
+import com.example.backend.POJO.Voivodeship;
 import com.example.backend.POJO.Year;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -77,14 +78,22 @@ public class YearDAOImpl implements YearDAO {
     @Override
     public String delete(int year_id) {
         try{
+
+            // Nullify the insertable = false, updatable = false constraints in District POJO
+            entityManager.createNativeQuery("UPDATE populations SET year_id = NULL WHERE year_id = ?1")
+                    .setParameter(1, year_id)  // Positional parameter (index starts from 1)
+                    .executeUpdate();
+
+            // Now fetch and remove the voivodeship
             Year year = entityManager.find(Year.class, year_id);
             entityManager.remove(year);
-        return "Year successfully deleted"; // Indicating success
+            return "Year successfully deleted";
+
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Data integrity violation: Unable to delete Year due to database constraints.");
         } catch (Exception e) {
             // Catch any other exceptions and provide a more generic error message
-            throw new RuntimeException("An error occurred while deleting the year. Please try again later.");
+            throw new RuntimeException("An error occurred while deleting the year. Please try again later." + e.getMessage());
         }
     }
 }

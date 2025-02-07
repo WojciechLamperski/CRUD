@@ -78,9 +78,17 @@ public class DistrictDAOImpl implements DistrictDAO {
     @Override
     public String delete(int district_id) {
         try{
+
+            // Nullify the insertable = false, updatable = false constraints in District POJO
+            entityManager.createNativeQuery("UPDATE populations SET district_id = NULL WHERE district_id = ?1")
+                    .setParameter(1, district_id)  // Positional parameter (index starts from 1)
+                    .executeUpdate();
+
+            // Now fetch and remove the voivodeship
             District district = entityManager.find(District.class, district_id);
             entityManager.remove(district);
-            return "District successfully deleted"; // Indicating success
+            return "District successfully deleted";
+
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Data integrity violation: Unable to delete District due to database constraints.");
         } catch (Exception e) {
