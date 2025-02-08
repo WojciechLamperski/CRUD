@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -25,10 +24,9 @@ public class District {
     @Column(name="district")
     private String district;      // district
 
-    @NotNull(message = "voivodeshipId can't be null")
     @Min(value = 1, message = "voivodeshipId must be greater than 0")
     @Column(name="voivodeship_id")
-    private int voivodeshipId;
+    private Integer voivodeshipId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voivodeship_id", referencedColumnName = "voivodeship_id", insertable = false, updatable = false)

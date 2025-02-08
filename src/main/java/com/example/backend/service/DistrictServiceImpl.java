@@ -33,8 +33,10 @@ public class DistrictServiceImpl implements DistrictService {
         if(district.getDistrictId() != 0 && districtDAO.findById(district.getDistrictId()) == null){
             throw new EntityNotFoundException("District which you're trying to update was not found");
         }
-        if(districtDAO.findById(district.getVoivodeshipId()) == null){
-            throw new ReferencedEntityNotFoundException("Voivodeship with this Id not found");
+        if(district.getVoivodeshipId() != null){
+            if(districtDAO.findById(district.getVoivodeshipId()) == null){
+                throw new ReferencedEntityNotFoundException("Voivodeship with this Id not found");
+            }
         }
         return districtDAO.save(district);
     }
@@ -114,13 +116,17 @@ public class DistrictServiceImpl implements DistrictService {
 
         Voivodeship voivodeship = district.getVoivodeship();
 
-        if(voivodeship == null) {
-            throw new EntityNotFoundException("Voivodeship with this id not found");
-        }
-
         DistrictDTO districtDTO = new DistrictDTO();
         districtDTO.setDistrictId(district.getDistrictId());
         districtDTO.setDistrict(district.getDistrict());
+
+        // Check since district can be null in populations
+        if(voivodeship != null) {
+            districtDTO.setVoivodeship(voivodeship.getVoivodeship());
+        }else{
+            districtDTO.setVoivodeship(null);
+        }
+
         districtDTO.setVoivodeship(voivodeship.getVoivodeship());
         return districtDTO;
     }

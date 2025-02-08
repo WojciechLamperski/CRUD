@@ -34,11 +34,15 @@ public class PopulationServiceImpl implements PopulationService {
         if(population.getPopulationId() != 0 && populationDAO.findById(population.getPopulationId()) == null){
             throw new EntityNotFoundException("Population which you're trying to update was not found");
         }
-        if(populationDAO.findById(population.getYearId()) == null){
-            throw new ReferencedEntityNotFoundException("Year with this Id not found");
+        if(population.getYearId() != null){
+            if(populationDAO.findById(population.getYearId()) == null) {
+                throw new ReferencedEntityNotFoundException("Year with this Id not found");
+            }
         }
-        if(populationDAO.findById(population.getDistrictId()) == null){
-            throw new ReferencedEntityNotFoundException("District with this Id not found");
+        if(population.getDistrictId() != null){
+            if(populationDAO.findById(population.getDistrictId()) == null){
+                throw new ReferencedEntityNotFoundException("District with this Id not found");
+            }
         }
         return populationDAO.save(population);
     }
@@ -81,6 +85,94 @@ public class PopulationServiceImpl implements PopulationService {
     }
 
     @Override
+    public PopulationResponse findAllInDistrict(int districtId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+
+        // Determine sorting direction
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        // try {
+        Page<Population> populations = populationDAO.findAllInDistrict(pageable, sort, districtId);
+        List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        PopulationResponse populationResponse = new PopulationResponse();
+        populationResponse.setContent(content);
+        populationResponse.setPageNumber(populations.getNumber());
+        populationResponse.setPageSize(populations.getSize());
+        populationResponse.setTotalElements(populations.getTotalElements());
+        populationResponse.setTotalPages(populations.getTotalPages());
+        populationResponse.setLast(populations.isLast());
+        // } catch (DataAccessException e) {
+        // throw new DatabaseException("Error retrieving all Population entities", e);
+        // }
+        return populationResponse;
+    }
+
+    @Override
+    public PopulationResponse findAllInYear(int yearId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+
+        // Determine sorting direction
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        // try {
+        Page<Population> populations = populationDAO.findAllInYear(pageable, sort, yearId);
+        List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        PopulationResponse populationResponse = new PopulationResponse();
+        populationResponse.setContent(content);
+        populationResponse.setPageNumber(populations.getNumber());
+        populationResponse.setPageSize(populations.getSize());
+        populationResponse.setTotalElements(populations.getTotalElements());
+        populationResponse.setTotalPages(populations.getTotalPages());
+        populationResponse.setLast(populations.isLast());
+        // } catch (DataAccessException e) {
+        // throw new DatabaseException("Error retrieving all Population entities", e);
+        // }
+        return populationResponse;
+    }
+
+    @Override
+    public PopulationResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+
+        // Determine sorting direction
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        // try {
+        Page<Population> populations = populationDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
+
+        List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        PopulationResponse populationResponse = new PopulationResponse();
+        populationResponse.setContent(content);
+        populationResponse.setPageNumber(populations.getNumber());
+        populationResponse.setPageSize(populations.getSize());
+        populationResponse.setTotalElements(populations.getTotalElements());
+        populationResponse.setTotalPages(populations.getTotalPages());
+        populationResponse.setLast(populations.isLast());
+
+        // } catch (DataAccessException e) {
+        // throw new DatabaseException("Error retrieving all Population entities", e);
+        // }
+        return populationResponse;
+    }
+
+
+
+    @Override
     @Transactional
     public String delete(int id) {
 
@@ -95,12 +187,27 @@ public class PopulationServiceImpl implements PopulationService {
 
         DistrictDTO districtDTO = new DistrictDTO();
         districtDTO.setDistrictId(population.getDistrict().getDistrictId());
-        districtDTO.setDistrict(population.getDistrict().getDistrict());
+
+        // Check since district can be null in populations
+        if(population.getDistrict() != null) {
+            districtDTO.setDistrict(population.getDistrict().getDistrict());
+        }else{
+            districtDTO.setDistrict(null);
+        }
+
         districtDTO.setVoivodeship(population.getDistrict().getVoivodeship().getVoivodeship());
+
 
         PopulationDTO populationDTO = new PopulationDTO();
         populationDTO.setPopulationId(population.getPopulationId());
-        populationDTO.setYear(population.getYear().getYear());
+
+        // Check since year can be null in populations
+        if(population.getYear() != null) {
+            populationDTO.setYear(population.getYear().getYear());
+        }else{
+            populationDTO.setYear(null);
+        }
+
         populationDTO.setDistrict(districtDTO);
         populationDTO.setMen(population.getMen());
         populationDTO.setWomen(population.getWomen());

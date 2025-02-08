@@ -89,7 +89,6 @@ public class DistrictDAOImpl implements DistrictDAO {
 
         try {
             TypedQuery<District> query = entityManager.createQuery(jpql, District.class);
-
             query.setParameter("voivodeshipId", voivodeshipId);
 
             int totalRows = query.getResultList().size();

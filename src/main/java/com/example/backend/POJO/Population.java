@@ -18,15 +18,13 @@ public class Population {
     @Column(name="population_id")
     private int populationId;  // population_id
 
-    @NotNull(message = "yearId can't be null")
     @Min(value = 1, message = "yearId must be greater than 0")
     @Column(name="year_id")
-    private int yearId;        // year_id
+    private Integer yearId;        // year_id
 
-    @NotNull(message = "districtId can't be null")
     @Min(value = 1, message = "districtId must be greater than 0")
     @Column(name="district_id")
-    private int districtId;    // district_id
+    private Integer districtId;    // district_id
 
     @NotNull(message = "men can't be null")
     @Min(value = 0, message = "number of men can't be negative")
