@@ -65,13 +65,9 @@ public class DistrictServiceImpl implements DistrictService {
         Page<District> districts = districtDAO.findAll(pageable, sort);
         List<DistrictDTO> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
 
-        DistrictResponse districtResponse = new DistrictResponse();
-        districtResponse.setContent(content);
-        districtResponse.setPageNumber(districts.getNumber());
-        districtResponse.setPageSize(districts.getSize());
-        districtResponse.setTotalElements(districts.getTotalElements());
-        districtResponse.setTotalPages(districts.getTotalPages());
-        districtResponse.setLast(districts.isLast());
+        DistrictResponse districtResponse = new DistrictResponse(
+                content, districts.getNumber(), districts.getSize(), districts.getTotalElements(), districts.getTotalPages(), districts.isLast()
+        );
 
         return districtResponse;
     }
@@ -90,13 +86,9 @@ public class DistrictServiceImpl implements DistrictService {
         Page<District> districts = districtDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
         List<DistrictDTO> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
 
-        DistrictResponse districtResponse = new DistrictResponse();
-        districtResponse.setContent(content);
-        districtResponse.setPageNumber(districts.getNumber());
-        districtResponse.setPageSize(districts.getSize());
-        districtResponse.setTotalElements(districts.getTotalElements());
-        districtResponse.setTotalPages(districts.getTotalPages());
-        districtResponse.setLast(districts.isLast());
+        DistrictResponse districtResponse = new DistrictResponse(
+                content, districts.getNumber(), districts.getSize(), districts.getTotalElements(), districts.getTotalPages(), districts.isLast()
+        );
 
         return districtResponse;
     }

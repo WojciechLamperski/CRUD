@@ -2,7 +2,6 @@ package com.example.backend.service;
 
 import com.example.backend.DAO.YearDAO;
 import com.example.backend.DTO.YearResponse;
-import com.example.backend.POJO.District;
 import com.example.backend.POJO.Year;
 import com.example.backend.exception.EntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -60,16 +59,10 @@ public class YearServiceImpl implements YearService {
         Page<Year> year = yearDAO.findAll(pageable, sort);
         List<Year> content = year.stream().collect(Collectors.toList());
 
-        YearResponse voivodeshipResponse = new YearResponse();
-        voivodeshipResponse.setContent(content);
-        voivodeshipResponse.setPageNumber(year.getNumber());
-        voivodeshipResponse.setPageSize(year.getSize());
-        voivodeshipResponse.setTotalElements(year.getTotalElements());
-        voivodeshipResponse.setTotalPages(year.getTotalPages());
-        voivodeshipResponse.setLast(year.isLast());
-        // } catch (DataAccessException e) {
-            // throw new DatabaseException("Error retrieving all Year entities", e);
-        // }
+        YearResponse voivodeshipResponse = new YearResponse(
+                content, year.getNumber(), year.getSize(), year.getTotalElements(), year.getTotalPages(), year.isLast()
+        );
+
         return voivodeshipResponse;
     }
 

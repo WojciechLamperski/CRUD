@@ -2,7 +2,6 @@ package com.example.backend.service;
 
 import com.example.backend.DAO.VoivodeshipDAO;
 import com.example.backend.DTO.VoivodeshipResponse;
-import com.example.backend.POJO.District;
 import com.example.backend.POJO.Voivodeship;
 import com.example.backend.exception.EntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -56,20 +55,13 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        // try {
         Page<Voivodeship> voivodeships = voivodeshipDAO.findAll(pageable, sort);
         List<Voivodeship> content = voivodeships.stream().collect(Collectors.toList());
 
-        VoivodeshipResponse voivodeshipResponse = new VoivodeshipResponse();
-        voivodeshipResponse.setContent(content);
-        voivodeshipResponse.setPageNumber(voivodeships.getNumber());
-        voivodeshipResponse.setPageSize(voivodeships.getSize());
-        voivodeshipResponse.setTotalElements(voivodeships.getTotalElements());
-        voivodeshipResponse.setTotalPages(voivodeships.getTotalPages());
-        voivodeshipResponse.setLast(voivodeships.isLast());
-        // } catch (DataAccessException e) {
-            // throw new DatabaseException("Error retrieving all Voivodeship entities", e);
-        // }
+        VoivodeshipResponse voivodeshipResponse = new VoivodeshipResponse(
+                content, voivodeships.getNumber(), voivodeships.getSize(), voivodeships.getTotalElements(), voivodeships.getTotalPages(), voivodeships.isLast()
+        );
+
         return voivodeshipResponse;
     }
 

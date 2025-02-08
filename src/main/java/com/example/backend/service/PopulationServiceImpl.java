@@ -4,7 +4,6 @@ import com.example.backend.DAO.PopulationDAO;
 import com.example.backend.DTO.DistrictDTO;
 import com.example.backend.DTO.PopulationResponse;
 import com.example.backend.DTO.PopulationDTO;
-import com.example.backend.POJO.District;
 import com.example.backend.POJO.Population;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.ReferencedEntityNotFoundException;
@@ -67,20 +66,13 @@ public class PopulationServiceImpl implements PopulationService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        // try {
         Page<Population> populations = populationDAO.findAll(pageable, sort);
         List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
 
-        PopulationResponse populationResponse = new PopulationResponse();
-        populationResponse.setContent(content);
-        populationResponse.setPageNumber(populations.getNumber());
-        populationResponse.setPageSize(populations.getSize());
-        populationResponse.setTotalElements(populations.getTotalElements());
-        populationResponse.setTotalPages(populations.getTotalPages());
-        populationResponse.setLast(populations.isLast());
-        // } catch (DataAccessException e) {
-            // throw new DatabaseException("Error retrieving all Population entities", e);
-        // }
+        PopulationResponse populationResponse = new PopulationResponse(
+                content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()
+        );
+
         return populationResponse;
     }
 
@@ -95,20 +87,13 @@ public class PopulationServiceImpl implements PopulationService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        // try {
         Page<Population> populations = populationDAO.findAllInDistrict(pageable, sort, districtId);
         List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
 
-        PopulationResponse populationResponse = new PopulationResponse();
-        populationResponse.setContent(content);
-        populationResponse.setPageNumber(populations.getNumber());
-        populationResponse.setPageSize(populations.getSize());
-        populationResponse.setTotalElements(populations.getTotalElements());
-        populationResponse.setTotalPages(populations.getTotalPages());
-        populationResponse.setLast(populations.isLast());
-        // } catch (DataAccessException e) {
-        // throw new DatabaseException("Error retrieving all Population entities", e);
-        // }
+        PopulationResponse populationResponse = new PopulationResponse(
+                content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()
+        );
+
         return populationResponse;
     }
 
@@ -123,20 +108,13 @@ public class PopulationServiceImpl implements PopulationService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        // try {
         Page<Population> populations = populationDAO.findAllInYear(pageable, sort, yearId);
         List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
 
-        PopulationResponse populationResponse = new PopulationResponse();
-        populationResponse.setContent(content);
-        populationResponse.setPageNumber(populations.getNumber());
-        populationResponse.setPageSize(populations.getSize());
-        populationResponse.setTotalElements(populations.getTotalElements());
-        populationResponse.setTotalPages(populations.getTotalPages());
-        populationResponse.setLast(populations.isLast());
-        // } catch (DataAccessException e) {
-        // throw new DatabaseException("Error retrieving all Population entities", e);
-        // }
+        PopulationResponse populationResponse = new PopulationResponse(
+                content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()
+        );
+
         return populationResponse;
     }
 
@@ -151,22 +129,14 @@ public class PopulationServiceImpl implements PopulationService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        // try {
         Page<Population> populations = populationDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
 
         List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
 
-        PopulationResponse populationResponse = new PopulationResponse();
-        populationResponse.setContent(content);
-        populationResponse.setPageNumber(populations.getNumber());
-        populationResponse.setPageSize(populations.getSize());
-        populationResponse.setTotalElements(populations.getTotalElements());
-        populationResponse.setTotalPages(populations.getTotalPages());
-        populationResponse.setLast(populations.isLast());
+        PopulationResponse populationResponse = new PopulationResponse(
+                content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()
+        );
 
-        // } catch (DataAccessException e) {
-        // throw new DatabaseException("Error retrieving all Population entities", e);
-        // }
         return populationResponse;
     }
 
