@@ -55,7 +55,7 @@ public class DistrictDAOImpl implements DistrictDAO {
         if (sort != null && sort.isSorted()) {
             String orderBy = sort.get().map(order -> "d." + order.getProperty() + " " + order.getDirection())
                     .reduce((a, b) -> a + ", " + b).orElse("");
-            jpql += " ORDER BY " + orderBy;  // ✅ Now, ORDER BY is part of the query BEFORE execution
+            jpql += " ORDER BY " + orderBy;
         }
 
         try {
@@ -73,6 +73,36 @@ public class DistrictDAOImpl implements DistrictDAO {
             throw new RuntimeException("An error occurred while retrieving the districts. Please try again later.");
         }
 
+    }
+
+    @Override
+    public Page<District> findAllInVoivodeship(Pageable pageable, Sort sort, int voivodeshipId) {
+        String jpql = "SELECT d FROM District d WHERE d.voivodeship.id = :voivodeshipId";
+
+
+        // Sorting
+        if (sort != null && sort.isSorted()) {
+            String orderBy = sort.get().map(order -> "d." + order.getProperty() + " " + order.getDirection())
+                    .reduce((a, b) -> a + ", " + b).orElse("");
+            jpql += " ORDER BY " + orderBy;
+        }
+
+        try {
+            TypedQuery<District> query = entityManager.createQuery(jpql, District.class);
+
+            query.setParameter("voivodeshipId", voivodeshipId);
+
+            int totalRows = query.getResultList().size();
+            List<District> districts = query
+                    .setFirstResult((int) pageable.getOffset()) // Offset for pagination
+                    .setMaxResults(pageable.getPageSize()) // Limit for pagination
+                    .getResultList();
+
+            return new PageImpl<>(districts, pageable, totalRows);
+
+        } catch (Error e){
+            throw new RuntimeException("An error occurred while retrieving the districts. Please try again later.");
+        }
     }
 
     @Override

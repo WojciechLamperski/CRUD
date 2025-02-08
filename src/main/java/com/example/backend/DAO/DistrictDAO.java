@@ -11,5 +11,6 @@ public interface DistrictDAO{
     String save(District district);
     District findById(int id);
     Page<District> findAll(Pageable pageable, Sort sort);
+    Page<District> findAllInVoivodeship(Pageable pageable, Sort sort, int voivodeshipId);
     String delete(int id);
 }

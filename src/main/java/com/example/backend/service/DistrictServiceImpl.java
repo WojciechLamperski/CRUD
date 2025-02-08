@@ -60,7 +60,6 @@ public class DistrictServiceImpl implements DistrictService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        // try {
         Page<District> districts = districtDAO.findAll(pageable, sort);
         List<DistrictDTO> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
 
@@ -71,9 +70,32 @@ public class DistrictServiceImpl implements DistrictService {
         districtResponse.setTotalElements(districts.getTotalElements());
         districtResponse.setTotalPages(districts.getTotalPages());
         districtResponse.setLast(districts.isLast());
-        // } catch (DataAccessException e) {
-            // throw new DatabaseException("Error retrieving all Population entities", e);
-        // }
+
+        return districtResponse;
+    }
+
+    @Override
+    public DistrictResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection){
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+
+        // Determine sorting direction
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<District> districts = districtDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
+        List<DistrictDTO> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        DistrictResponse districtResponse = new DistrictResponse();
+        districtResponse.setContent(content);
+        districtResponse.setPageNumber(districts.getNumber());
+        districtResponse.setPageSize(districts.getSize());
+        districtResponse.setTotalElements(districts.getTotalElements());
+        districtResponse.setTotalPages(districts.getTotalPages());
+        districtResponse.setLast(districts.isLast());
+
         return districtResponse;
     }
 
