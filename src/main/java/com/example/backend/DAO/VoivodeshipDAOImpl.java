@@ -56,7 +56,7 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
         if (sort != null && sort.isSorted()) {
             String orderBy = sort.get().map(order -> "v." + order.getProperty() + " " + order.getDirection())
                     .reduce((a, b) -> a + ", " + b).orElse("");
-            jpql += " ORDER BY " + orderBy;  // ✅ Now, ORDER BY is part of the query BEFORE execution
+            jpql += " ORDER BY " + orderBy;
         }
 
         try {

@@ -34,12 +34,12 @@ public class PopulationServiceImpl implements PopulationService {
             throw new EntityNotFoundException("Population which you're trying to update was not found");
         }
         if(population.getYearId() != null){
-            if(populationDAO.findById(population.getYearId()) == null) {
+            if(population.getPopulationId() != 0 & populationDAO.findById(population.getYearId()) == null) {
                 throw new ReferencedEntityNotFoundException("Year with this Id not found");
             }
         }
         if(population.getDistrictId() != null){
-            if(populationDAO.findById(population.getDistrictId()) == null){
+            if(population.getPopulationId() != 0 &  populationDAO.findById(population.getDistrictId()) == null){
                 throw new ReferencedEntityNotFoundException("District with this Id not found");
             }
         }
@@ -57,90 +57,23 @@ public class PopulationServiceImpl implements PopulationService {
 
     @Override
     public PopulationResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
-        int maxPageSize = 100;  // Prevent excessive page sizes
-        pageSize = Math.min(pageSize, maxPageSize);
-
-        // Determine sorting direction
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<Population> populations = populationDAO.findAll(pageable, sort);
-        List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
-
-        PopulationResponse populationResponse = new PopulationResponse(
-                content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()
-        );
-
-        return populationResponse;
+        return convertToResponse(null, null, null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     public PopulationResponse findAllInDistrict(int districtId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
-        int maxPageSize = 100;  // Prevent excessive page sizes
-        pageSize = Math.min(pageSize, maxPageSize);
-
-        // Determine sorting direction
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<Population> populations = populationDAO.findAllInDistrict(pageable, sort, districtId);
-        List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
-
-        PopulationResponse populationResponse = new PopulationResponse(
-                content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()
-        );
-
-        return populationResponse;
+        return convertToResponse(districtId, null, null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     public PopulationResponse findAllInYear(int yearId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
-        int maxPageSize = 100;  // Prevent excessive page sizes
-        pageSize = Math.min(pageSize, maxPageSize);
-
-        // Determine sorting direction
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<Population> populations = populationDAO.findAllInYear(pageable, sort, yearId);
-        List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
-
-        PopulationResponse populationResponse = new PopulationResponse(
-                content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()
-        );
-
-        return populationResponse;
+        return convertToResponse(null, yearId, null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     public PopulationResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
-        int maxPageSize = 100;  // Prevent excessive page sizes
-        pageSize = Math.min(pageSize, maxPageSize);
-
-        // Determine sorting direction
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<Population> populations = populationDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
-
-        List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
-
-        PopulationResponse populationResponse = new PopulationResponse(
-                content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()
-        );
-
-        return populationResponse;
+        return convertToResponse(null, null, voivodeshipId, pageNumber, pageSize, sortBy, sortDirection);
     }
-
-
 
     @Override
     @Transactional
@@ -156,17 +89,15 @@ public class PopulationServiceImpl implements PopulationService {
     public PopulationDTO convertToDTO(Population population) {
 
         DistrictDTO districtDTO = new DistrictDTO();
-        districtDTO.setDistrictId(population.getDistrict().getDistrictId());
 
         // Check since district can be null in populations
         if(population.getDistrict() != null) {
+            districtDTO.setDistrictId(population.getDistrict().getDistrictId());
             districtDTO.setDistrict(population.getDistrict().getDistrict());
+            districtDTO.setVoivodeship(population.getDistrict().getVoivodeship().getVoivodeship());
         }else{
             districtDTO.setDistrict(null);
         }
-
-        districtDTO.setVoivodeship(population.getDistrict().getVoivodeship().getVoivodeship());
-
 
         PopulationDTO populationDTO = new PopulationDTO();
         populationDTO.setPopulationId(population.getPopulationId());
@@ -184,5 +115,35 @@ public class PopulationServiceImpl implements PopulationService {
 
         return populationDTO;
     }
+
+    public PopulationResponse convertToResponse(Integer districtId, Integer yearId, Integer voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+
+        // Determine sorting direction
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        // Determine the correct query to use based on the provided parameters
+        Page<Population> populations;
+        if (districtId != null) {
+            populations = populationDAO.findAllInDistrict(pageable, sort, districtId);
+        } else if (yearId != null) {
+            populations = populationDAO.findAllInYear(pageable, sort, yearId);
+        } else if (voivodeshipId != null) {
+            populations = populationDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
+        } else {
+            populations = populationDAO.findAll(pageable, sort);
+        }
+
+        List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        return new PopulationResponse(
+                content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()
+        );
+    }
+
 
 }

@@ -1,6 +1,5 @@
 package com.example.backend.DAO;
 
-import com.example.backend.POJO.Voivodeship;
 import com.example.backend.POJO.Year;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -50,13 +49,14 @@ public class YearDAOImpl implements YearDAO {
 
     @Override
     public Page<Year> findAll(Pageable pageable, Sort sort) {
+
         String jpql = "SELECT y FROM Year y";
 
         // Sorting
         if (sort != null && sort.isSorted()) {
             String orderBy = sort.get().map(order -> "y." + order.getProperty() + " " + order.getDirection())
                     .reduce((a, b) -> a + ", " + b).orElse("");
-            jpql += " ORDER BY " + orderBy;  // ✅ Now, ORDER BY is part of the query BEFORE execution
+            jpql += " ORDER BY " + orderBy;
         }
 
         try {
@@ -71,7 +71,7 @@ public class YearDAOImpl implements YearDAO {
             return new PageImpl<>(year, pageable, totalRows);
 
         } catch (Error e){
-            throw new RuntimeException("An error occurred while retrieving the years. Please try again later.");
+            throw new RuntimeException("An error occurred while retrieving the years. Please try again later." + e.getMessage());
         }
     }
 

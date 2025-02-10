@@ -34,7 +34,7 @@ public class DistrictServiceImpl implements DistrictService {
             throw new EntityNotFoundException("District which you're trying to update was not found");
         }
         if(district.getVoivodeshipId() != null){
-            if(districtDAO.findById(district.getVoivodeshipId()) == null){
+            if(district.getDistrictId() != 0 & districtDAO.findById(district.getVoivodeshipId()) == null){
                 throw new ReferencedEntityNotFoundException("Voivodeship with this Id not found");
             }
         }
@@ -53,44 +53,12 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public DistrictResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
-        int maxPageSize = 100;  // Prevent excessive page sizes
-        pageSize = Math.min(pageSize, maxPageSize);
-
-        // Determine sorting direction
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<District> districts = districtDAO.findAll(pageable, sort);
-        List<DistrictDTO> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
-
-        DistrictResponse districtResponse = new DistrictResponse(
-                content, districts.getNumber(), districts.getSize(), districts.getTotalElements(), districts.getTotalPages(), districts.isLast()
-        );
-
-        return districtResponse;
+        return convertToResponse(null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     public DistrictResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection){
-        int maxPageSize = 100;  // Prevent excessive page sizes
-        pageSize = Math.min(pageSize, maxPageSize);
-
-        // Determine sorting direction
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<District> districts = districtDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
-        List<DistrictDTO> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
-
-        DistrictResponse districtResponse = new DistrictResponse(
-                content, districts.getNumber(), districts.getSize(), districts.getTotalElements(), districts.getTotalPages(), districts.isLast()
-        );
-
-        return districtResponse;
+        return convertToResponse(voivodeshipId, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
@@ -121,6 +89,31 @@ public class DistrictServiceImpl implements DistrictService {
 
         districtDTO.setVoivodeship(voivodeship.getVoivodeship());
         return districtDTO;
+    }
+
+    public DistrictResponse convertToResponse(Integer voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+
+        // Determine sorting direction
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        // Fetch districts based on whether voivodeshipId is provided
+        Page<District> districts;
+        if (voivodeshipId == null) {
+            districts = districtDAO.findAll(pageable, sort);
+        } else {
+            districts = districtDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
+        }
+
+        List<DistrictDTO> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        return new DistrictResponse(
+                content, districts.getNumber(), districts.getSize(), districts.getTotalElements(), districts.getTotalPages(), districts.isLast()
+        );
     }
 
 }

@@ -13,5 +13,4 @@ public interface PopulationService{
     PopulationResponse findAllInYear(int yearId, int pageNumber, int pageSize, String sortBy, String sortDirection);
     PopulationResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection);
     String delete(int id);
-    PopulationDTO convertToDTO(Population population);
 }

@@ -55,7 +55,6 @@ public class YearServiceImpl implements YearService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        // try {
         Page<Year> year = yearDAO.findAll(pageable, sort);
         List<Year> content = year.stream().collect(Collectors.toList());
 

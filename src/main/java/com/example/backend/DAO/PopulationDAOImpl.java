@@ -56,7 +56,7 @@ public class PopulationDAOImpl implements PopulationDAO {
         if (sort != null && sort.isSorted()) {
             String orderBy = sort.get().map(order -> "p." + order.getProperty() + " " + order.getDirection())
                     .reduce((a, b) -> a + ", " + b).orElse("");
-            jpql += " ORDER BY " + orderBy;  // ✅ Now, ORDER BY is part of the query BEFORE execution
+            jpql += " ORDER BY " + orderBy;
         }
         try {
             TypedQuery<Population> query = entityManager.createQuery(jpql, Population.class);
@@ -77,8 +77,6 @@ public class PopulationDAOImpl implements PopulationDAO {
     public Page<Population> findAllInVoivodeship(Pageable pageable, Sort sort, int voivodeshipId) {
         String jpql = "SELECT p FROM Population p WHERE p.district.voivodeship.voivodeshipId = :voivodeshipId";
 
-        System.out.println("jpql: " + jpql);
-
         // Sorting
         if (sort != null && sort.isSorted()) {
             String orderBy = sort.get().map(order -> "p." + order.getProperty() + " " + order.getDirection())
@@ -90,8 +88,6 @@ public class PopulationDAOImpl implements PopulationDAO {
             query.setParameter("voivodeshipId", voivodeshipId);
 
             int totalRows = query.getResultList().size();
-
-            System.out.println("Total rows: " + totalRows);
 
             List<Population> populations = query
                     .setFirstResult((int) pageable.getOffset()) // Offset for pagination

@@ -11,5 +11,4 @@ public interface DistrictService {
     DistrictResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection);
     DistrictResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection);
     String delete(int id);
-    DistrictDTO convertToDTO(District district);
 }
