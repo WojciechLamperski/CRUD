@@ -1,43 +1,30 @@
 package com.example.backend.POJO;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
 
+import java.util.List;
+
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name="voivodeships")
 public class Voivodeship {
 
-    @Min(value = 1, message = "voivodeshipId must be greater than 0")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="voivodeship_id")
     private int voivodeshipId; // voivodeship_id
+
+    @NotEmpty(message = "voivodeship can't be empty")
+    @Column(name="voivodeship")
     private String voivodeship; // voivodeship
 
-    public Voivodeship() {}
+    @JsonIgnore
+    @OneToMany(mappedBy = "voivodeship")
+    private List<District> districts;
 
-    public int getVoivodeshipId() {
-        return voivodeshipId;
-    }
-
-    public void setVoivodeshipId(int voivodeshipId) {
-        this.voivodeshipId = voivodeshipId;
-    }
-
-    public String getVoivodeship() {
-        return voivodeship;
-    }
-
-    public void setVoivodeship(String voivodeship) {
-        this.voivodeship = voivodeship;
-    }
-
-    @Override
-    public String toString() {
-        return "Voivodeship{" +
-                "voivodeshipId=" + voivodeshipId +
-                ", voivodeship='" + voivodeship + '\'' +
-                '}';
-    }
 }

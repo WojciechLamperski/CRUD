@@ -1,13 +1,13 @@
 package com.example.backend.controller;
 
 
+import com.example.backend.DTO.VoivodeshipResponse;
 import com.example.backend.POJO.Voivodeship;
 import com.example.backend.service.VoivodeshipService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -19,9 +19,15 @@ public class VoivodeshipRestController {
         voivodeshipService = theVoivodeshipService;
     }
 
+
     @GetMapping("/voivodeships")
-    public List<Voivodeship> findAll() {
-        return voivodeshipService.findAll();
+    public VoivodeshipResponse findAll(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "voivodeshipId", required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
+    ) {
+        return voivodeshipService.findAll(pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @GetMapping("/voivodeships/{voivodeshipId}")

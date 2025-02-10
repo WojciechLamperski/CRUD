@@ -1,12 +1,11 @@
 package com.example.backend.controller;
 
+import com.example.backend.DTO.YearResponse;
 import com.example.backend.POJO.Year;
 import com.example.backend.service.YearService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -20,8 +19,13 @@ public class YearRestController {
     }
 
     @GetMapping("/years")
-    public List<Year> findAll() {
-        return yearService.findAll();
+    public YearResponse findAll(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "yearId", required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
+    ) {
+        return yearService.findAll(pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @GetMapping("/years/{yearId}")

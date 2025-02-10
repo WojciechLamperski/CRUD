@@ -1,12 +1,13 @@
 package com.example.backend.controller;
 
+import com.example.backend.DTO.DistrictDTO;
+import com.example.backend.DTO.DistrictResponse;
 import com.example.backend.POJO.District;
 import com.example.backend.service.DistrictService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -19,12 +20,28 @@ public class DistrictRestController {
     }
 
     @GetMapping("/districts")
-    public List<District> findAll() {
-        return districtService.findAll();
+    public DistrictResponse findAll(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "districtId", required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
+    ) {
+        return districtService.findAll(pageNumber, pageSize, sortBy, sortDirection);
+    }
+
+    @GetMapping("/voivodeships/{voivodeshipId}/districts")
+    public DistrictResponse findAllInVoivodeship(
+            @PathVariable int voivodeshipId,
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "districtId", required = false) String sortBy,
+            @RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
+    ) {
+        return districtService.findAllInVoivodeship(voivodeshipId, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @GetMapping("/districts/{districtId}")
-    public District findById(@PathVariable int districtId) {
+    public DistrictDTO findById(@PathVariable int districtId) {
         return districtService.findById(districtId);
     }
 
