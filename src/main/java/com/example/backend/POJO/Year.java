@@ -21,7 +21,7 @@ public class Year {
 
     @NotNull(message = "year can't be null")
     @Min(value = 1, message = "year must be greater than 0")
-    @Column(name="year")
+    @Column(name="`year`")
     private int year;
 
     @JsonIgnore

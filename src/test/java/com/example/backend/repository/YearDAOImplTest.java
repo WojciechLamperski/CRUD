@@ -59,7 +59,7 @@ public class YearDAOImplTest {
     // Create Year
     @Test
     @Transactional
-    public void createYear() throws Exception {
+    public void testSaveYear() throws Exception {
         // Create a new Year object to be created
         Year newYear = new Year();
         newYear.setYear(9999);
@@ -81,40 +81,105 @@ public class YearDAOImplTest {
         assert responseMessage.contains("saved successfully");
     }
 
-//    @Test
-//    public void updateYear() throws Exception {
-//        // Assume there's an existing year with yearId = 1
-//        int testId = 1;
-//
-//        // Create an updated Year object
-//        Year updatedYear = new Year();
-//        updatedYear.setYear(2026);
-//
-//        // Convert the updated Year object to JSON
-//        String updatedYearJson = objectMapper.writeValueAsString(updatedYear);
-//
-//        // Perform a PUT request to update the existing Year
-//        mockMvc.perform(MockMvcRequestBuilders.put("/api/years/{id}", testId)
-//                        .contentType("application/json")
-//                        .content(updatedYearJson))
-//                .andExpect(MockMvcResultMatchers.status().isOk()) // Expect status 200 (OK)
-//                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.year").value(6666)); // Check if the year is updated to 2026
-//    }
-//
-//    @Test
-//    public void deleteYear() throws Exception {
-//        // Assume there's an existing year with yearId = 1
-//        int testId = 1;
-//
-//        // Perform a DELETE request to delete the year with the given ID
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/api/years/{id}", testId))
-//                .andExpect(MockMvcResultMatchers.status().isNoContent()); // Expect status 204 (No Content)
-//    }
+    @Test
+    @Transactional
+    public void testUpdateYear() throws Exception {
 
-    //TODO
-    // Get Year with additional sort stuff ie. descend,
-    // order by x and so on, and get opposites of that to check sorting works
+        String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/api/years"))
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(); // Check if 'id' in the response matches testId
+
+        // Return the content (the list of years)
+        List<Year> content = objectMapper.readValue(responseJson, YearResponse.class).getContent();
+
+        int testId = content.get(0).getYearId();
+
+        // Create an updated Year object
+        Year updatedYear = new Year();
+        updatedYear.setYearId(testId);
+        updatedYear.setYear(6666);
+
+        // Convert the updated Year object to JSON
+        String updatedYearJson = objectMapper.writeValueAsString(updatedYear);
+
+        // Perform a PUT request to update the existing Year
+        String responseMessage = mockMvc.perform(MockMvcRequestBuilders.put("/api/years")
+                        .contentType("application/json")
+                        .content(updatedYearJson))
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Expect status 200 (OK)
+                .andReturn()
+                .getResponse()
+                .getContentAsString(); // Get response as a string
+
+        // Verify that the response contains the expected message
+        assert responseMessage.contains("object with id:");
+        assert responseMessage.contains("saved successfully");
+    }
+
+    @Test
+    @Transactional
+    public void testDeleteYear() throws Exception {
+
+        String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/api/years"))
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(); // Check if 'id' in the response matches testId
+
+        // Return the content (the list of years)
+        List<Year> content = objectMapper.readValue(responseJson, YearResponse.class).getContent();
+
+        int testId = content.get(0).getYearId();
+
+        // Perform a DELETE request to delete the year with the given ID
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/years/{id}", testId))
+                .andExpect(MockMvcResultMatchers.content().string("Year successfully deleted"));
+    }
+
+    // Test sortOrder
+    @Test
+    public void testSortingOrder() throws Exception {
+        // Test sorting by "yearId" ascending
+        String ascResponse = mockMvc.perform(MockMvcRequestBuilders.get("/api/years")
+                        .param("sortDirection", "asc"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        List<Year> ascList = objectMapper.readValue(ascResponse, YearResponse.class).getContent();
+
+        // Test sorting by "yearId" descending
+        String descResponse = mockMvc.perform(MockMvcRequestBuilders.get("/api/years")
+                        .param("sortDirection", "desc"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        List<Year> descList = objectMapper.readValue(descResponse, YearResponse.class).getContent();
+
+        assert !ascList.isEmpty();
+        assert !descList.isEmpty();
+        assert ascList.size() == descList.size();
+
+        if(ascList.size() > 1) {
+            assert(ascList.get(0) != descList.get(0));
+        }
+    }
+
+    // Test sortBy Year
+
+    // Test Page
+
+    // Test PageSize
+
 
     //TODO
     // Test incorrect responses - error handling
