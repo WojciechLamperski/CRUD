@@ -6,6 +6,7 @@ import com.example.backend.DTO.DistrictResponse;
 import com.example.backend.POJO.District;
 import com.example.backend.POJO.Voivodeship;
 import com.example.backend.exception.EntityNotFoundException;
+import com.example.backend.exception.InvalidSortFieldException;
 import com.example.backend.exception.ReferencedEntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,8 @@ public class DistrictServiceImpl implements DistrictService {
     public DistrictServiceImpl(DistrictDAO theDistrictDAO) {
         districtDAO = theDistrictDAO;
     }
+
+    private static final List<String> ALLOWED_SORT_FIELDS = List.of("districtId", "district");
 
     @Override
     @Transactional
@@ -53,11 +56,21 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public DistrictResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
+
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
+        }
+
         return convertToResponse(null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     public DistrictResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection){
+
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
+        }
+
         return convertToResponse(voivodeshipId, pageNumber, pageSize, sortBy, sortDirection);
     }
 

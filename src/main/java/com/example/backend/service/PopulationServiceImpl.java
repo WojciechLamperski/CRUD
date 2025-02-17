@@ -6,6 +6,7 @@ import com.example.backend.DTO.PopulationResponse;
 import com.example.backend.DTO.PopulationDTO;
 import com.example.backend.POJO.Population;
 import com.example.backend.exception.EntityNotFoundException;
+import com.example.backend.exception.InvalidSortFieldException;
 import com.example.backend.exception.ReferencedEntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,8 @@ public class PopulationServiceImpl implements PopulationService {
     public PopulationServiceImpl(PopulationDAO thePopulationDAO) {
         populationDAO = thePopulationDAO;
     }
+
+    private static final List<String> ALLOWED_SORT_FIELDS = List.of("populationId", "yearId", "districtId", "men", "women");
 
     @Override
     @Transactional
@@ -57,21 +60,41 @@ public class PopulationServiceImpl implements PopulationService {
 
     @Override
     public PopulationResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
+
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
+        }
+
         return convertToResponse(null, null, null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     public PopulationResponse findAllInDistrict(int districtId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
+        }
+
         return convertToResponse(districtId, null, null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     public PopulationResponse findAllInYear(int yearId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
+        }
+
         return convertToResponse(null, yearId, null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     public PopulationResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
+        }
+
         return convertToResponse(null, null, voivodeshipId, pageNumber, pageSize, sortBy, sortDirection);
     }
 

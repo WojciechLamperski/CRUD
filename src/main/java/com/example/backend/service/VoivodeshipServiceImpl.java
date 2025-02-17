@@ -4,6 +4,7 @@ import com.example.backend.DAO.VoivodeshipDAO;
 import com.example.backend.DTO.VoivodeshipResponse;
 import com.example.backend.POJO.Voivodeship;
 import com.example.backend.exception.EntityNotFoundException;
+import com.example.backend.exception.InvalidSortFieldException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,8 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
     public VoivodeshipServiceImpl(VoivodeshipDAO theVoivodeshipDAO) {
         voivodeshipDAO = theVoivodeshipDAO;
     }
+
+    private static final List<String> ALLOWED_SORT_FIELDS = List.of("voivodeshipId", "voivodeship");
 
     @Override
     @Transactional
@@ -46,6 +49,11 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
 
     @Override
     public VoivodeshipResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
+
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
+        }
+
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
 
