@@ -25,7 +25,7 @@ public class YearDAOImplTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void getAllYearsIsPopulated() throws Exception {
+    public void testGetAllYearsIsPopulated() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/years"))
             .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
             .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
@@ -143,10 +143,12 @@ public class YearDAOImplTest {
     }
 
     // Test sortOrder
+    // Test sortBy Year
     @Test
-    public void testSortingOrder() throws Exception {
+    public void testSortingOrderAndSortByField() throws Exception {
         // Test sorting by "yearId" ascending
         String ascResponse = mockMvc.perform(MockMvcRequestBuilders.get("/api/years")
+                        .param("sortBy", "year")
                         .param("sortDirection", "asc"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
@@ -157,6 +159,7 @@ public class YearDAOImplTest {
 
         // Test sorting by "yearId" descending
         String descResponse = mockMvc.perform(MockMvcRequestBuilders.get("/api/years")
+                        .param("sortBy", "year")
                         .param("sortDirection", "desc"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
@@ -174,15 +177,96 @@ public class YearDAOImplTest {
         }
     }
 
-    // Test sortBy Year
-
     // Test Page
+    @Test
+    public void testPageChange() throws Exception {
+        // Test sorting by "yearId" ascending
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/years")
+                        .param("pageNumber", "1")
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.jsonPath("$.pageNumber").value(1));
+    }
 
     // Test PageSize
+    @Test
+    public void testPageSize() throws Exception {
+        // Test sorting by "yearId" ascending
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/years"))
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.jsonPath("$.pageSize").isNumber());
+    }
 
 
-    //TODO
-    // Test incorrect responses - error handling
+    // Test Exception Handling
+    @Test
+    public void testHandleTypeMismatchException() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/years/{yearId}", "invalidYearId")) // passing a string instead of a valid integer
+                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid parameter type: yearId. Expected type: int"));
+    }
+
+    @Test
+    public void testYearNotFoundException() throws Exception {
+        int nonExistentYearId = 99999; // Assume this `yearId` does not exist
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/years/{yearId}", nonExistentYearId))
+                .andExpect(MockMvcResultMatchers.status().isNotFound()) // Expect 404 Not Found
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Year not found"));
+    }
+
+    @Test
+    public void testHandleHttpMessageNotReadableException() throws Exception {
+        String invalidJson = "{ invalid json "; // malformed JSON
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/years")
+                        .contentType("application/json")
+                        .content(invalidJson))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid input. Please provide a JSON object with the required fields."));
+    }
+
+    @Test
+    public void testValidationException() throws Exception {
+        // Assuming that the `Year` entity has validation annotations like @NotNull or @Min
+        Year invalidYear = new Year(); // Missing required fields
+        String invalidYearJson = objectMapper.writeValueAsString(invalidYear);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/years")
+                        .contentType("application/json")
+                        .content(invalidYearJson))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("year must be greater than 0"));
+    }
+
+    @Test
+    public void testInvalidSortByField() throws Exception {
+        // Simulate an invalid sortBy field
+        String invalidSortBy = "nonExistingField";
+
+        // Perform the GET request with the invalid sortBy
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/years")
+                        .param("sortBy", invalidSortBy)
+                        .param("pageNumber", "0")
+                        .param("pageSize", "20")
+                        .param("sortDirection", "asc"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid sort field: " + invalidSortBy + ". Allowed fields: [yearId, year]"));
+    }
+
+//    @Test
+//    public void testDatabaseUnavailable() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/api/years"))
+//                .andExpect(MockMvcResultMatchers.status().isServiceUnavailable()) // Expect 503 Service Unavailable
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Database service is currently unavailable. Please try again later."));
+//    }
 
 
 }
