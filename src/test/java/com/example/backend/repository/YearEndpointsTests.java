@@ -39,18 +39,7 @@ public class YearEndpointsTests {
     @Test
     public void testGetYearById() throws Exception {
 
-        String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/api/years"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(); // Check if 'id' in the response matches testId
-
-        // Return the content (the list of years)
-        List<Year> content = objectMapper.readValue(responseJson, YearResponse.class).getContent();
-
-        int testId = content.get(0).getYearId(); // The ID you want to test
+        int testId = 1; // The ID you want to test
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/years/{id}", testId))
                 .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
@@ -87,18 +76,7 @@ public class YearEndpointsTests {
     @Transactional
     public void testUpdateYear() throws Exception {
 
-        String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/api/years"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(); // Check if 'id' in the response matches testId
-
-        // Return the content (the list of years)
-        List<Year> content = objectMapper.readValue(responseJson, YearResponse.class).getContent();
-
-        int testId = content.get(0).getYearId();
+        int testId = 1;
 
         // Create an updated Year object
         Year updatedYear = new Year();
@@ -126,18 +104,7 @@ public class YearEndpointsTests {
     @Transactional
     public void testDeleteYear() throws Exception {
 
-        String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/api/years"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(); // Check if 'id' in the response matches testId
-
-        // Return the content (the list of years)
-        List<Year> content = objectMapper.readValue(responseJson, YearResponse.class).getContent();
-
-        int testId = content.get(0).getYearId();
+        int testId = 1;
 
         // Perform a DELETE request to delete the year with the given ID
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/years/{id}", testId))

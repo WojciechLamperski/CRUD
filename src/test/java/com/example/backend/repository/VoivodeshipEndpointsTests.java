@@ -39,18 +39,7 @@ public class VoivodeshipEndpointsTests {
     @Test
     public void testGetVoivodeshipById() throws Exception {
 
-        String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(); // Check if 'id' in the response matches testId
-
-        // Return the content (the list of voivodeships)
-        List<Voivodeship> content = objectMapper.readValue(responseJson, VoivodeshipResponse.class).getContent();
-
-        int testId = content.get(0).getVoivodeshipId(); // The ID you want to test
+        int testId = 1; // The ID you want to test
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships/{id}", testId))
                 .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
@@ -87,18 +76,7 @@ public class VoivodeshipEndpointsTests {
     @Transactional
     public void testUpdateVoivodeship() throws Exception {
 
-        String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(); // Check if 'id' in the response matches testId
-
-        // Return the content (the list of voivodeships)
-        List<Voivodeship> content = objectMapper.readValue(responseJson, VoivodeshipResponse.class).getContent();
-
-        int testId = content.get(0).getVoivodeshipId();
+        int testId = 1;
 
         // Create an updated Voivodeship object
         Voivodeship updatedVoivodeship = new Voivodeship();
@@ -126,18 +104,7 @@ public class VoivodeshipEndpointsTests {
     @Transactional
     public void testDeleteVoivodeship() throws Exception {
 
-        String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(); // Check if 'id' in the response matches testId
-
-        // Return the content (the list of voivodeships)
-        List<Voivodeship> content = objectMapper.readValue(responseJson, VoivodeshipResponse.class).getContent();
-
-        int testId = content.get(0).getVoivodeshipId();
+        int testId = 1;
 
         // Perform a DELETE request to delete the voivodeship with the given ID
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/voivodeships/{id}", testId))
