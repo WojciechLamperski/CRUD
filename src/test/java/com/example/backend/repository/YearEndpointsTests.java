@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -16,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-public class YearDAOImplTest {
+@ActiveProfiles("test")
+public class YearEndpointsTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -259,14 +261,5 @@ public class YearDAOImplTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid sort field: " + invalidSortBy + ". Allowed fields: [yearId, year]"));
     }
-
-//    @Test
-//    public void testDatabaseUnavailable() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.get("/api/years"))
-//                .andExpect(MockMvcResultMatchers.status().isServiceUnavailable()) // Expect 503 Service Unavailable
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Database service is currently unavailable. Please try again later."));
-//    }
-
 
 }
