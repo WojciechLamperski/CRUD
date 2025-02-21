@@ -1,4 +1,4 @@
-package com.example.backend.repository;
+package com.example.backend.endpoints;
 
 import com.example.backend.DTO.DistrictDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;

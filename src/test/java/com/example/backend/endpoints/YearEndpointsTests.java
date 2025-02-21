@@ -1,4 +1,4 @@
-package com.example.backend.repository;
+package com.example.backend.endpoints;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
