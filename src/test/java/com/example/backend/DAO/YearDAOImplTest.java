@@ -14,6 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -47,6 +49,7 @@ public class YearDAOImplTest {
 
     @Test
     public void testFindAllYears() {
+        // Arrange
         int pageNumber = 1;
         int pageSize = 15;
         String sortBy = "year";
@@ -55,7 +58,29 @@ public class YearDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
+        // Act
         Page<Year> years = yearDAO.findAll(pageable, sort);
+
+        // Assert
+        // 1. Check that the result is not null
+        assertThat(years).isNotNull();
+
+        // 2. Verify pagination details
+        assertThat(years.getNumber()).isEqualTo(pageNumber); // Check current page number
+        assertThat(years.getSize()).isEqualTo(pageSize); // Check page size
+        assertThat(years.getTotalPages()).isGreaterThanOrEqualTo(0); // Check total pages (at least 0)
+
+        // 3. Verify sorting
+        List<Year> content = years.getContent();
+        if (!content.isEmpty()) {
+            for (int i = 1; i < content.size(); i++) {
+                // Ensure each year is greater than or equal to the previous one (ascending order)
+                assertThat(content.get(i).getYear()).isGreaterThanOrEqualTo(content.get(i - 1).getYear());
+            }
+        }
+
+        // 4. Verify content (optional, depending on your test data)
+        assertThat(content).isNotEmpty(); // Ensure the page has content
     }
 
     @Test
