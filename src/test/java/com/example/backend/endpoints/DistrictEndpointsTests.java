@@ -154,7 +154,7 @@ public class DistrictEndpointsTests {
         assert ascList.size() == descList.size();
 
         if(ascList.size() > 1) {
-            assert(ascList.get(0) != descList.get(0));
+            assert(ascList.getFirst() != descList.getFirst());
         }
     }
 

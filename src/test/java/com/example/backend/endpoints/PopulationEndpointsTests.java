@@ -261,7 +261,7 @@ public class PopulationEndpointsTests {
                         .getContentAsString();
 
         // Verify that the response contains the expected message
-        response.contains("can't be null");
+        assert response.contains("can't be null");
     }
 
     @Test
