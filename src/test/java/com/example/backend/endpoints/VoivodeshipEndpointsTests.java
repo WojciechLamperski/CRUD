@@ -29,8 +29,8 @@ public class VoivodeshipEndpointsTests {
     @Test
     public void testGetAllVoivodeshipsIsPopulated() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].voivodeshipId").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].voivodeship").isString());
@@ -39,15 +39,15 @@ public class VoivodeshipEndpointsTests {
     @Test
     public void testGetVoivodeshipById() throws Exception {
 
-        int testId = 1; // The ID you want to test
+        int testId = 1;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships/{id}", testId))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
-                .andExpect(MockMvcResultMatchers.jsonPath("$.voivodeshipId").value(testId)); // Check if 'id' in the response matches testId
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+                // Check if 'id' in the response matches testId
+                .andExpect(MockMvcResultMatchers.jsonPath("$.voivodeshipId").value(testId));
     }
 
-    // Create Voivodeship
     @Test
     @Transactional
     public void testSaveVoivodeship() throws Exception {
@@ -62,10 +62,10 @@ public class VoivodeshipEndpointsTests {
         String responseMessage = mockMvc.perform(MockMvcRequestBuilders.post("/api/voivodeships")
                         .contentType("application/json")
                         .content(newVoivodeshipJson))
-                .andExpect(MockMvcResultMatchers.status().isCreated()) // Expect status 201 (Created)
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn()
                 .getResponse()
-                .getContentAsString(); // Get response as a string
+                .getContentAsString();
 
         // Verify that the response contains the expected message
         assert responseMessage.contains("object with id:");
@@ -90,10 +90,10 @@ public class VoivodeshipEndpointsTests {
         String responseMessage = mockMvc.perform(MockMvcRequestBuilders.put("/api/voivodeships")
                         .contentType("application/json")
                         .content(updatedVoivodeshipJson))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Expect status 200 (OK)
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
                 .getResponse()
-                .getContentAsString(); // Get response as a string
+                .getContentAsString();
 
         // Verify that the response contains the expected message
         assert responseMessage.contains("object with id:");
@@ -146,55 +146,55 @@ public class VoivodeshipEndpointsTests {
         }
     }
 
-    // Test Page
     @Test
     public void testPageChange() throws Exception {
         // Test sorting by "voivodeshipId" ascending
         mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships")
                         .param("pageNumber", "1")
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageNumber").value(1));
     }
 
-    // Test PageSize
     @Test
     public void testPageSize() throws Exception {
         // Test sorting by "voivodeshipId" ascending
         mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageSize").isNumber());
     }
-
 
     // Test Exception Handling
     @Test
     public void testHandleTypeMismatchException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships/{voivodeshipId}", "invalidVoivodeshipId")) // passing a string instead of a valid integer
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid parameter type: voivodeshipId. Expected type: int"));
     }
 
     @Test
     public void testVoivodeshipNotFoundException() throws Exception {
-        int nonExistentVoivodeshipId = 99999; // Assume this `voivodeshipId` does not exist
+
+        // Using `voivodeshipId` that doesn't exist
+        int nonExistentVoivodeshipId = 99999;
         mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships/{voivodeshipId}", nonExistentVoivodeshipId))
-                .andExpect(MockMvcResultMatchers.status().isNotFound()) // Expect 404 Not Found
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Voivodeship not found"));
     }
 
     @Test
     public void testHandleHttpMessageNotReadableException() throws Exception {
-        String invalidJson = "{ invalid json "; // malformed JSON
+        // Using malformed JSON
+        String invalidJson = "{ invalid json ";
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/voivodeships")
                         .contentType("application/json")
                         .content(invalidJson))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid input. Please provide a JSON object with the required fields."));
     }
@@ -208,7 +208,7 @@ public class VoivodeshipEndpointsTests {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/voivodeships")
                         .contentType("application/json")
                         .content(invalidVoivodeshipJson))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("voivodeship can't be empty"));
     }
@@ -224,7 +224,7 @@ public class VoivodeshipEndpointsTests {
                         .param("pageNumber", "0")
                         .param("pageSize", "20")
                         .param("sortDirection", "asc"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid sort field: " + invalidSortBy + ". Allowed fields: [voivodeshipId, voivodeship]"));
     }

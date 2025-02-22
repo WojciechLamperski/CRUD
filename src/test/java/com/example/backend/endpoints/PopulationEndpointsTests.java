@@ -30,8 +30,8 @@ public class PopulationEndpointsTests {
     @Test
     public void testGetAllPopulationsIsPopulated() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/populations"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].populationId").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].men").isNumber())
@@ -41,11 +41,11 @@ public class PopulationEndpointsTests {
     @Test
     public void testGetAllPopulationsInVoivodeshipIsPopulated() throws Exception {
 
-        int testId = 2; // The ID you want to test
+        int testId = 2;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships/{voivodeshipId}/populations", testId))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].populationId").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].men").isNumber())
@@ -55,11 +55,11 @@ public class PopulationEndpointsTests {
     @Test
     public void testGetAllPopulationsInDistrictIsPopulated() throws Exception {
 
-        int testId = 2; // The ID you want to test
+        int testId = 2;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/districts/{districtId}/populations", testId))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].populationId").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].men").isNumber())
@@ -69,11 +69,11 @@ public class PopulationEndpointsTests {
     @Test
     public void testGetAllPopulationsInYearIsPopulated() throws Exception {
 
-        int testId = 2; // The ID you want to test
+        int testId = 2;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/years/{yearId}/populations", testId))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].populationId").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].men").isNumber())
@@ -83,15 +83,15 @@ public class PopulationEndpointsTests {
     @Test
     public void testGetPopulationById() throws Exception {
 
-        int testId = 1; // The ID you want to test
+        int testId = 1;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/populations/{id}", testId))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
-                .andExpect(MockMvcResultMatchers.jsonPath("$.populationId").value(testId)); // Check if 'id' in the response matches testId
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+                // Check if 'id' in the response matches testId
+                .andExpect(MockMvcResultMatchers.jsonPath("$.populationId").value(testId));
     }
 
-    // Create Population
     @Test
     @Transactional
     public void testSavePopulation() throws Exception {
@@ -138,10 +138,10 @@ public class PopulationEndpointsTests {
         String responseMessage = mockMvc.perform(MockMvcRequestBuilders.put("/api/populations")
                         .contentType("application/json")
                         .content(updatedPopulationJson))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Expect status 200 (OK)
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
                 .getResponse()
-                .getContentAsString(); // Get response as a string
+                .getContentAsString();
 
         // Verify that the response contains the expected message
         assert responseMessage.contains("object with id:");
@@ -159,8 +159,6 @@ public class PopulationEndpointsTests {
                 .andExpect(MockMvcResultMatchers.content().string("Population successfully deleted"));
     }
 
-    // Test sortOrder
-    // Test sortBy Population
     @Test
     public void testSortingOrderAndSortByField() throws Exception {
         // Test sorting by "populationId" ascending
@@ -190,29 +188,27 @@ public class PopulationEndpointsTests {
         assert ascList.size() == descList.size();
 
         if(ascList.size() > 1) {
-            assert(ascList.get(0) != descList.get(0));
+            assert(ascList.getFirst() != descList.getFirst());
         }
     }
 
-    // Test Page
     @Test
     public void testPageChange() throws Exception {
         // Test sorting by "populationId" ascending
         mockMvc.perform(MockMvcRequestBuilders.get("/api/populations")
                         .param("pageNumber", "1")
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageNumber").value(1));
     }
 
-    // Test PageSize
     @Test
     public void testPageSize() throws Exception {
         // Test sorting by "populationId" ascending
         mockMvc.perform(MockMvcRequestBuilders.get("/api/populations"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageSize").isNumber());
     }
 
@@ -220,8 +216,10 @@ public class PopulationEndpointsTests {
     // Test Exception Handling
     @Test
     public void testHandleTypeMismatchException() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/populations/{populationId}", "invalidPopulationId")) // passing a string instead of a valid integer
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+
+        // passing a string instead of a valid integer
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/populations/{populationId}", "invalidPopulationId"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid parameter type: populationId. Expected type: int"));
     }
@@ -242,7 +240,7 @@ public class PopulationEndpointsTests {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/populations")
                         .contentType("application/json")
                         .content(invalidJson))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid input. Please provide a JSON object with the required fields."));
     }
@@ -256,14 +254,14 @@ public class PopulationEndpointsTests {
         String response = mockMvc.perform(MockMvcRequestBuilders.post("/api/populations")
                         .contentType("application/json")
                         .content(invalidPopulationJson))
-                        .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                        .andExpect(MockMvcResultMatchers.status().isBadRequest())
                         .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                         .andReturn()
                         .getResponse()
-                        .getContentAsString(); // Get response as a string
+                        .getContentAsString();
 
-        response.contains("can't be null");
         // Verify that the response contains the expected message
+        response.contains("can't be null");
     }
 
     @Test
@@ -277,7 +275,7 @@ public class PopulationEndpointsTests {
                         .param("pageNumber", "0")
                         .param("pageSize", "20")
                         .param("sortDirection", "asc"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid sort field: " + invalidSortBy + ". Allowed fields: [populationId, yearId, districtId, men, women]"));
     }

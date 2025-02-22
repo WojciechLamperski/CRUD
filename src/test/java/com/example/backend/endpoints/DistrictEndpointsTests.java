@@ -30,8 +30,8 @@ public class DistrictEndpointsTests {
     @Test
     public void testGetAllDistrictsIsPopulated() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/districts"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].districtId").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].district").isString());
@@ -40,11 +40,11 @@ public class DistrictEndpointsTests {
     @Test
     public void testGetAllDistrictsInVoivodeshipIsPopulated() throws Exception {
 
-        int testId = 2; // The ID you want to test
+        int testId = 2;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships/{voivodeshipId}/districts", testId))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].districtId").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].voivodeship").isString())
@@ -54,15 +54,14 @@ public class DistrictEndpointsTests {
     @Test
     public void testGetDistrictById() throws Exception {
 
-        int testId = 1; // The ID you want to test
+        int testId = 1;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/districts/{id}", testId))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.districtId").value(testId)); // Check if 'id' in the response matches testId
     }
 
-    // Create District
     @Test
     @Transactional
     public void testSaveDistrict() throws Exception {
@@ -126,8 +125,6 @@ public class DistrictEndpointsTests {
                 .andExpect(MockMvcResultMatchers.content().string("District successfully deleted"));
     }
 
-    // Test sortOrder
-    // Test sortBy District
     @Test
     public void testSortingOrderAndSortByField() throws Exception {
         // Test sorting by "districtId" ascending
@@ -161,25 +158,23 @@ public class DistrictEndpointsTests {
         }
     }
 
-    // Test Page
     @Test
     public void testPageChange() throws Exception {
         // Test sorting by "districtId" ascending
         mockMvc.perform(MockMvcRequestBuilders.get("/api/districts")
                         .param("pageNumber", "1")
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageNumber").value(1));
     }
 
-    // Test PageSize
     @Test
     public void testPageSize() throws Exception {
         // Test sorting by "districtId" ascending
         mockMvc.perform(MockMvcRequestBuilders.get("/api/districts"))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Check HTTP status is 200
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json")) // Check if content type is JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageSize").isNumber());
     }
 
@@ -187,8 +182,9 @@ public class DistrictEndpointsTests {
     // Test Exception Handling
     @Test
     public void testHandleTypeMismatchException() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/districts/{districtId}", "invalidDistrictId")) // passing a string instead of a valid integer
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+        // passing a string instead of a valid integer
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/districts/{districtId}", "invalidDistrictId"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid parameter type: districtId. Expected type: int"));
     }
@@ -197,7 +193,7 @@ public class DistrictEndpointsTests {
     public void testDistrictNotFoundException() throws Exception {
         int nonExistentDistrictId = 99999; // Assume this `districtId` does not exist
         mockMvc.perform(MockMvcRequestBuilders.get("/api/districts/{districtId}", nonExistentDistrictId))
-                .andExpect(MockMvcResultMatchers.status().isNotFound()) // Expect 404 Not Found
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("District not found"));
     }
@@ -209,7 +205,7 @@ public class DistrictEndpointsTests {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/districts")
                         .contentType("application/json")
                         .content(invalidJson))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid input. Please provide a JSON object with the required fields."));
     }
@@ -223,7 +219,7 @@ public class DistrictEndpointsTests {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/districts")
                         .contentType("application/json")
                         .content(invalidDistrictJson))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("district can't be empty"));
     }
@@ -239,7 +235,7 @@ public class DistrictEndpointsTests {
                         .param("pageNumber", "0")
                         .param("pageSize", "20")
                         .param("sortDirection", "asc"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expect 400 Bad Request
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid sort field: " + invalidSortBy + ". Allowed fields: [districtId, district]"));
     }
