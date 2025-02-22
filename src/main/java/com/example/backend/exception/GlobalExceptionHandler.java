@@ -43,6 +43,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
     }
 
+    // Handle Invalid Sort Field Exception
+    @ExceptionHandler(InvalidSortFieldException.class)
+    public ResponseEntity<ErrorObject> handleInvalidSortFieldException(InvalidSortFieldException ex) {
+        ErrorObject errorObject = new ErrorObject();
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(new Date());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
+
     // Handles incorrect types in request body (like null or boolean errors) with a custom message
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorObject> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {

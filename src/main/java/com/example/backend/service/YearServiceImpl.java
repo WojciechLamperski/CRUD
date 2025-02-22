@@ -4,6 +4,7 @@ import com.example.backend.DAO.YearDAO;
 import com.example.backend.DTO.YearResponse;
 import com.example.backend.POJO.Year;
 import com.example.backend.exception.EntityNotFoundException;
+import com.example.backend.exception.InvalidSortFieldException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,8 @@ public class YearServiceImpl implements YearService {
     public YearServiceImpl(YearDAO theYearDAO) {
         yearDAO = theYearDAO;
     }
+
+    private static final List<String> ALLOWED_SORT_FIELDS = List.of("yearId", "year");
 
     @Override
     @Transactional
@@ -46,8 +49,14 @@ public class YearServiceImpl implements YearService {
 
     @Override
     public YearResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
+
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
+        }
+
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
+
 
         // Determine sorting direction
         Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;

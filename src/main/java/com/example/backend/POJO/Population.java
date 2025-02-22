@@ -3,6 +3,7 @@ package com.example.backend.POJO;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,15 +27,15 @@ public class Population {
     @Column(name="district_id")
     private Integer districtId;    // district_id
 
-    @NotNull(message = "men can't be null")
     @Min(value = 0, message = "number of men can't be negative")
+    @NotNull(message = "men can't be null")
     @Column(name="men")
-    private int men;           // men (number of men)
+    private Integer men;           // men (number of men)
 
-    @NotNull(message = "women can't be null")
     @Min(value = 0, message = "number of women can't be negative")
+    @NotNull(message = "women can't be null")
     @Column(name="women")
-    private int women;         // women (number of women)
+    private Integer women;         // women (number of women)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id", referencedColumnName = "district_id", insertable = false, updatable = false)
