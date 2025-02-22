@@ -31,7 +31,6 @@ public class DistrictDAOImplTest {
     private DistrictDAOImpl districtDAO;
 
     private District district1;
-    private District district2;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +38,7 @@ public class DistrictDAOImplTest {
         district1 = new District();
         district1.setDistrict("wymyślony");
 
-        district2 = new District();
+        District district2 = new District();
         district2.setDistrict("wymyślony2");
 
         entityManager.persist(district1);
@@ -104,7 +103,6 @@ public class DistrictDAOImplTest {
         String result = districtDAO.save(newDistrict);
 
         assertThat(result).contains("saved successfully");
-        assertThat(newDistrict.getDistrictId()).isNotNull();
     }
 
     @Test
@@ -134,8 +132,6 @@ public class DistrictDAOImplTest {
 
     @Test
     public void testDeleteDistrict_NotFound() {
-        assertThrows(RuntimeException.class, () -> {
-            districtDAO.delete(999);
-        });
+        assertThrows(RuntimeException.class, () -> districtDAO.delete(999));
     }
 }

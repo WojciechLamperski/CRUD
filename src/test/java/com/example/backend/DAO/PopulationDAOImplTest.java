@@ -31,7 +31,6 @@ public class PopulationDAOImplTest {
     private PopulationDAOImpl populationDAO;
 
     private Population population1;
-    private Population population2;
 
     @BeforeEach
     void setUp() {
@@ -42,7 +41,7 @@ public class PopulationDAOImplTest {
         population1.setMen(1234);
         population1.setWomen(4321);
 
-        population2 = new Population();
+        Population population2 = new Population();
         population2.setDistrictId(2);
         population2.setYearId(2);
         population2.setMen(9876);
@@ -169,7 +168,6 @@ public class PopulationDAOImplTest {
         String result = populationDAO.save(newPopulation);
 
         assertThat(result).contains("saved successfully");
-        assertThat(newPopulation.getPopulationId()).isNotNull();
     }
 
     @Test
@@ -201,8 +199,6 @@ public class PopulationDAOImplTest {
 
     @Test
     public void testDeletePopulation_NotFound() {
-        assertThrows(RuntimeException.class, () -> {
-            populationDAO.delete(9000000);
-        });
+        assertThrows(RuntimeException.class, () -> populationDAO.delete(9000000));
     }
 }

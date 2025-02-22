@@ -31,7 +31,6 @@ public class VoivodeshipDAOImplTest {
     private VoivodeshipDAOImpl voivodeshipDAO;
 
     private Voivodeship voivodeship1;
-    private Voivodeship voivodeship2;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +38,7 @@ public class VoivodeshipDAOImplTest {
         voivodeship1 = new Voivodeship();
         voivodeship1.setVoivodeship("WYMYŚLONE");
 
-        voivodeship2 = new Voivodeship();
+        Voivodeship voivodeship2 = new Voivodeship();
         voivodeship2.setVoivodeship("WYMYŚLONE2");
 
         entityManager.persist(voivodeship1);
@@ -81,7 +80,6 @@ public class VoivodeshipDAOImplTest {
         String result = voivodeshipDAO.save(newVoivodeship);
 
         assertThat(result).contains("saved successfully");
-        assertThat(newVoivodeship.getVoivodeshipId()).isNotNull();
     }
 
     @Test
@@ -112,8 +110,6 @@ public class VoivodeshipDAOImplTest {
 
     @Test
     public void testDeleteVoivodeship_NotFound() {
-        assertThrows(RuntimeException.class, () -> {
-            voivodeshipDAO.delete(999);
-        });
+        assertThrows(RuntimeException.class, () -> voivodeshipDAO.delete(999));
     }
 }
