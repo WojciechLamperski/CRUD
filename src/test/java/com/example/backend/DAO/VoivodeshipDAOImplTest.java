@@ -58,22 +58,19 @@ public class VoivodeshipDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        // Act
         Page<Voivodeship> voivodeships = voivodeshipDAO.findAll(pageable, sort);
 
-        // Assert
-        // 1. Check that the result is not null
+        // Check that the result is not null
         assertThat(voivodeships).isNotNull();
 
-        // 2. Verify pagination details
-        assertThat(voivodeships.getNumber()).isEqualTo(pageNumber); // Check current page number
-        assertThat(voivodeships.getSize()).isEqualTo(pageSize); // Check page size
-        assertThat(voivodeships.getTotalPages()).isGreaterThanOrEqualTo(0); // Check total pages (at least 0)
+        // Verify pagination details
+        assertThat(voivodeships.getNumber()).isEqualTo(pageNumber);
+        assertThat(voivodeships.getSize()).isEqualTo(pageSize);
+        assertThat(voivodeships.getTotalPages()).isGreaterThanOrEqualTo(0);
 
-        // 3. Verify content
+        // Verify content
         List<Voivodeship> content = voivodeships.getContent();
-
-        assertThat(content).isNotEmpty(); // Ensure the page has content
+        assertThat(content).isNotEmpty();
     }
 
     @Test

@@ -63,23 +63,19 @@ public class PopulationDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        // Act
         Page<Population> population = populationDAO.findAll(pageable, sort);
 
-
-        // Assert
-        // 1. Check that the result is not null
+        // Check that the result is not null
         assertThat(population).isNotNull();
 
-        // 2. Verify pagination details
-        assertThat(population.getNumber()).isEqualTo(pageNumber); // Check current page number
-        assertThat(population.getSize()).isEqualTo(pageSize); // Check page size
-        assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0); // Check total pages (at least 0)
+        // Verify pagination details
+        assertThat(population.getNumber()).isEqualTo(pageNumber);
+        assertThat(population.getSize()).isEqualTo(pageSize);
+        assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0);
 
-        // 3. Verify content
+        // Verify content
         List<Population> content = population.getContent();
-
-        assertThat(content).isNotEmpty(); // Ensure the page has content
+        assertThat(content).isNotEmpty();
     }
 
     @Test
@@ -93,25 +89,19 @@ public class PopulationDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        // Act
         Page<Population> population = populationDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
 
-
-        // Assert
-        // 1. Check that the result is not null
+        // Check that the result is not null
         assertThat(population).isNotNull();
 
-        // 2. Verify pagination details
-        assertThat(population.getNumber()).isEqualTo(pageNumber); // Check current page number
-        assertThat(population.getSize()).isEqualTo(pageSize); // Check page size
-        assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0); // Check total pages (at least 0)
+        // Verify pagination details
+        assertThat(population.getNumber()).isEqualTo(pageNumber);
+        assertThat(population.getSize()).isEqualTo(pageSize);
+        assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0);
 
-        // 3. Verify content
+        // Verify content
         List<Population> content = population.getContent();
-
-        assertThat(content).isNotEmpty(); // Ensure the page has content
-
-        // assertThat(content.get(0).getPopulation()).isEqualTo(population1.getVoivodeship().equals(content.get(content.size()-1).getVoivodeship()));
+        assertThat(content).isNotEmpty();
     }
 
     @Test
@@ -125,25 +115,19 @@ public class PopulationDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        // Act
         Page<Population> population = populationDAO.findAllInDistrict(pageable, sort, districtId);
 
-
-        // Assert
-        // 1. Check that the result is not null
+        // Check that the result is not null
         assertThat(population).isNotNull();
 
-        // 2. Verify pagination details
-        assertThat(population.getNumber()).isEqualTo(pageNumber); // Check current page number
-        assertThat(population.getSize()).isEqualTo(pageSize); // Check page size
-        assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0); // Check total pages (at least 0)
+        // Verify pagination details
+        assertThat(population.getNumber()).isEqualTo(pageNumber);
+        assertThat(population.getSize()).isEqualTo(pageSize);
+        assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0);
 
-        // 3. Verify content
+        // Verify content
         List<Population> content = population.getContent();
-
-        assertThat(content).isNotEmpty(); // Ensure the page has content
-
-        // assertThat(content.get(0).getPopulation()).isEqualTo(population1.getVoivodeship().equals(content.get(content.size()-1).getVoivodeship()));
+        assertThat(content).isNotEmpty();
     }
 
     @Test
@@ -157,25 +141,21 @@ public class PopulationDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        // Act
         Page<Population> population = populationDAO.findAllInDistrict(pageable, sort, yearId);
 
 
-        // Assert
-        // 1. Check that the result is not null
+        // Check that the result is not null
         assertThat(population).isNotNull();
 
-        // 2. Verify pagination details
-        assertThat(population.getNumber()).isEqualTo(pageNumber); // Check current page number
-        assertThat(population.getSize()).isEqualTo(pageSize); // Check page size
-        assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0); // Check total pages (at least 0)
+        // Verify pagination details
+        assertThat(population.getNumber()).isEqualTo(pageNumber);
+        assertThat(population.getSize()).isEqualTo(pageSize);
+        assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0);
 
-        // 3. Verify content
+        // Verify content
         List<Population> content = population.getContent();
+        assertThat(content).isNotEmpty();
 
-        assertThat(content).isNotEmpty(); // Ensure the page has content
-
-        // assertThat(content.get(0).getPopulation()).isEqualTo(population1.getVoivodeship().equals(content.get(content.size()-1).getVoivodeship()));
     }
 
     @Test

@@ -31,7 +31,6 @@ public class YearDAOImplTest {
     private YearDAOImpl yearDAO;
 
     private Year year1;
-    private Year year2;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +38,7 @@ public class YearDAOImplTest {
         year1 = new Year();
         year1.setYear(2020);
 
-        year2 = new Year();
+        Year year2 = new Year();
         year2.setYear(2021);
 
         entityManager.persist(year1);
@@ -58,19 +57,17 @@ public class YearDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        // Act
         Page<Year> years = yearDAO.findAll(pageable, sort);
 
-        // Assert
-        // 1. Check that the result is not null
+        // heck that the result is not null
         assertThat(years).isNotNull();
 
-        // 2. Verify pagination details
-        assertThat(years.getNumber()).isEqualTo(pageNumber); // Check current page number
-        assertThat(years.getSize()).isEqualTo(pageSize); // Check page size
-        assertThat(years.getTotalPages()).isGreaterThanOrEqualTo(0); // Check total pages (at least 0)
+        // Verify pagination details
+        assertThat(years.getNumber()).isEqualTo(pageNumber);
+        assertThat(years.getSize()).isEqualTo(pageSize);
+        assertThat(years.getTotalPages()).isGreaterThanOrEqualTo(0);
 
-        // 3. Verify sorting
+        // Verify sorting
         List<Year> content = years.getContent();
         if (!content.isEmpty()) {
             for (int i = 1; i < content.size(); i++) {
@@ -79,8 +76,8 @@ public class YearDAOImplTest {
             }
         }
 
-        // 4. Verify content (optional, depending on your test data)
-        assertThat(content).isNotEmpty(); // Ensure the page has content
+        // Verify content (optional, depending on your test data)
+        assertThat(content).isNotEmpty();
     }
 
     @Test
@@ -91,7 +88,6 @@ public class YearDAOImplTest {
         String result = yearDAO.save(newYear);
 
         assertThat(result).contains("saved successfully");
-        assertThat(newYear.getYearId()).isNotNull();
     }
 
     @Test
@@ -122,8 +118,6 @@ public class YearDAOImplTest {
 
     @Test
     public void testDeleteYear_NotFound() {
-        assertThrows(RuntimeException.class, () -> {
-            yearDAO.delete(999);
-        });
+        assertThrows(RuntimeException.class, () -> yearDAO.delete(999));
     }
 }

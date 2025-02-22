@@ -57,23 +57,17 @@ public class DistrictDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        // Act
         Page<District> district = districtDAO.findAll(pageable, sort);
-
-
-        // Assert
-        // 1. Check that the result is not null
         assertThat(district).isNotNull();
 
-        // 2. Verify pagination details
-        assertThat(district.getNumber()).isEqualTo(pageNumber); // Check current page number
-        assertThat(district.getSize()).isEqualTo(pageSize); // Check page size
-        assertThat(district.getTotalPages()).isGreaterThanOrEqualTo(0); // Check total pages (at least 0)
+        // Verify pagination details
+        assertThat(district.getNumber()).isEqualTo(pageNumber);
+        assertThat(district.getSize()).isEqualTo(pageSize);
+        assertThat(district.getTotalPages()).isGreaterThanOrEqualTo(0);
 
-        // 3. Verify content
+        // Verify content
         List<District> content = district.getContent();
-
-        assertThat(content).isNotEmpty(); // Ensure the page has content
+        assertThat(content).isNotEmpty();
     }
 
     @Test
@@ -87,25 +81,19 @@ public class DistrictDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        // Act
         Page<District> district = districtDAO.findAllInVoivodeship(pageable, sort, VoivodeshipId);
 
-
-        // Assert
-        // 1. Check that the result is not null
         assertThat(district).isNotNull();
 
-        // 2. Verify pagination details
-        assertThat(district.getNumber()).isEqualTo(pageNumber); // Check current page number
-        assertThat(district.getSize()).isEqualTo(pageSize); // Check page size
-        assertThat(district.getTotalPages()).isGreaterThanOrEqualTo(0); // Check total pages (at least 0)
+        // Verify pagination details
+        assertThat(district.getNumber()).isEqualTo(pageNumber);
+        assertThat(district.getSize()).isEqualTo(pageSize);
+        assertThat(district.getTotalPages()).isGreaterThanOrEqualTo(0);
 
-        // 3. Verify content
+        // Verify content
         List<District> content = district.getContent();
+        assertThat(content).isNotEmpty();
 
-        assertThat(content).isNotEmpty(); // Ensure the page has content
-
-        // assertThat(content.get(0).getDistrict()).isEqualTo(district1.getVoivodeship().equals(content.get(content.size()-1).getVoivodeship()));
     }
 
     @Test
@@ -130,7 +118,6 @@ public class DistrictDAOImplTest {
     @Test
     public void testFindById_NotFound() {
         District foundDistrict = districtDAO.findById(999);
-
         assertThat(foundDistrict).isNull();
     }
 
