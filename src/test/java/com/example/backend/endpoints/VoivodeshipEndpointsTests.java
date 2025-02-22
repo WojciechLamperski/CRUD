@@ -111,8 +111,6 @@ public class VoivodeshipEndpointsTests {
                 .andExpect(MockMvcResultMatchers.content().string("Voivodeship successfully deleted"));
     }
 
-    // Test sortOrder
-    // Test sortBy Voivodeship
     @Test
     public void testSortingOrderAndSortByField() throws Exception {
         // Test sorting by "voivodeshipId" ascending

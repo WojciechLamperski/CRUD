@@ -48,7 +48,6 @@ public class YearEndpointsTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.yearId").value(testId));
     }
 
-    // Create Year
     @Test
     @Transactional
     public void testSaveYear() throws Exception {
