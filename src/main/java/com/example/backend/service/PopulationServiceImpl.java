@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class PopulationServiceImpl implements PopulationService {
 
-    private PopulationDAO populationDAO;
+    private final PopulationDAO populationDAO;
 
     public PopulationServiceImpl(PopulationDAO thePopulationDAO) {
         populationDAO = thePopulationDAO;

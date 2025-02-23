@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class VoivodeshipServiceImpl implements VoivodeshipService {
 
-    private VoivodeshipDAO voivodeshipDAO;
+    private final VoivodeshipDAO voivodeshipDAO;
 
     public VoivodeshipServiceImpl(VoivodeshipDAO theVoivodeshipDAO) {
         voivodeshipDAO = theVoivodeshipDAO;
@@ -66,11 +66,9 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
         Page<Voivodeship> voivodeships = voivodeshipDAO.findAll(pageable, sort);
         List<Voivodeship> content = voivodeships.stream().collect(Collectors.toList());
 
-        VoivodeshipResponse voivodeshipResponse = new VoivodeshipResponse(
+        return new VoivodeshipResponse(
                 content, voivodeships.getNumber(), voivodeships.getSize(), voivodeships.getTotalElements(), voivodeships.getTotalPages(), voivodeships.isLast()
         );
-
-        return voivodeshipResponse;
     }
 
     @Override

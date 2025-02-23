@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public class DistrictDAOImpl implements DistrictDAO {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     // constructor injection
     public DistrictDAOImpl(EntityManager theEntityManager) {

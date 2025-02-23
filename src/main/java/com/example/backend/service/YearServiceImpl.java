@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class YearServiceImpl implements YearService {
 
-    private YearDAO yearDAO;
+    private final YearDAO yearDAO;
 
     public YearServiceImpl(YearDAO theYearDAO) {
         yearDAO = theYearDAO;
@@ -67,11 +67,9 @@ public class YearServiceImpl implements YearService {
         Page<Year> year = yearDAO.findAll(pageable, sort);
         List<Year> content = year.stream().collect(Collectors.toList());
 
-        YearResponse voivodeshipResponse = new YearResponse(
+        return new YearResponse(
                 content, year.getNumber(), year.getSize(), year.getTotalElements(), year.getTotalPages(), year.isLast()
         );
-
-        return voivodeshipResponse;
     }
 
     @Override

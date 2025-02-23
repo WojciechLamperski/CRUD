@@ -8,12 +8,12 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
+import java.util.Objects;
 
 
 @ControllerAdvice
@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
     // Custom error from Service implementations
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorObject> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ErrorObject> handleEntityNotFoundException(EntityNotFoundException ex) {
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
@@ -33,11 +33,11 @@ public class GlobalExceptionHandler {
 
     // Handles incorrect types in URL (invalid parameter types)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorObject> handleTypeMismatch(MethodArgumentTypeMismatchException ex, WebRequest request) {
+    public ResponseEntity<ErrorObject> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorObject.setMessage("Invalid parameter type: " + ex.getName() +
-                ". Expected type: " + ex.getRequiredType().getSimpleName());
+                ". Expected type: " + Objects.requireNonNull(ex.getRequiredType()).getSimpleName());
         errorObject.setTimestamp(new Date());
 
         return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
 
     // Handles incorrect types in request body (like null or boolean errors) with a custom message
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorObject> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ErrorObject> handleHttpMessageNotReadable() {
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        errorObject.setMessage(ex.getBindingResult().getFieldError().getDefaultMessage());
+        errorObject.setMessage(Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage());
         errorObject.setTimestamp(new Date());
 
         return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
@@ -105,7 +105,7 @@ public class GlobalExceptionHandler {
 
     // Handles database constraint violations (e.g., unique, foreign key, null constraint)
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorObject> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+    public ResponseEntity<ErrorObject> handleDataIntegrityViolationException() {
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.CONFLICT.value());
@@ -129,7 +129,7 @@ public class GlobalExceptionHandler {
 
     // Handles cases where the database is unavailable (e.g., server down, connectivity issues)
     @ExceptionHandler(CannotCreateTransactionException.class)
-    public ResponseEntity<ErrorObject> handleDatabaseUnavailable(CannotCreateTransactionException ex) {
+    public ResponseEntity<ErrorObject> handleDatabaseUnavailable() {
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());

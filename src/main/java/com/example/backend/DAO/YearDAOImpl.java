@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public class YearDAOImpl implements YearDAO {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     // constructor injection
     public YearDAOImpl(EntityManager theEntityManager) {

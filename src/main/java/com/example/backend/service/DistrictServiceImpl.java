@@ -16,12 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class DistrictServiceImpl implements DistrictService {
 
-    private DistrictDAO districtDAO;
+    private final DistrictDAO districtDAO;
 
     public DistrictServiceImpl(DistrictDAO theDistrictDAO) {
         districtDAO = theDistrictDAO;
@@ -100,7 +101,7 @@ public class DistrictServiceImpl implements DistrictService {
             districtDTO.setVoivodeship(null);
         }
 
-        districtDTO.setVoivodeship(voivodeship.getVoivodeship());
+        districtDTO.setVoivodeship(Objects.requireNonNull(voivodeship).getVoivodeship());
         return districtDTO;
     }
 
