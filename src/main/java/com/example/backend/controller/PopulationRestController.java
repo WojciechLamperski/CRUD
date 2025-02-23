@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class PopulationRestController {
 
-    private PopulationService populationService;
+    private final PopulationService populationService;
 
     public PopulationRestController(PopulationService thePopulationService) {
         populationService = thePopulationService;

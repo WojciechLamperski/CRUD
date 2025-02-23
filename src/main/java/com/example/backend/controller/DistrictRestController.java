@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class DistrictRestController {
 
-    private DistrictService districtService;
+    private final DistrictService districtService;
 
     public DistrictRestController(DistrictService theDistrictService) {
         districtService = theDistrictService;

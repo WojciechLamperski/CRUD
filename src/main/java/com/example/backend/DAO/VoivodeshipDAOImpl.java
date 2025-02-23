@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public class VoivodeshipDAOImpl implements VoivodeshipDAO {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     // constructor injection
     public  VoivodeshipDAOImpl(EntityManager theEntityManager) {

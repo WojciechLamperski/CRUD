@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public class PopulationDAOImpl implements PopulationDAO {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     // constructor injection
     public PopulationDAOImpl(EntityManager theEntityManager) {

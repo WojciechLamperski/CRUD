@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class VoivodeshipRestController {
 
-    private VoivodeshipService voivodeshipService;
+    private final VoivodeshipService voivodeshipService;
 
     public VoivodeshipRestController(VoivodeshipService theVoivodeshipService) {
         voivodeshipService = theVoivodeshipService;
