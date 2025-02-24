@@ -44,4 +44,4 @@
 - These variables will be used by our *application.properties* & *application-test.properties* as well as in our *python script*.
 ### 6. Populate the database using python script
 - Run your python script, in the "database" folder - *jsonToMySQL.py*. It will populate the database with the  values from *data.json* (remember to populate the test database, if you created one)
-### 7. Run the app.
+### 7. Run the app. 🚀 
