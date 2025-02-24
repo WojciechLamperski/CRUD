@@ -43,5 +43,6 @@
     ```
 - These variables will be used by our *application.properties* & *application-test.properties* as well as in our *python script*.
 ### 6. Populate the database using python script
-- Run your python script, in the "database" folder - *jsonToMySQL.py*. It will populate the database with the  values from *data.json* (remember to populate the test database, if you created one)
+- Run your python script, in the "database" folder - *jsonToMySQL.py*. It will populate the database with the  values from *data.json*. 
+- By default, the script uses the main database environment variables (`DB_HOST`, `DB_NAME`, etc.), so if you created a test database modify the python scrip (change `DB_HOST` to `DB_TEST_HOST` and so on) and fire it for the second time.
 ### 7. Run the app. 🚀 
