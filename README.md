@@ -14,11 +14,13 @@
     - Use the **custom user** created in the previous step, **or**
     - Use the **root user** for authentication.
 
-- In my app I assume that the url to you SQL app is based on the db name, if it's not modify it in *application.properties* and *application-test.properties*:
+- In my app I assume that the url to you SQL follows this structure (which it most likely does), but if it doesn't - modify it in *application.properties* and *application-test.properties*:
 
    ```properties
-   spring.datasource.url=jdbc:mysql://${DB_TEST_URL}/${DB_TEST_NAME}
+   spring.datasource.url=jdbc:mysql://${DB_HOST}${DB_PORT}/${DB_NAME}
+   # ie. jdbc:mysql://localhost:3306/backend
    ```
+  
 ### 4. Execute the Database Script
 - Navigate to the `database` directory and locate the `.sql` script.
 - Copy the script and execute it in **MySQL Workbench** to create a database named `"backend"` (you can use different name if you want).
@@ -32,14 +34,13 @@
     DB_USER=USER_YOU_HAVE_SET
     DB_PASSWORD=PASSWORD_YOU_HAVE_SET
     DB_NAME=DB_NAME_YOU_HAVE_SET
-    DB_URL=ie.localhost:3306
+    DB_PORT=ie.:3306
     # Test DB   
     DB_TEST_HOST=ie.localhost
     DB_TEST_USER=USER_YOU_HAVE_SET
     DB_TEST_PASSWORD=PASSWORD_YOU_HAVE_SET
     DB_TEST_NAME=DB_NAME_YOU_HAVE_SET
-    DB_TEST_URL=ie.localhost:3306
-    
+    DB_TEST_PORT=ie.:3306
     ```
 - These variables will be used by our *application.properties* & *application-test.properties* as well as in our *python script*.
 ### 6. Populate the database using python script
