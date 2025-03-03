@@ -1,8 +1,8 @@
 package com.example.backend.service;
 
-import com.example.backend.DAO.YearDAO;
-import com.example.backend.DTO.YearResponse;
-import com.example.backend.POJO.Year;
+import com.example.backend.repository.YearRepository;
+import com.example.backend.model.YearResponse;
+import com.example.backend.entity.YearEntity;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.InvalidSortFieldException;
 import org.springframework.data.domain.Page;
@@ -19,32 +19,32 @@ import java.util.stream.Collectors;
 @Service
 public class YearServiceImpl implements YearService {
 
-    private final YearDAO yearDAO;
+    private final YearRepository yearRepository;
 
-    public YearServiceImpl(YearDAO theYearDAO) {
-        yearDAO = theYearDAO;
+    public YearServiceImpl(YearRepository theYearRepository) {
+        yearRepository = theYearRepository;
     }
 
     private static final List<String> ALLOWED_SORT_FIELDS = List.of("yearId", "year");
 
     @Override
     @Transactional
-    public String save(Year year) {
+    public String save(YearEntity year) {
 
-        if(year.getYearId() != 0 && yearDAO.findById(year.getYearId()) == null){
+        if(year.getYearId() != 0 && yearRepository.findById(year.getYearId()) == null){
             throw new EntityNotFoundException("Year which you're trying to update was not found");
         }
-        return yearDAO.save(year);
+        return yearRepository.save(year);
     }
 
     @Override
-    public Year findById(int id) {
+    public YearEntity findById(int id) {
 
-        Year year = yearDAO.findById(id);
+        YearEntity year = yearRepository.findById(id);
         if (year == null) {
             throw new EntityNotFoundException("Year not found");
         }
-        return yearDAO.findById(id);
+        return yearRepository.findById(id);
     }
 
     @Override
@@ -64,8 +64,8 @@ public class YearServiceImpl implements YearService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<Year> year = yearDAO.findAll(pageable, sort);
-        List<Year> content = year.stream().collect(Collectors.toList());
+        Page<YearEntity> year = yearRepository.findAll(pageable, sort);
+        List<YearEntity> content = year.stream().collect(Collectors.toList());
 
         return new YearResponse(
                 content, year.getNumber(), year.getSize(), year.getTotalElements(), year.getTotalPages(), year.isLast()
@@ -76,10 +76,10 @@ public class YearServiceImpl implements YearService {
     @Transactional
     public String delete(int id) {
 
-        Year year = yearDAO.findById(id);
+        YearEntity year = yearRepository.findById(id);
         if (year == null) {
             throw new EntityNotFoundException("Year not found");
         }
-        return yearDAO.delete(id);
+        return yearRepository.delete(id);
     }
 }

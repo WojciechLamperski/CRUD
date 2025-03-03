@@ -1,6 +1,6 @@
-package com.example.backend.DAO;
+package com.example.backend.repository;
 
-import com.example.backend.POJO.District;
+import com.example.backend.entity.DistrictEntity;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,26 +19,26 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Transactional
-public class DistrictDAOImplTest {
+public class DistrictRepositoryImplTest {
 
     @Autowired
     private EntityManager entityManager;
 
     @Autowired
-    private DistrictDAOImpl districtDAO;
+    private DistrictRepositoryImpl districtDAO;
 
-    private District district1;
+    private DistrictEntity district1;
 
     @BeforeEach
     void setUp() {
         // Create and persist test data
-        district1 = new District();
+        district1 = new DistrictEntity();
         district1.setDistrict("wymyślony");
 
-        District district2 = new District();
+        DistrictEntity district2 = new DistrictEntity();
         district2.setDistrict("wymyślony2");
 
         entityManager.persist(district1);
@@ -56,7 +56,7 @@ public class DistrictDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<District> district = districtDAO.findAll(pageable, sort);
+        Page<DistrictEntity> district = districtDAO.findAll(pageable, sort);
         assertThat(district).isNotNull();
 
         // Verify pagination details
@@ -65,7 +65,7 @@ public class DistrictDAOImplTest {
         assertThat(district.getTotalPages()).isGreaterThanOrEqualTo(0);
 
         // Verify content
-        List<District> content = district.getContent();
+        List<DistrictEntity> content = district.getContent();
         assertThat(content).isNotEmpty();
     }
 
@@ -80,7 +80,7 @@ public class DistrictDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<District> district = districtDAO.findAllInVoivodeship(pageable, sort, VoivodeshipId);
+        Page<DistrictEntity> district = districtDAO.findAllInVoivodeship(pageable, sort, VoivodeshipId);
 
         assertThat(district).isNotNull();
 
@@ -90,14 +90,14 @@ public class DistrictDAOImplTest {
         assertThat(district.getTotalPages()).isGreaterThanOrEqualTo(0);
 
         // Verify content
-        List<District> content = district.getContent();
+        List<DistrictEntity> content = district.getContent();
         assertThat(content).isNotEmpty();
 
     }
 
     @Test
     public void testSaveDistrict() {
-        District newDistrict = new District();
+        DistrictEntity newDistrict = new DistrictEntity();
         newDistrict.setDistrict("wymyślony3");
 
         String result = districtDAO.save(newDistrict);
@@ -107,7 +107,7 @@ public class DistrictDAOImplTest {
 
     @Test
     public void testFindById() {
-        District foundDistrict = districtDAO.findById(district1.getDistrictId());
+        DistrictEntity foundDistrict = districtDAO.findById(district1.getDistrictId());
 
         assertThat(foundDistrict).isNotNull();
         assertThat(foundDistrict.getDistrict()).isEqualTo(district1.getDistrict());
@@ -115,7 +115,7 @@ public class DistrictDAOImplTest {
 
     @Test
     public void testFindById_NotFound() {
-        District foundDistrict = districtDAO.findById(999);
+        DistrictEntity foundDistrict = districtDAO.findById(999);
         assertThat(foundDistrict).isNull();
     }
 
@@ -126,7 +126,7 @@ public class DistrictDAOImplTest {
         assertThat(result).isEqualTo("District successfully deleted");
 
         // Verify that the district is deleted
-        District deletedDistrict = entityManager.find(District.class, district1.getDistrictId());
+        DistrictEntity deletedDistrict = entityManager.find(DistrictEntity.class, district1.getDistrictId());
         assertThat(deletedDistrict).isNull();
     }
 

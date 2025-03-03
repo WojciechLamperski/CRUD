@@ -9,9 +9,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import com.example.backend.POJO.Year;
+import com.example.backend.entity.YearEntity;
 import java.util.List;
-import com.example.backend.DTO.YearResponse;
+import com.example.backend.model.YearResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -52,7 +52,7 @@ public class YearEndpointsTests {
     @Transactional
     public void testSaveYear() throws Exception {
         // Create a new Year object to be created
-        Year newYear = new Year();
+        YearEntity newYear = new YearEntity();
         newYear.setYear(9999);
 
         // Convert the Year object to JSON
@@ -79,7 +79,7 @@ public class YearEndpointsTests {
         int testId = 1;
 
         // Create an updated Year object
-        Year updatedYear = new Year();
+        YearEntity updatedYear = new YearEntity();
         updatedYear.setYearId(testId);
         updatedYear.setYear(6666);
 
@@ -122,7 +122,7 @@ public class YearEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<Year> ascList = objectMapper.readValue(ascResponse, YearResponse.class).getContent();
+        List<YearEntity> ascList = objectMapper.readValue(ascResponse, YearResponse.class).getContent();
 
         // Test sorting by "yearId" descending
         String descResponse = mockMvc.perform(MockMvcRequestBuilders.get("/api/years")
@@ -133,7 +133,7 @@ public class YearEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<Year> descList = objectMapper.readValue(descResponse, YearResponse.class).getContent();
+        List<YearEntity> descList = objectMapper.readValue(descResponse, YearResponse.class).getContent();
 
         assert !ascList.isEmpty();
         assert !descList.isEmpty();
@@ -199,7 +199,7 @@ public class YearEndpointsTests {
     @Test
     public void testValidationException() throws Exception {
         // Assuming that the `Year` entity has validation annotations like @NotNull or @Min
-        Year invalidYear = new Year(); // Missing required fields
+        YearEntity invalidYear = new YearEntity(); // Missing required fields
         String invalidYearJson = objectMapper.writeValueAsString(invalidYear);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/years")

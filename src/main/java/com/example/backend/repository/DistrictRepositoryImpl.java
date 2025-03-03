@@ -1,6 +1,6 @@
-package com.example.backend.DAO;
+package com.example.backend.repository;
 
-import com.example.backend.POJO.District;
+import com.example.backend.entity.DistrictEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
@@ -14,19 +14,19 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class DistrictDAOImpl implements DistrictDAO {
+public class DistrictRepositoryImpl implements DistrictRepository {
 
     private final EntityManager entityManager;
 
     // constructor injection
-    public DistrictDAOImpl(EntityManager theEntityManager) {
+    public DistrictRepositoryImpl(EntityManager theEntityManager) {
         entityManager = theEntityManager;
     }
 
     @Override
-    public String save(District theDistrict) {
+    public String save(DistrictEntity theDistrict) {
         try {
-            District dbDistrict = entityManager.merge(theDistrict);
+            DistrictEntity dbDistrict = entityManager.merge(theDistrict);
             return ("object with id:" + dbDistrict.getDistrictId() + " saved successfully");
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save District due to database constraints.");
@@ -37,9 +37,9 @@ public class DistrictDAOImpl implements DistrictDAO {
     }
 
     @Override
-    public District findById(int district_id) {
+    public DistrictEntity findById(int district_id) {
         try {
-            return entityManager.find(District.class, district_id);
+            return entityManager.find(DistrictEntity.class, district_id);
         } catch (NoResultException e) {
             return null; // Return null if district not found
         } catch (Exception e) {
@@ -48,8 +48,8 @@ public class DistrictDAOImpl implements DistrictDAO {
     }
 
     @Override
-    public Page<District> findAll(Pageable pageable, Sort sort) {
-        String jpql = "SELECT d FROM District d";
+    public Page<DistrictEntity> findAll(Pageable pageable, Sort sort) {
+        String jpql = "SELECT d FROM DistrictEntity d";
 
         // Sorting
         if (sort != null && sort.isSorted()) {
@@ -59,10 +59,10 @@ public class DistrictDAOImpl implements DistrictDAO {
         }
 
         try {
-            TypedQuery<District> query = entityManager.createQuery(jpql, District.class);
+            TypedQuery<DistrictEntity> query = entityManager.createQuery(jpql, DistrictEntity.class);
 
             int totalRows = query.getResultList().size();
-            List<District> districts = query
+            List<DistrictEntity> districts = query
                     .setFirstResult((int) pageable.getOffset()) // Offset for pagination
                     .setMaxResults(pageable.getPageSize()) // Limit for pagination
                     .getResultList();
@@ -76,8 +76,8 @@ public class DistrictDAOImpl implements DistrictDAO {
     }
 
     @Override
-    public Page<District> findAllInVoivodeship(Pageable pageable, Sort sort, int voivodeshipId) {
-        String jpql = "SELECT d FROM District d WHERE d.voivodeship.id = :voivodeshipId";
+    public Page<DistrictEntity> findAllInVoivodeship(Pageable pageable, Sort sort, int voivodeshipId) {
+        String jpql = "SELECT d FROM DistrictEntity d WHERE d.voivodeship.id = :voivodeshipId";
 
 
         // Sorting
@@ -88,11 +88,11 @@ public class DistrictDAOImpl implements DistrictDAO {
         }
 
         try {
-            TypedQuery<District> query = entityManager.createQuery(jpql, District.class);
+            TypedQuery<DistrictEntity> query = entityManager.createQuery(jpql, DistrictEntity.class);
             query.setParameter("voivodeshipId", voivodeshipId);
 
             int totalRows = query.getResultList().size();
-            List<District> districts = query
+            List<DistrictEntity> districts = query
                     .setFirstResult((int) pageable.getOffset()) // Offset for pagination
                     .setMaxResults(pageable.getPageSize()) // Limit for pagination
                     .getResultList();
@@ -108,13 +108,13 @@ public class DistrictDAOImpl implements DistrictDAO {
     public String delete(int district_id) {
         try{
 
-            // Nullify the insertable = false, updatable = false constraints in District POJO
+            // Nullify the insertable = false, updatable = false constraints in District entity
             entityManager.createNativeQuery("UPDATE populations SET district_id = NULL WHERE district_id = ?1")
                     .setParameter(1, district_id)  // Positional parameter (index starts from 1)
                     .executeUpdate();
 
             // Now fetch and remove the voivodeship
-            District district = entityManager.find(District.class, district_id);
+            DistrictEntity district = entityManager.find(DistrictEntity.class, district_id);
             entityManager.remove(district);
             return "District successfully deleted";
 

@@ -1,4 +1,4 @@
-package com.example.backend.POJO;
+package com.example.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name="districts")
-public class District {
+public class DistrictEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,10 +30,10 @@ public class District {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voivodeship_id", referencedColumnName = "voivodeship_id", insertable = false, updatable = false)
-    private Voivodeship voivodeship; // Voivodeship name stored in secondary table
+    private VoivodeshipEntity voivodeship; // Voivodeship name stored in secondary table
 
     @JsonIgnore
     @OneToMany(mappedBy = "district")
-    private List<Population> populations;
+    private List<PopulationEntity> populations;
 }
 

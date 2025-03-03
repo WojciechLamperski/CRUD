@@ -1,6 +1,6 @@
-package com.example.backend.DAO;
+package com.example.backend.repository;
 
-import com.example.backend.POJO.Voivodeship;
+import com.example.backend.entity.VoivodeshipEntity;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,23 +22,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class VoivodeshipDAOImplTest {
+public class VoivodeshipRepositoryImplTest {
 
     @Autowired
     private EntityManager entityManager;
 
     @Autowired
-    private VoivodeshipDAOImpl voivodeshipDAO;
+    private VoivodeshipRepositoryImpl voivodeshipDAO;
 
-    private Voivodeship voivodeship1;
+    private VoivodeshipEntity voivodeship1;
 
     @BeforeEach
     void setUp() {
         // Create and persist test data
-        voivodeship1 = new Voivodeship();
+        voivodeship1 = new VoivodeshipEntity();
         voivodeship1.setVoivodeship("WYMYŚLONE");
 
-        Voivodeship voivodeship2 = new Voivodeship();
+        VoivodeshipEntity voivodeship2 = new VoivodeshipEntity();
         voivodeship2.setVoivodeship("WYMYŚLONE2");
 
         entityManager.persist(voivodeship1);
@@ -57,7 +57,7 @@ public class VoivodeshipDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<Voivodeship> voivodeships = voivodeshipDAO.findAll(pageable, sort);
+        Page<VoivodeshipEntity> voivodeships = voivodeshipDAO.findAll(pageable, sort);
 
         // Check that the result is not null
         assertThat(voivodeships).isNotNull();
@@ -68,13 +68,13 @@ public class VoivodeshipDAOImplTest {
         assertThat(voivodeships.getTotalPages()).isGreaterThanOrEqualTo(0);
 
         // Verify content
-        List<Voivodeship> content = voivodeships.getContent();
+        List<VoivodeshipEntity> content = voivodeships.getContent();
         assertThat(content).isNotEmpty();
     }
 
     @Test
     public void testSaveVoivodeship() {
-        Voivodeship newVoivodeship = new Voivodeship();
+        VoivodeshipEntity newVoivodeship = new VoivodeshipEntity();
         newVoivodeship.setVoivodeship("WYMYŚLONE3");
 
         String result = voivodeshipDAO.save(newVoivodeship);
@@ -84,7 +84,7 @@ public class VoivodeshipDAOImplTest {
 
     @Test
     public void testFindById() {
-        Voivodeship foundVoivodeship = voivodeshipDAO.findById(voivodeship1.getVoivodeshipId());
+        VoivodeshipEntity foundVoivodeship = voivodeshipDAO.findById(voivodeship1.getVoivodeshipId());
 
         assertThat(foundVoivodeship).isNotNull();
         assertThat(foundVoivodeship.getVoivodeship()).isEqualTo(voivodeship1.getVoivodeship());
@@ -92,7 +92,7 @@ public class VoivodeshipDAOImplTest {
 
     @Test
     public void testFindById_NotFound() {
-        Voivodeship foundVoivodeship = voivodeshipDAO.findById(999);
+        VoivodeshipEntity foundVoivodeship = voivodeshipDAO.findById(999);
 
         assertThat(foundVoivodeship).isNull();
     }
@@ -104,7 +104,7 @@ public class VoivodeshipDAOImplTest {
         assertThat(result).isEqualTo("Voivodeship successfully deleted");
 
         // Verify that the voivodeship is deleted
-        Voivodeship deletedVoivodeship = entityManager.find(Voivodeship.class, voivodeship1.getVoivodeshipId());
+        VoivodeshipEntity deletedVoivodeship = entityManager.find(VoivodeshipEntity.class, voivodeship1.getVoivodeshipId());
         assertThat(deletedVoivodeship).isNull();
     }
 

@@ -1,10 +1,10 @@
 package com.example.backend.service;
 
-import com.example.backend.DAO.DistrictDAO;
-import com.example.backend.DTO.DistrictDTO;
-import com.example.backend.DTO.DistrictResponse;
-import com.example.backend.POJO.District;
-import com.example.backend.POJO.Voivodeship;
+import com.example.backend.repository.DistrictRepository;
+import com.example.backend.model.DistrictModel;
+import com.example.backend.model.DistrictResponse;
+import com.example.backend.entity.DistrictEntity;
+import com.example.backend.entity.VoivodeshipEntity;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.InvalidSortFieldException;
 import com.example.backend.exception.ReferencedEntityNotFoundException;
@@ -22,33 +22,33 @@ import java.util.stream.Collectors;
 @Service
 public class DistrictServiceImpl implements DistrictService {
 
-    private final DistrictDAO districtDAO;
+    private final DistrictRepository districtRepository;
 
-    public DistrictServiceImpl(DistrictDAO theDistrictDAO) {
-        districtDAO = theDistrictDAO;
+    public DistrictServiceImpl(DistrictRepository theDistrictRepository) {
+        districtRepository = theDistrictRepository;
     }
 
     private static final List<String> ALLOWED_SORT_FIELDS = List.of("districtId", "district");
 
     @Override
     @Transactional
-    public String save(District district) {
+    public String save(DistrictEntity district) {
 
-        if(district.getDistrictId() != 0 && districtDAO.findById(district.getDistrictId()) == null){
+        if(district.getDistrictId() != 0 && districtRepository.findById(district.getDistrictId()) == null){
             throw new EntityNotFoundException("District which you're trying to update was not found");
         }
         if(district.getVoivodeshipId() != null){
-            if(district.getDistrictId() != 0 & districtDAO.findById(district.getVoivodeshipId()) == null){
+            if(district.getDistrictId() != 0 & districtRepository.findById(district.getVoivodeshipId()) == null){
                 throw new ReferencedEntityNotFoundException("Voivodeship with this Id not found");
             }
         }
-        return districtDAO.save(district);
+        return districtRepository.save(district);
     }
 
     @Override
-    public DistrictDTO findById(int id) {
+    public DistrictModel findById(int id) {
 
-        District district = districtDAO.findById(id);
+        DistrictEntity district = districtRepository.findById(id);
         if (district == null) {
             throw new EntityNotFoundException("District not found");
         }
@@ -79,30 +79,30 @@ public class DistrictServiceImpl implements DistrictService {
     @Transactional
     public String delete(int id) {
 
-        District district = districtDAO.findById(id);
+        DistrictEntity district = districtRepository.findById(id);
         if (district == null) {
             throw new EntityNotFoundException("District not found");
         }
-        return districtDAO.delete(id);
+        return districtRepository.delete(id);
     }
 
-    public DistrictDTO convertToDTO(District district) {
+    public DistrictModel convertToDTO(DistrictEntity district) {
 
-        Voivodeship voivodeship = district.getVoivodeship();
+        VoivodeshipEntity voivodeship = district.getVoivodeship();
 
-        DistrictDTO districtDTO = new DistrictDTO();
-        districtDTO.setDistrictId(district.getDistrictId());
-        districtDTO.setDistrict(district.getDistrict());
+        DistrictModel districtModel = new DistrictModel();
+        districtModel.setDistrictId(district.getDistrictId());
+        districtModel.setDistrict(district.getDistrict());
 
         // Check since district can be null in populations
         if(voivodeship != null) {
-            districtDTO.setVoivodeship(voivodeship.getVoivodeship());
+            districtModel.setVoivodeship(voivodeship.getVoivodeship());
         }else{
-            districtDTO.setVoivodeship(null);
+            districtModel.setVoivodeship(null);
         }
 
-        districtDTO.setVoivodeship(Objects.requireNonNull(voivodeship).getVoivodeship());
-        return districtDTO;
+        districtModel.setVoivodeship(Objects.requireNonNull(voivodeship).getVoivodeship());
+        return districtModel;
     }
 
     public DistrictResponse convertToResponse(Integer voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
@@ -116,14 +116,14 @@ public class DistrictServiceImpl implements DistrictService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         // Fetch districts based on whether voivodeshipId is provided
-        Page<District> districts;
+        Page<DistrictEntity> districts;
         if (voivodeshipId == null) {
-            districts = districtDAO.findAll(pageable, sort);
+            districts = districtRepository.findAll(pageable, sort);
         } else {
-            districts = districtDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
+            districts = districtRepository.findAllInVoivodeship(pageable, sort, voivodeshipId);
         }
 
-        List<DistrictDTO> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<DistrictModel> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
 
         return new DistrictResponse(
                 content, districts.getNumber(), districts.getSize(), districts.getTotalElements(), districts.getTotalPages(), districts.isLast()

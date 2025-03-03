@@ -1,6 +1,6 @@
 package com.example.backend.endpoints;
 
-import com.example.backend.DTO.PopulationDTO;
+import com.example.backend.model.PopulationModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +10,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import com.example.backend.POJO.Population;
+import com.example.backend.entity.PopulationEntity;
 import java.util.List;
-import com.example.backend.DTO.PopulationResponse;
+import com.example.backend.model.PopulationResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -96,7 +96,7 @@ public class PopulationEndpointsTests {
     @Transactional
     public void testSavePopulation() throws Exception {
         // Create a new Population object to be created
-        Population newPopulation = new Population();
+        PopulationEntity newPopulation = new PopulationEntity();
         newPopulation.setDistrictId(1);
         newPopulation.setYearId(1);
         newPopulation.setMen(1234);
@@ -126,7 +126,7 @@ public class PopulationEndpointsTests {
         int testId = 1;
 
         // Create an updated Population object
-        Population updatedPopulation = new Population();
+        PopulationEntity updatedPopulation = new PopulationEntity();
         updatedPopulation.setPopulationId(testId);
         updatedPopulation.setWomen(1234);
         updatedPopulation.setMen(4321);
@@ -170,7 +170,7 @@ public class PopulationEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<PopulationDTO> ascList = objectMapper.readValue(ascResponse, PopulationResponse.class).getContent();
+        List<PopulationModel> ascList = objectMapper.readValue(ascResponse, PopulationResponse.class).getContent();
 
         // Test sorting by "populationId" descending
         String descResponse = mockMvc.perform(MockMvcRequestBuilders.get("/api/populations")
@@ -181,7 +181,7 @@ public class PopulationEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<PopulationDTO> descList = objectMapper.readValue(descResponse, PopulationResponse.class).getContent();
+        List<PopulationModel> descList = objectMapper.readValue(descResponse, PopulationResponse.class).getContent();
 
         assert !ascList.isEmpty();
         assert !descList.isEmpty();
@@ -248,7 +248,7 @@ public class PopulationEndpointsTests {
     @Test
     public void testValidationException() throws Exception {
         // Assuming that the `Population` entity has validation annotations like @NotNull or @Min
-        Population invalidPopulation = new Population(); // Missing required fields
+        PopulationEntity invalidPopulation = new PopulationEntity(); // Missing required fields
         String invalidPopulationJson = objectMapper.writeValueAsString(invalidPopulation);
 
         String response = mockMvc.perform(MockMvcRequestBuilders.post("/api/populations")

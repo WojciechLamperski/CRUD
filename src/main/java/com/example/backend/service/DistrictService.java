@@ -1,13 +1,13 @@
 package com.example.backend.service;
 
-import com.example.backend.DTO.DistrictDTO;
-import com.example.backend.DTO.DistrictResponse;
-import com.example.backend.POJO.District;
+import com.example.backend.model.DistrictModel;
+import com.example.backend.model.DistrictResponse;
+import com.example.backend.entity.DistrictEntity;
 
 
 public interface DistrictService {
-    String save(District district);
-    DistrictDTO findById(int id);
+    String save(DistrictEntity district);
+    DistrictModel findById(int id);
     DistrictResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection);
     DistrictResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection);
     String delete(int id);

@@ -1,7 +1,7 @@
 package com.example.backend.controller;
 
-import com.example.backend.DTO.YearResponse;
-import com.example.backend.POJO.Year;
+import com.example.backend.model.YearResponse;
+import com.example.backend.entity.YearEntity;
 import com.example.backend.service.YearService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -29,13 +29,13 @@ public class YearRestController {
     }
 
     @GetMapping("/years/{yearId}")
-    public Year findById(@PathVariable int yearId) {
+    public YearEntity findById(@PathVariable int yearId) {
         return yearService.findById(yearId);
     }
 
     @PostMapping("/years")
     @ResponseStatus(HttpStatus.CREATED)
-    public String save(@Valid @RequestBody Year theYear) {
+    public String save(@Valid @RequestBody YearEntity theYear) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         theYear.setYearId(0);
@@ -43,7 +43,7 @@ public class YearRestController {
     }
 
     @PutMapping("/years")
-    public String update(@Valid @RequestBody Year theYear) {
+    public String update(@Valid @RequestBody YearEntity theYear) {
         return yearService.save(theYear);
     }
 

@@ -1,10 +1,10 @@
 package com.example.backend.service;
 
-import com.example.backend.DAO.PopulationDAO;
-import com.example.backend.DTO.DistrictDTO;
-import com.example.backend.DTO.PopulationResponse;
-import com.example.backend.DTO.PopulationDTO;
-import com.example.backend.POJO.Population;
+import com.example.backend.repository.PopulationRepository;
+import com.example.backend.model.DistrictModel;
+import com.example.backend.model.PopulationResponse;
+import com.example.backend.model.PopulationModel;
+import com.example.backend.entity.PopulationEntity;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.InvalidSortFieldException;
 import com.example.backend.exception.ReferencedEntityNotFoundException;
@@ -21,37 +21,37 @@ import java.util.stream.Collectors;
 @Service
 public class PopulationServiceImpl implements PopulationService {
 
-    private final PopulationDAO populationDAO;
+    private final PopulationRepository populationRepository;
 
-    public PopulationServiceImpl(PopulationDAO thePopulationDAO) {
-        populationDAO = thePopulationDAO;
+    public PopulationServiceImpl(PopulationRepository thePopulationRepository) {
+        populationRepository = thePopulationRepository;
     }
 
     private static final List<String> ALLOWED_SORT_FIELDS = List.of("populationId", "yearId", "districtId", "men", "women");
 
     @Override
     @Transactional
-    public String save(Population population) {
+    public String save(PopulationEntity population) {
 
-        if(population.getPopulationId() != 0 && populationDAO.findById(population.getPopulationId()) == null){
+        if(population.getPopulationId() != 0 && populationRepository.findById(population.getPopulationId()) == null){
             throw new EntityNotFoundException("Population which you're trying to update was not found");
         }
         if(population.getYearId() != null){
-            if(population.getPopulationId() != 0 & populationDAO.findById(population.getYearId()) == null) {
+            if(population.getPopulationId() != 0 & populationRepository.findById(population.getYearId()) == null) {
                 throw new ReferencedEntityNotFoundException("Year with this Id not found");
             }
         }
         if(population.getDistrictId() != null){
-            if(population.getPopulationId() != 0 &  populationDAO.findById(population.getDistrictId()) == null){
+            if(population.getPopulationId() != 0 &  populationRepository.findById(population.getDistrictId()) == null){
                 throw new ReferencedEntityNotFoundException("District with this Id not found");
             }
         }
-        return populationDAO.save(population);
+        return populationRepository.save(population);
     }
 
     @Override
-    public PopulationDTO findById(int id) {
-        Population population = populationDAO.findById(id);
+    public PopulationModel findById(int id) {
+        PopulationEntity population = populationRepository.findById(id);
         if (population == null) {
             throw new EntityNotFoundException("Population not found");
         }
@@ -102,41 +102,41 @@ public class PopulationServiceImpl implements PopulationService {
     @Transactional
     public String delete(int id) {
 
-        Population population = populationDAO.findById(id);
+        PopulationEntity population = populationRepository.findById(id);
         if (population == null) {
             throw new EntityNotFoundException("District not found");
         }
-        return populationDAO.delete(id);
+        return populationRepository.delete(id);
     }
 
-    public PopulationDTO convertToDTO(Population population) {
+    public PopulationModel convertToDTO(PopulationEntity population) {
 
-        DistrictDTO districtDTO = new DistrictDTO();
+        DistrictModel districtModel = new DistrictModel();
 
         // Check since district can be null in populations
         if(population.getDistrict() != null) {
-            districtDTO.setDistrictId(population.getDistrict().getDistrictId());
-            districtDTO.setDistrict(population.getDistrict().getDistrict());
-            districtDTO.setVoivodeship(population.getDistrict().getVoivodeship().getVoivodeship());
+            districtModel.setDistrictId(population.getDistrict().getDistrictId());
+            districtModel.setDistrict(population.getDistrict().getDistrict());
+            districtModel.setVoivodeship(population.getDistrict().getVoivodeship().getVoivodeship());
         }else{
-            districtDTO.setDistrict(null);
+            districtModel.setDistrict(null);
         }
 
-        PopulationDTO populationDTO = new PopulationDTO();
-        populationDTO.setPopulationId(population.getPopulationId());
+        PopulationModel populationModel = new PopulationModel();
+        populationModel.setPopulationId(population.getPopulationId());
 
         // Check since year can be null in populations
         if(population.getYear() != null) {
-            populationDTO.setYear(population.getYear().getYear());
+            populationModel.setYear(population.getYear().getYear());
         }else{
-            populationDTO.setYear(null);
+            populationModel.setYear(null);
         }
 
-        populationDTO.setDistrict(districtDTO);
-        populationDTO.setMen(population.getMen());
-        populationDTO.setWomen(population.getWomen());
+        populationModel.setDistrict(districtModel);
+        populationModel.setMen(population.getMen());
+        populationModel.setWomen(population.getWomen());
 
-        return populationDTO;
+        return populationModel;
     }
 
     public PopulationResponse convertToResponse(Integer districtId, Integer yearId, Integer voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
@@ -150,18 +150,18 @@ public class PopulationServiceImpl implements PopulationService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         // Determine the correct query to use based on the provided parameters
-        Page<Population> populations;
+        Page<PopulationEntity> populations;
         if (districtId != null) {
-            populations = populationDAO.findAllInDistrict(pageable, sort, districtId);
+            populations = populationRepository.findAllInDistrict(pageable, sort, districtId);
         } else if (yearId != null) {
-            populations = populationDAO.findAllInYear(pageable, sort, yearId);
+            populations = populationRepository.findAllInYear(pageable, sort, yearId);
         } else if (voivodeshipId != null) {
-            populations = populationDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
+            populations = populationRepository.findAllInVoivodeship(pageable, sort, voivodeshipId);
         } else {
-            populations = populationDAO.findAll(pageable, sort);
+            populations = populationRepository.findAll(pageable, sort);
         }
 
-        List<PopulationDTO> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<PopulationModel> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
 
         return new PopulationResponse(
                 content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()

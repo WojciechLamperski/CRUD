@@ -1,4 +1,4 @@
-package com.example.backend.DTO;
+package com.example.backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,8 +12,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DistrictResponse {
-    private List<DistrictDTO> content;
+public class PopulationResponse {
+    private List<PopulationModel> content;
     private int pageNumber;
     private int pageSize;
     private long totalElements;

@@ -9,9 +9,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import com.example.backend.POJO.Voivodeship;
+import com.example.backend.entity.VoivodeshipEntity;
 import java.util.List;
-import com.example.backend.DTO.VoivodeshipResponse;
+import com.example.backend.model.VoivodeshipResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -52,7 +52,7 @@ public class VoivodeshipEndpointsTests {
     @Transactional
     public void testSaveVoivodeship() throws Exception {
         // Create a new Voivodeship object to be created
-        Voivodeship newVoivodeship = new Voivodeship();
+        VoivodeshipEntity newVoivodeship = new VoivodeshipEntity();
         newVoivodeship.setVoivodeship("WYMYŚLONE");
 
         // Convert the Voivodeship object to JSON
@@ -79,7 +79,7 @@ public class VoivodeshipEndpointsTests {
         int testId = 1;
 
         // Create an updated Voivodeship object
-        Voivodeship updatedVoivodeship = new Voivodeship();
+        VoivodeshipEntity updatedVoivodeship = new VoivodeshipEntity();
         updatedVoivodeship.setVoivodeshipId(testId);
         updatedVoivodeship.setVoivodeship("WYMYŚLONE2");
 
@@ -122,7 +122,7 @@ public class VoivodeshipEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<Voivodeship> ascList = objectMapper.readValue(ascResponse, VoivodeshipResponse.class).getContent();
+        List<VoivodeshipEntity> ascList = objectMapper.readValue(ascResponse, VoivodeshipResponse.class).getContent();
 
         // Test sorting by "voivodeshipId" descending
         String descResponse = mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships")
@@ -133,7 +133,7 @@ public class VoivodeshipEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<Voivodeship> descList = objectMapper.readValue(descResponse, VoivodeshipResponse.class).getContent();
+        List<VoivodeshipEntity> descList = objectMapper.readValue(descResponse, VoivodeshipResponse.class).getContent();
 
         assert !ascList.isEmpty();
         assert !descList.isEmpty();
@@ -200,7 +200,7 @@ public class VoivodeshipEndpointsTests {
     @Test
     public void testValidationException() throws Exception {
         // Assuming that the `Voivodeship` entity has validation annotations like @NotNull or @Min
-        Voivodeship invalidVoivodeship = new Voivodeship(); // Missing required fields
+        VoivodeshipEntity invalidVoivodeship = new VoivodeshipEntity(); // Missing required fields
         String invalidVoivodeshipJson = objectMapper.writeValueAsString(invalidVoivodeship);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/voivodeships")

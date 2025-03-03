@@ -1,6 +1,6 @@
-package com.example.backend.DAO;
+package com.example.backend.repository;
 
-import com.example.backend.POJO.Voivodeship;
+import com.example.backend.entity.VoivodeshipEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
@@ -14,19 +14,19 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class VoivodeshipDAOImpl implements VoivodeshipDAO {
+public class VoivodeshipRepositoryImpl implements VoivodeshipRepository {
 
     private final EntityManager entityManager;
 
     // constructor injection
-    public  VoivodeshipDAOImpl(EntityManager theEntityManager) {
+    public VoivodeshipRepositoryImpl(EntityManager theEntityManager) {
         entityManager = theEntityManager;
     }
 
     @Override
-    public String save(Voivodeship theVoivodeship) {
+    public String save(VoivodeshipEntity theVoivodeship) {
         try {
-            Voivodeship dbyVoivodeship = entityManager.merge(theVoivodeship);
+            VoivodeshipEntity dbyVoivodeship = entityManager.merge(theVoivodeship);
             return ("object with id:" + dbyVoivodeship.getVoivodeshipId() + " saved successfully");
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save Voivodeship due to database constraints.");
@@ -37,9 +37,9 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
     }
 
     @Override
-    public Voivodeship findById(int voivodeship_id) {
+    public VoivodeshipEntity findById(int voivodeship_id) {
         try{
-            return entityManager.find(Voivodeship.class, voivodeship_id);
+            return entityManager.find(VoivodeshipEntity.class, voivodeship_id);
         } catch (NoResultException e) {
             return null; // Return null if voivodeship not found
         } catch (Exception e) {
@@ -48,9 +48,9 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
     }
 
     @Override
-    public Page<Voivodeship> findAll(Pageable pageable, Sort sort) {
+    public Page<VoivodeshipEntity> findAll(Pageable pageable, Sort sort) {
 
-        String jpql = "SELECT v FROM Voivodeship v";
+        String jpql = "SELECT v FROM VoivodeshipEntity v";
 
         // Sorting
         if (sort != null && sort.isSorted()) {
@@ -60,10 +60,10 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
         }
 
         try {
-            TypedQuery<Voivodeship> query = entityManager.createQuery(jpql, Voivodeship.class);
+            TypedQuery<VoivodeshipEntity> query = entityManager.createQuery(jpql, VoivodeshipEntity.class);
 
             int totalRows = query.getResultList().size();
-            List<Voivodeship> voivodeship = query
+            List<VoivodeshipEntity> voivodeship = query
                     .setFirstResult((int) pageable.getOffset()) // Offset for pagination
                     .setMaxResults(pageable.getPageSize()) // Limit for pagination
                     .getResultList();
@@ -78,13 +78,13 @@ public class VoivodeshipDAOImpl implements VoivodeshipDAO {
     public String delete(int voivodeship_id) {
         try{
 
-            // Nullify the insertable = false, updatable = false constraints in District POJO
+            // Nullify the insertable = false, updatable = false constraints in District entity
             entityManager.createNativeQuery("UPDATE districts SET voivodeship_id = NULL WHERE voivodeship_id = ?1")
                     .setParameter(1, voivodeship_id)  // Positional parameter (index starts from 1)
                     .executeUpdate();
 
             // Now fetch and remove the voivodeship
-            Voivodeship voivodeship = entityManager.find(Voivodeship.class, voivodeship_id);
+            VoivodeshipEntity voivodeship = entityManager.find(VoivodeshipEntity.class, voivodeship_id);
             entityManager.remove(voivodeship);
             return "Voivodeship successfully deleted";
 
