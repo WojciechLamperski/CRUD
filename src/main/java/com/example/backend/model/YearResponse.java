@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class YearResponse {
-    private List<YearEntity> content;
+    private List<YearModel> content;
     private int pageNumber;
     private int pageSize;
     private long totalElements;

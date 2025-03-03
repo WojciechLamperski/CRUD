@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VoivodeshipResponse {
-    private List<VoivodeshipEntity> content;
+    private List<VoivodeshipModel> content;
     private int pageNumber;
     private int pageSize;
     private long totalElements;

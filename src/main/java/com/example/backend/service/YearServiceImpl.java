@@ -1,8 +1,9 @@
 package com.example.backend.service;
 
-import com.example.backend.repository.YearRepository;
-import com.example.backend.model.YearResponse;
 import com.example.backend.entity.YearEntity;
+import com.example.backend.model.YearModel;
+import com.example.backend.model.YearResponse;
+import com.example.backend.repository.YearRepository;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.InvalidSortFieldException;
 import org.springframework.data.domain.Page;
@@ -67,9 +68,7 @@ public class YearServiceImpl implements YearService {
         Page<YearEntity> year = yearRepository.findAll(pageable, sort);
         List<YearEntity> content = year.stream().collect(Collectors.toList());
 
-        return new YearResponse(
-                content, year.getNumber(), year.getSize(), year.getTotalElements(), year.getTotalPages(), year.isLast()
-        );
+        return convertToResponse(null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
@@ -81,5 +80,35 @@ public class YearServiceImpl implements YearService {
             throw new EntityNotFoundException("Year not found");
         }
         return yearRepository.delete(id);
+    }
+
+
+    public YearModel convertToModel(YearEntity district) {
+
+        YearModel voivodeshipModel = new YearModel();
+        voivodeshipModel.setYearId(district.getYearId());
+        voivodeshipModel.setYear(district.getYear());
+
+        return voivodeshipModel;
+    }
+
+    public YearResponse convertToResponse(Integer voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+
+        // Determine sorting direction
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<YearEntity> voivodeships;
+        voivodeships = yearRepository.findAll(pageable, sort);
+
+        List<YearModel> content = voivodeships.stream().map(this::convertToModel).collect(Collectors.toList());
+
+        return new YearResponse(
+                content, voivodeships.getNumber(), voivodeships.getSize(), voivodeships.getTotalElements(), voivodeships.getTotalPages(), voivodeships.isLast()
+        );
     }
 }

@@ -1,5 +1,6 @@
 package com.example.backend.endpoints;
 
+import com.example.backend.model.VoivodeshipModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,7 +123,7 @@ public class VoivodeshipEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<VoivodeshipEntity> ascList = objectMapper.readValue(ascResponse, VoivodeshipResponse.class).getContent();
+        List<VoivodeshipModel> ascList = objectMapper.readValue(ascResponse, VoivodeshipResponse.class).getContent();
 
         // Test sorting by "voivodeshipId" descending
         String descResponse = mockMvc.perform(MockMvcRequestBuilders.get("/api/voivodeships")
@@ -133,7 +134,7 @@ public class VoivodeshipEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<VoivodeshipEntity> descList = objectMapper.readValue(descResponse, VoivodeshipResponse.class).getContent();
+        List<VoivodeshipModel> descList = objectMapper.readValue(descResponse, VoivodeshipResponse.class).getContent();
 
         assert !ascList.isEmpty();
         assert !descList.isEmpty();

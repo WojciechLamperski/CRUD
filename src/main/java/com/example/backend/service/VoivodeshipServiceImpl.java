@@ -1,7 +1,9 @@
 package com.example.backend.service;
 
+import com.example.backend.entity.DistrictEntity;
+import com.example.backend.entity.PopulationEntity;
+import com.example.backend.model.*;
 import com.example.backend.repository.VoivodeshipRepository;
-import com.example.backend.model.VoivodeshipResponse;
 import com.example.backend.entity.VoivodeshipEntity;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.InvalidSortFieldException;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -66,9 +69,7 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
         Page<VoivodeshipEntity> voivodeships = voivodeshipRepository.findAll(pageable, sort);
         List<VoivodeshipEntity> content = voivodeships.stream().collect(Collectors.toList());
 
-        return new VoivodeshipResponse(
-                content, voivodeships.getNumber(), voivodeships.getSize(), voivodeships.getTotalElements(), voivodeships.getTotalPages(), voivodeships.isLast()
-        );
+        return convertToResponse(null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
@@ -80,6 +81,35 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
         }
         return voivodeshipRepository.delete(id);
 
+    }
+
+    public VoivodeshipModel convertToModel(VoivodeshipEntity district) {
+
+        VoivodeshipModel voivodeshipModel = new VoivodeshipModel();
+        voivodeshipModel.setVoivodeshipId(district.getVoivodeshipId());
+        voivodeshipModel.setVoivodeship(district.getVoivodeship());
+
+        return voivodeshipModel;
+    }
+
+    public VoivodeshipResponse convertToResponse(Integer voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+
+        // Determine sorting direction
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<VoivodeshipEntity> voivodeships;
+        voivodeships = voivodeshipRepository.findAll(pageable, sort);
+
+        List<VoivodeshipModel> content = voivodeships.stream().map(this::convertToModel).collect(Collectors.toList());
+
+        return new VoivodeshipResponse(
+                content, voivodeships.getNumber(), voivodeships.getSize(), voivodeships.getTotalElements(), voivodeships.getTotalPages(), voivodeships.isLast()
+        );
     }
 
 }

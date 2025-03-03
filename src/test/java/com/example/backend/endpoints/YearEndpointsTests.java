@@ -1,5 +1,6 @@
 package com.example.backend.endpoints;
 
+import com.example.backend.model.YearModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,7 +123,7 @@ public class YearEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<YearEntity> ascList = objectMapper.readValue(ascResponse, YearResponse.class).getContent();
+        List<YearModel> ascList = objectMapper.readValue(ascResponse, YearResponse.class).getContent();
 
         // Test sorting by "yearId" descending
         String descResponse = mockMvc.perform(MockMvcRequestBuilders.get("/api/years")
@@ -133,7 +134,7 @@ public class YearEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<YearEntity> descList = objectMapper.readValue(descResponse, YearResponse.class).getContent();
+        List<YearModel> descList = objectMapper.readValue(descResponse, YearResponse.class).getContent();
 
         assert !ascList.isEmpty();
         assert !descList.isEmpty();
