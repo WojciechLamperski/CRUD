@@ -1,6 +1,6 @@
-package com.example.backend.DTO;
+package com.example.backend.model;
 
-import com.example.backend.POJO.Year;
+import com.example.backend.entity.YearEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class YearResponse {
-    private List<Year> content;
+    private List<YearModel> content;
     private int pageNumber;
     private int pageSize;
     private long totalElements;

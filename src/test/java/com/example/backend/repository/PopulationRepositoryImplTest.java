@@ -1,6 +1,6 @@
-package com.example.backend.DAO;
+package com.example.backend.repository;
 
-import com.example.backend.POJO.Population;
+import com.example.backend.entity.PopulationEntity;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,29 +19,29 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Transactional
-public class PopulationDAOImplTest {
+public class PopulationRepositoryImplTest {
 
     @Autowired
     private EntityManager entityManager;
 
     @Autowired
-    private PopulationDAOImpl populationDAO;
+    private PopulationRepositoryImpl populationRepository;
 
-    private Population population1;
+    private PopulationEntity population1;
 
     @BeforeEach
     void setUp() {
         // Create and persist test data
-        population1 = new Population();
+        population1 = new PopulationEntity();
         population1.setDistrictId(1);
         population1.setYearId(1);
         population1.setMen(1234);
         population1.setWomen(4321);
 
-        Population population2 = new Population();
+        PopulationEntity population2 = new PopulationEntity();
         population2.setDistrictId(2);
         population2.setYearId(2);
         population2.setMen(9876);
@@ -62,7 +62,7 @@ public class PopulationDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<Population> population = populationDAO.findAll(pageable, sort);
+        Page<PopulationEntity> population = populationRepository.findAll(pageable, sort);
 
         // Check that the result is not null
         assertThat(population).isNotNull();
@@ -73,7 +73,7 @@ public class PopulationDAOImplTest {
         assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0);
 
         // Verify content
-        List<Population> content = population.getContent();
+        List<PopulationEntity> content = population.getContent();
         assertThat(content).isNotEmpty();
     }
 
@@ -88,7 +88,7 @@ public class PopulationDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<Population> population = populationDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
+        Page<PopulationEntity> population = populationRepository.findAllInVoivodeship(pageable, sort, voivodeshipId);
 
         // Check that the result is not null
         assertThat(population).isNotNull();
@@ -99,7 +99,7 @@ public class PopulationDAOImplTest {
         assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0);
 
         // Verify content
-        List<Population> content = population.getContent();
+        List<PopulationEntity> content = population.getContent();
         assertThat(content).isNotEmpty();
     }
 
@@ -114,7 +114,7 @@ public class PopulationDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<Population> population = populationDAO.findAllInDistrict(pageable, sort, districtId);
+        Page<PopulationEntity> population = populationRepository.findAllInDistrict(pageable, sort, districtId);
 
         // Check that the result is not null
         assertThat(population).isNotNull();
@@ -125,7 +125,7 @@ public class PopulationDAOImplTest {
         assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0);
 
         // Verify content
-        List<Population> content = population.getContent();
+        List<PopulationEntity> content = population.getContent();
         assertThat(content).isNotEmpty();
     }
 
@@ -140,7 +140,7 @@ public class PopulationDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<Population> population = populationDAO.findAllInDistrict(pageable, sort, yearId);
+        Page<PopulationEntity> population = populationRepository.findAllInDistrict(pageable, sort, yearId);
 
 
         // Check that the result is not null
@@ -152,27 +152,27 @@ public class PopulationDAOImplTest {
         assertThat(population.getTotalPages()).isGreaterThanOrEqualTo(0);
 
         // Verify content
-        List<Population> content = population.getContent();
+        List<PopulationEntity> content = population.getContent();
         assertThat(content).isNotEmpty();
 
     }
 
     @Test
     public void testSavePopulation() {
-        Population newPopulation = new Population();
+        PopulationEntity newPopulation = new PopulationEntity();
         newPopulation.setDistrictId(3);
         newPopulation.setYearId(3);
         newPopulation.setMen(3333);
         newPopulation.setWomen(3333);
 
-        String result = populationDAO.save(newPopulation);
+        String result = populationRepository.save(newPopulation);
 
         assertThat(result).contains("saved successfully");
     }
 
     @Test
     public void testFindById() {
-        Population foundPopulation = populationDAO.findById(population1.getPopulationId());
+        PopulationEntity foundPopulation = populationRepository.findById(population1.getPopulationId());
 
         assertThat(foundPopulation).isNotNull();
         assertThat(foundPopulation.getMen()).isEqualTo(population1.getMen());
@@ -181,24 +181,24 @@ public class PopulationDAOImplTest {
 
     @Test
     public void testFindById_NotFound() {
-        Population foundPopulation = populationDAO.findById(9000000);
+        PopulationEntity foundPopulation = populationRepository.findById(9000000);
 
         assertThat(foundPopulation).isNull();
     }
 
     @Test
     public void testDeletePopulation() {
-        String result = populationDAO.delete(population1.getPopulationId());
+        String result = populationRepository.delete(population1.getPopulationId());
 
         assertThat(result).isEqualTo("Population successfully deleted");
 
         // Verify that the population is deleted
-        Population deletedPopulation = entityManager.find(Population.class, population1.getPopulationId());
+        PopulationEntity deletedPopulation = entityManager.find(PopulationEntity.class, population1.getPopulationId());
         assertThat(deletedPopulation).isNull();
     }
 
     @Test
     public void testDeletePopulation_NotFound() {
-        assertThrows(RuntimeException.class, () -> populationDAO.delete(9000000));
+        assertThrows(RuntimeException.class, () -> populationRepository.delete(9000000));
     }
 }

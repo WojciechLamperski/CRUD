@@ -1,3 +1,13 @@
+
+### Prerequisites:
+
+- [Java 21](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+- [MySQL](https://dev.mysql.com/downloads/mysql/)
+- [JDK-21](https://jdk.java.net/21/)
+- [Postman](https://www.postman.com/downloads/) (Optional but useful)
+
+-----------------
+
 ## Project Setup Guide
 
 ### 1. Install and Set Up MySQL Workbench
@@ -47,3 +57,40 @@
 - Run your python script, in the "database" folder - *jsonToMySQL.py*. It will populate the database with the  values from *data.json*. 
 - By default, the script uses the main database environment variables (`DB_HOST`, `DB_NAME`, etc.), so if you created a test database simply comment the original variables and uncomment the test variables in your python scrip and fire it for the second time.
 ### 7. Run the app. 🚀 
+- For running the main app use:
+    ```
+    mvn spring-boot:run
+    ```
+  ###### Endpoints
+  The app should start on localhost:8080, unless this port is already occupied. <br>
+  You have the following URL endpoints at your disposal:
+  - /api/years
+    - /{yearId}
+    - /{yearId}/districts
+    - /{yearId}/populations
+  - /api/voivodeships
+    - /{voivodeshipId}
+    - /{voivodeshipId}/districts
+    - /{voivodeshipId}/populations
+  - /api/districts
+    - /{districtId}
+    - /{districtId}/populations
+  - /api/populations
+    - /{populationId}
+
+  <br>
+  
+  ###### Request Types
+  All of the above work for **GET** request, but **POST**, and **PUT** don't work for nested requests. If you want to delete a record use **DELETE** request and add the ID of the record you want to delete (years/1 will delete first year).
+
+  <br>
+  
+  ###### Pages, Ordering, Sorting
+  You can also specify params (when doing a **GET** request) such as ordering by record, sort order, and page size, like this: <br>
+  - /api/years?pageNumber=0&pageSize=1&sortBy=yearId&sortDirection=desc
+
+
+- For running tests use:
+    ```
+    mvn clean install
+    ```

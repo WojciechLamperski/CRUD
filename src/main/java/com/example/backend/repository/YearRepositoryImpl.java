@@ -1,6 +1,6 @@
-package com.example.backend.DAO;
+package com.example.backend.repository;
 
-import com.example.backend.POJO.Year;
+import com.example.backend.entity.YearEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
@@ -14,19 +14,19 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class YearDAOImpl implements YearDAO {
+public class YearRepositoryImpl implements YearRepository {
 
     private final EntityManager entityManager;
 
     // constructor injection
-    public YearDAOImpl(EntityManager theEntityManager) {
+    public YearRepositoryImpl(EntityManager theEntityManager) {
         entityManager = theEntityManager;
     }
 
     @Override
-    public String save(Year theYear) {
+    public String save(YearEntity theYear) {
         try {
-            Year dbyYear = entityManager.merge(theYear);
+            YearEntity dbyYear = entityManager.merge(theYear);
             return ("object with id:" + dbyYear.getYearId() + " saved successfully");
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save Year due to database constraints.");
@@ -37,9 +37,9 @@ public class YearDAOImpl implements YearDAO {
     }
 
     @Override
-    public Year findById(int year_id) {
+    public YearEntity findById(int year_id) {
         try {
-            return entityManager.find(Year.class, year_id);
+            return entityManager.find(YearEntity.class, year_id);
         } catch (NoResultException e) {
             return null; // Return null if year not found
         } catch (Exception e) {
@@ -48,9 +48,9 @@ public class YearDAOImpl implements YearDAO {
     }
 
     @Override
-    public Page<Year> findAll(Pageable pageable, Sort sort) {
+    public Page<YearEntity> findAll(Pageable pageable, Sort sort) {
 
-        String jpql = "SELECT y FROM Year y";
+        String jpql = "SELECT y FROM YearEntity y";
 
         // Sorting
         if (sort != null && sort.isSorted()) {
@@ -60,10 +60,10 @@ public class YearDAOImpl implements YearDAO {
         }
 
         try {
-            TypedQuery<Year> query = entityManager.createQuery(jpql, Year.class);
+            TypedQuery<YearEntity> query = entityManager.createQuery(jpql, YearEntity.class);
 
             int totalRows = query.getResultList().size();
-            List<Year> year = query
+            List<YearEntity> year = query
                     .setFirstResult((int) pageable.getOffset()) // Offset for pagination
                     .setMaxResults(pageable.getPageSize()) // Limit for pagination
                     .getResultList();
@@ -79,13 +79,13 @@ public class YearDAOImpl implements YearDAO {
     public String delete(int year_id) {
         try{
 
-            // Nullify the insertable = false, updatable = false constraints in District POJO
+            // Nullify the insertable = false, updatable = false constraints in District entity
             entityManager.createNativeQuery("UPDATE populations SET year_id = NULL WHERE year_id = ?1")
                     .setParameter(1, year_id)  // Positional parameter (index starts from 1)
                     .executeUpdate();
 
             // Now fetch and remove the voivodeship
-            Year year = entityManager.find(Year.class, year_id);
+            YearEntity year = entityManager.find(YearEntity.class, year_id);
             entityManager.remove(year);
             return "Year successfully deleted";
 

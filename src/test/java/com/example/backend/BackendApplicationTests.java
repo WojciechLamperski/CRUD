@@ -1,9 +1,9 @@
 package com.example.backend;
 
-import com.example.backend.DAO.DistrictDAO;
-import com.example.backend.DAO.PopulationDAO;
-import com.example.backend.DAO.VoivodeshipDAO;
-import com.example.backend.DAO.YearDAO;
+import com.example.backend.repository.DistrictRepository;
+import com.example.backend.repository.PopulationRepository;
+import com.example.backend.repository.VoivodeshipRepository;
+import com.example.backend.repository.YearRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,9 +24,9 @@ class BackendApplicationTests {
 
     @Test
     void criticalBeansAreLoaded() {
-        assertThat(applicationContext.getBean(YearDAO.class)).isNotNull();
-        assertThat(applicationContext.getBean(VoivodeshipDAO.class)).isNotNull();
-        assertThat(applicationContext.getBean(PopulationDAO.class)).isNotNull();
-        assertThat(applicationContext.getBean(DistrictDAO.class)).isNotNull();
+        assertThat(applicationContext.getBean(YearRepository.class)).isNotNull();
+        assertThat(applicationContext.getBean(VoivodeshipRepository.class)).isNotNull();
+        assertThat(applicationContext.getBean(PopulationRepository.class)).isNotNull();
+        assertThat(applicationContext.getBean(DistrictRepository.class)).isNotNull();
     }
 }

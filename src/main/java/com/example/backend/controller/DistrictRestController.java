@@ -1,8 +1,8 @@
 package com.example.backend.controller;
 
-import com.example.backend.DTO.DistrictDTO;
-import com.example.backend.DTO.DistrictResponse;
-import com.example.backend.POJO.District;
+import com.example.backend.model.DistrictModel;
+import com.example.backend.model.DistrictResponse;
+import com.example.backend.entity.DistrictEntity;
 import com.example.backend.service.DistrictService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -41,13 +41,13 @@ public class DistrictRestController {
     }
 
     @GetMapping("/districts/{districtId}")
-    public DistrictDTO findById(@PathVariable int districtId) {
+    public DistrictModel findById(@PathVariable int districtId) {
         return districtService.findById(districtId);
     }
 
     @PostMapping("/districts")
     @ResponseStatus(HttpStatus.CREATED)
-    public String save(@Valid @RequestBody District theDistrict) {
+    public String save(@Valid @RequestBody DistrictEntity theDistrict) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         theDistrict.setDistrictId(0);
@@ -55,7 +55,7 @@ public class DistrictRestController {
     }
 
     @PutMapping("/districts")
-    public String update(@Valid @RequestBody District theDistrict) {
+    public String update(@Valid @RequestBody DistrictEntity theDistrict) {
         return districtService.save(theDistrict);
     }
 

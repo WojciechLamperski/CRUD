@@ -1,4 +1,4 @@
-package com.example.backend.POJO;
+package com.example.backend.entity;
 
 
 import jakarta.persistence.*;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name="populations")
-public class Population {
+public class PopulationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,10 +38,10 @@ public class Population {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id", referencedColumnName = "district_id", insertable = false, updatable = false)
-    private District district; // Voivodeship name stored in secondary table
+    private DistrictEntity district; // Voivodeship name stored in secondary table
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "year_id", referencedColumnName = "year_id", insertable = false, updatable = false)
-    private Year year; // Voivodeship name stored in secondary table
+    private YearEntity year; // Voivodeship name stored in secondary table
 
 }

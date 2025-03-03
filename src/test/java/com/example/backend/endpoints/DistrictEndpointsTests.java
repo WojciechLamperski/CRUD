@@ -1,6 +1,6 @@
 package com.example.backend.endpoints;
 
-import com.example.backend.DTO.DistrictDTO;
+import com.example.backend.model.DistrictModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +10,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import com.example.backend.POJO.District;
+import com.example.backend.entity.DistrictEntity;
 import java.util.List;
-import com.example.backend.DTO.DistrictResponse;
+import com.example.backend.model.DistrictResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -66,7 +66,7 @@ public class DistrictEndpointsTests {
     @Transactional
     public void testSaveDistrict() throws Exception {
         // Create a new District object to be created
-        District newDistrict = new District();
+        DistrictEntity newDistrict = new DistrictEntity();
         newDistrict.setDistrict("wymyślony");
 
         // Convert the District object to JSON
@@ -93,7 +93,7 @@ public class DistrictEndpointsTests {
         int testId = 1;
 
         // Create an updated District object
-        District updatedDistrict = new District();
+        DistrictEntity updatedDistrict = new DistrictEntity();
         updatedDistrict.setDistrictId(testId);
         updatedDistrict.setDistrict("wymyślony2");
 
@@ -136,7 +136,7 @@ public class DistrictEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<DistrictDTO> ascList = objectMapper.readValue(ascResponse, DistrictResponse.class).getContent();
+        List<DistrictModel> ascList = objectMapper.readValue(ascResponse, DistrictResponse.class).getContent();
 
         // Test sorting by "districtId" descending
         String descResponse = mockMvc.perform(MockMvcRequestBuilders.get("/api/districts")
@@ -147,7 +147,7 @@ public class DistrictEndpointsTests {
                 .getResponse()
                 .getContentAsString();
 
-        List<DistrictDTO> descList = objectMapper.readValue(descResponse, DistrictResponse.class).getContent();
+        List<DistrictModel> descList = objectMapper.readValue(descResponse, DistrictResponse.class).getContent();
 
         assert !ascList.isEmpty();
         assert !descList.isEmpty();
@@ -213,7 +213,7 @@ public class DistrictEndpointsTests {
     @Test
     public void testValidationException() throws Exception {
         // Assuming that the `District` entity has validation annotations like @NotNull or @Min
-        District invalidDistrict = new District(); // Missing required fields
+        DistrictEntity invalidDistrict = new DistrictEntity(); // Missing required fields
         String invalidDistrictJson = objectMapper.writeValueAsString(invalidDistrict);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/districts")

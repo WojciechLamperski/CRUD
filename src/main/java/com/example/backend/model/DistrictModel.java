@@ -1,4 +1,4 @@
-package com.example.backend.DTO;
+package com.example.backend.model;
 
 
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DistrictDTO {
+public class DistrictModel {
     private int districtId;       // district_id
     private String district;      // district
     private String voivodeship;    // voivodeship

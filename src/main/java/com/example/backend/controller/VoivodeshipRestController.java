@@ -1,8 +1,8 @@
 package com.example.backend.controller;
 
 
-import com.example.backend.DTO.VoivodeshipResponse;
-import com.example.backend.POJO.Voivodeship;
+import com.example.backend.model.VoivodeshipResponse;
+import com.example.backend.entity.VoivodeshipEntity;
 import com.example.backend.service.VoivodeshipService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -31,13 +31,13 @@ public class VoivodeshipRestController {
     }
 
     @GetMapping("/voivodeships/{voivodeshipId}")
-    public Voivodeship findById(@PathVariable int voivodeshipId) {
+    public VoivodeshipEntity findById(@PathVariable int voivodeshipId) {
         return voivodeshipService.findById(voivodeshipId);
     }
 
     @PostMapping("/voivodeships")
     @ResponseStatus(HttpStatus.CREATED)
-    public String save(@Valid @RequestBody Voivodeship theVoivodeship) {
+    public String save(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         theVoivodeship.setVoivodeshipId(0);
@@ -45,7 +45,7 @@ public class VoivodeshipRestController {
     }
 
     @PutMapping("/voivodeships")
-    public String update(@Valid @RequestBody Voivodeship theVoivodeship) {
+    public String update(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
         return voivodeshipService.save(theVoivodeship);
     }
 

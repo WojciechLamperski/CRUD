@@ -1,4 +1,4 @@
-package com.example.backend.POJO;
+package com.example.backend.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name="voivodeships")
-public class Voivodeship {
+public class VoivodeshipEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +25,6 @@ public class Voivodeship {
 
     @JsonIgnore
     @OneToMany(mappedBy = "voivodeship")
-    private List<District> districts;
+    private List<DistrictEntity> districts;
 
 }

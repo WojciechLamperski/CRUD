@@ -1,4 +1,4 @@
-package com.example.backend.POJO;
+package com.example.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name="years")
-public class Year {
+public class YearEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +26,6 @@ public class Year {
 
     @JsonIgnore
     @OneToMany(mappedBy = "year")
-    private List<Population> populations;
+    private List<PopulationEntity> populations;
 
 }

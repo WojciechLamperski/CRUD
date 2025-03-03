@@ -1,6 +1,6 @@
-package com.example.backend.DAO;
+package com.example.backend.repository;
 
-import com.example.backend.POJO.Year;
+import com.example.backend.entity.YearEntity;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,26 +19,26 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Transactional
-public class YearDAOImplTest {
+public class YearRepositoryImplTest {
 
     @Autowired
     private EntityManager entityManager;
 
     @Autowired
-    private YearDAOImpl yearDAO;
+    private YearRepositoryImpl yearRepository;
 
-    private Year year1;
+    private YearEntity year1;
 
     @BeforeEach
     void setUp() {
         // Create and persist test data
-        year1 = new Year();
+        year1 = new YearEntity();
         year1.setYear(2020);
 
-        Year year2 = new Year();
+        YearEntity year2 = new YearEntity();
         year2.setYear(2021);
 
         entityManager.persist(year1);
@@ -57,7 +57,7 @@ public class YearDAOImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<Year> years = yearDAO.findAll(pageable, sort);
+        Page<YearEntity> years = yearRepository.findAll(pageable, sort);
 
         // heck that the result is not null
         assertThat(years).isNotNull();
@@ -68,7 +68,7 @@ public class YearDAOImplTest {
         assertThat(years.getTotalPages()).isGreaterThanOrEqualTo(0);
 
         // Verify sorting
-        List<Year> content = years.getContent();
+        List<YearEntity> content = years.getContent();
         if (!content.isEmpty()) {
             for (int i = 1; i < content.size(); i++) {
                 // Ensure each year is greater than or equal to the previous one (ascending order)
@@ -82,17 +82,17 @@ public class YearDAOImplTest {
 
     @Test
     public void testSaveYear() {
-        Year newYear = new Year();
+        YearEntity newYear = new YearEntity();
         newYear.setYear(2022);
 
-        String result = yearDAO.save(newYear);
+        String result = yearRepository.save(newYear);
 
         assertThat(result).contains("saved successfully");
     }
 
     @Test
     public void testFindById() {
-        Year foundYear = yearDAO.findById(year1.getYearId());
+        YearEntity foundYear = yearRepository.findById(year1.getYearId());
 
         assertThat(foundYear).isNotNull();
         assertThat(foundYear.getYear()).isEqualTo(year1.getYear());
@@ -100,24 +100,24 @@ public class YearDAOImplTest {
 
     @Test
     public void testFindById_NotFound() {
-        Year foundYear = yearDAO.findById(999);
+        YearEntity foundYear = yearRepository.findById(999);
 
         assertThat(foundYear).isNull();
     }
 
     @Test
     public void testDeleteYear() {
-        String result = yearDAO.delete(year1.getYearId());
+        String result = yearRepository.delete(year1.getYearId());
 
         assertThat(result).isEqualTo("Year successfully deleted");
 
         // Verify that the year is deleted
-        Year deletedYear = entityManager.find(Year.class, year1.getYearId());
+        YearEntity deletedYear = entityManager.find(YearEntity.class, year1.getYearId());
         assertThat(deletedYear).isNull();
     }
 
     @Test
     public void testDeleteYear_NotFound() {
-        assertThrows(RuntimeException.class, () -> yearDAO.delete(999));
+        assertThrows(RuntimeException.class, () -> yearRepository.delete(999));
     }
 }

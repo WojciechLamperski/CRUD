@@ -1,8 +1,10 @@
 package com.example.backend.service;
 
-import com.example.backend.DAO.VoivodeshipDAO;
-import com.example.backend.DTO.VoivodeshipResponse;
-import com.example.backend.POJO.Voivodeship;
+import com.example.backend.entity.DistrictEntity;
+import com.example.backend.entity.PopulationEntity;
+import com.example.backend.model.*;
+import com.example.backend.repository.VoivodeshipRepository;
+import com.example.backend.entity.VoivodeshipEntity;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.InvalidSortFieldException;
 import org.springframework.data.domain.Page;
@@ -13,38 +15,39 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
 @Service
 public class VoivodeshipServiceImpl implements VoivodeshipService {
 
-    private final VoivodeshipDAO voivodeshipDAO;
+    private final VoivodeshipRepository voivodeshipRepository;
 
-    public VoivodeshipServiceImpl(VoivodeshipDAO theVoivodeshipDAO) {
-        voivodeshipDAO = theVoivodeshipDAO;
+    public VoivodeshipServiceImpl(VoivodeshipRepository theVoivodeshipRepository) {
+        voivodeshipRepository = theVoivodeshipRepository;
     }
 
     private static final List<String> ALLOWED_SORT_FIELDS = List.of("voivodeshipId", "voivodeship");
 
     @Override
     @Transactional
-    public String save(Voivodeship voivodeship) {
+    public String save(VoivodeshipEntity voivodeship) {
 
-        if(voivodeship.getVoivodeshipId() != 0 && voivodeshipDAO.findById(voivodeship.getVoivodeshipId()) == null){
+        if(voivodeship.getVoivodeshipId() != 0 && voivodeshipRepository.findById(voivodeship.getVoivodeshipId()) == null){
             throw new EntityNotFoundException("Voivodeship which you're trying to update was not found");
         }
-        return voivodeshipDAO.save(voivodeship);
+        return voivodeshipRepository.save(voivodeship);
     }
 
     @Override
-    public Voivodeship findById(int id) {
+    public VoivodeshipEntity findById(int id) {
 
-        Voivodeship voivodeship = voivodeshipDAO.findById(id);
+        VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id);
         if (voivodeship == null) {
             throw new EntityNotFoundException("Voivodeship not found");
         }
-        return voivodeshipDAO.findById(id);
+        return voivodeshipRepository.findById(id);
     }
 
     @Override
@@ -63,23 +66,50 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<Voivodeship> voivodeships = voivodeshipDAO.findAll(pageable, sort);
-        List<Voivodeship> content = voivodeships.stream().collect(Collectors.toList());
+        Page<VoivodeshipEntity> voivodeships = voivodeshipRepository.findAll(pageable, sort);
+        List<VoivodeshipEntity> content = voivodeships.stream().collect(Collectors.toList());
 
-        return new VoivodeshipResponse(
-                content, voivodeships.getNumber(), voivodeships.getSize(), voivodeships.getTotalElements(), voivodeships.getTotalPages(), voivodeships.isLast()
-        );
+        return convertToResponse(null, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     @Transactional
     public String delete(int id) {
-        Voivodeship voivodeship = voivodeshipDAO.findById(id);
+        VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id);
         if (voivodeship == null) {
             throw new EntityNotFoundException("Voivodeship not found");
         }
-        return voivodeshipDAO.delete(id);
+        return voivodeshipRepository.delete(id);
 
+    }
+
+    public VoivodeshipModel convertToModel(VoivodeshipEntity district) {
+
+        VoivodeshipModel voivodeshipModel = new VoivodeshipModel();
+        voivodeshipModel.setVoivodeshipId(district.getVoivodeshipId());
+        voivodeshipModel.setVoivodeship(district.getVoivodeship());
+
+        return voivodeshipModel;
+    }
+
+    public VoivodeshipResponse convertToResponse(Integer voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+        int maxPageSize = 100;  // Prevent excessive page sizes
+        pageSize = Math.min(pageSize, maxPageSize);
+
+        // Determine sorting direction
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<VoivodeshipEntity> voivodeships;
+        voivodeships = voivodeshipRepository.findAll(pageable, sort);
+
+        List<VoivodeshipModel> content = voivodeships.stream().map(this::convertToModel).collect(Collectors.toList());
+
+        return new VoivodeshipResponse(
+                content, voivodeships.getNumber(), voivodeships.getSize(), voivodeships.getTotalElements(), voivodeships.getTotalPages(), voivodeships.isLast()
+        );
     }
 
 }
