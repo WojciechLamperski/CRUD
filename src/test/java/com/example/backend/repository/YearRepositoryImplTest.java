@@ -28,7 +28,7 @@ public class YearRepositoryImplTest {
     private EntityManager entityManager;
 
     @Autowired
-    private YearRepositoryImpl yearDAO;
+    private YearRepositoryImpl yearRepository;
 
     private YearEntity year1;
 
@@ -57,7 +57,7 @@ public class YearRepositoryImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<YearEntity> years = yearDAO.findAll(pageable, sort);
+        Page<YearEntity> years = yearRepository.findAll(pageable, sort);
 
         // heck that the result is not null
         assertThat(years).isNotNull();
@@ -85,14 +85,14 @@ public class YearRepositoryImplTest {
         YearEntity newYear = new YearEntity();
         newYear.setYear(2022);
 
-        String result = yearDAO.save(newYear);
+        String result = yearRepository.save(newYear);
 
         assertThat(result).contains("saved successfully");
     }
 
     @Test
     public void testFindById() {
-        YearEntity foundYear = yearDAO.findById(year1.getYearId());
+        YearEntity foundYear = yearRepository.findById(year1.getYearId());
 
         assertThat(foundYear).isNotNull();
         assertThat(foundYear.getYear()).isEqualTo(year1.getYear());
@@ -100,14 +100,14 @@ public class YearRepositoryImplTest {
 
     @Test
     public void testFindById_NotFound() {
-        YearEntity foundYear = yearDAO.findById(999);
+        YearEntity foundYear = yearRepository.findById(999);
 
         assertThat(foundYear).isNull();
     }
 
     @Test
     public void testDeleteYear() {
-        String result = yearDAO.delete(year1.getYearId());
+        String result = yearRepository.delete(year1.getYearId());
 
         assertThat(result).isEqualTo("Year successfully deleted");
 
@@ -118,6 +118,6 @@ public class YearRepositoryImplTest {
 
     @Test
     public void testDeleteYear_NotFound() {
-        assertThrows(RuntimeException.class, () -> yearDAO.delete(999));
+        assertThrows(RuntimeException.class, () -> yearRepository.delete(999));
     }
 }

@@ -28,7 +28,7 @@ public class VoivodeshipRepositoryImplTest {
     private EntityManager entityManager;
 
     @Autowired
-    private VoivodeshipRepositoryImpl voivodeshipDAO;
+    private VoivodeshipRepositoryImpl voivodeshipRepository;
 
     private VoivodeshipEntity voivodeship1;
 
@@ -57,7 +57,7 @@ public class VoivodeshipRepositoryImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<VoivodeshipEntity> voivodeships = voivodeshipDAO.findAll(pageable, sort);
+        Page<VoivodeshipEntity> voivodeships = voivodeshipRepository.findAll(pageable, sort);
 
         // Check that the result is not null
         assertThat(voivodeships).isNotNull();
@@ -77,14 +77,14 @@ public class VoivodeshipRepositoryImplTest {
         VoivodeshipEntity newVoivodeship = new VoivodeshipEntity();
         newVoivodeship.setVoivodeship("WYMYŚLONE3");
 
-        String result = voivodeshipDAO.save(newVoivodeship);
+        String result = voivodeshipRepository.save(newVoivodeship);
 
         assertThat(result).contains("saved successfully");
     }
 
     @Test
     public void testFindById() {
-        VoivodeshipEntity foundVoivodeship = voivodeshipDAO.findById(voivodeship1.getVoivodeshipId());
+        VoivodeshipEntity foundVoivodeship = voivodeshipRepository.findById(voivodeship1.getVoivodeshipId());
 
         assertThat(foundVoivodeship).isNotNull();
         assertThat(foundVoivodeship.getVoivodeship()).isEqualTo(voivodeship1.getVoivodeship());
@@ -92,14 +92,14 @@ public class VoivodeshipRepositoryImplTest {
 
     @Test
     public void testFindById_NotFound() {
-        VoivodeshipEntity foundVoivodeship = voivodeshipDAO.findById(999);
+        VoivodeshipEntity foundVoivodeship = voivodeshipRepository.findById(999);
 
         assertThat(foundVoivodeship).isNull();
     }
 
     @Test
     public void testDeleteVoivodeship() {
-        String result = voivodeshipDAO.delete(voivodeship1.getVoivodeshipId());
+        String result = voivodeshipRepository.delete(voivodeship1.getVoivodeshipId());
 
         assertThat(result).isEqualTo("Voivodeship successfully deleted");
 
@@ -110,6 +110,6 @@ public class VoivodeshipRepositoryImplTest {
 
     @Test
     public void testDeleteVoivodeship_NotFound() {
-        assertThrows(RuntimeException.class, () -> voivodeshipDAO.delete(999));
+        assertThrows(RuntimeException.class, () -> voivodeshipRepository.delete(999));
     }
 }

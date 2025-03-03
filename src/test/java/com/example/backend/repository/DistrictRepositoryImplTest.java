@@ -28,7 +28,7 @@ public class DistrictRepositoryImplTest {
     private EntityManager entityManager;
 
     @Autowired
-    private DistrictRepositoryImpl districtDAO;
+    private DistrictRepositoryImpl districtRepository;
 
     private DistrictEntity district1;
 
@@ -56,7 +56,7 @@ public class DistrictRepositoryImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<DistrictEntity> district = districtDAO.findAll(pageable, sort);
+        Page<DistrictEntity> district = districtRepository.findAll(pageable, sort);
         assertThat(district).isNotNull();
 
         // Verify pagination details
@@ -80,7 +80,7 @@ public class DistrictRepositoryImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<DistrictEntity> district = districtDAO.findAllInVoivodeship(pageable, sort, VoivodeshipId);
+        Page<DistrictEntity> district = districtRepository.findAllInVoivodeship(pageable, sort, VoivodeshipId);
 
         assertThat(district).isNotNull();
 
@@ -100,14 +100,14 @@ public class DistrictRepositoryImplTest {
         DistrictEntity newDistrict = new DistrictEntity();
         newDistrict.setDistrict("wymyślony3");
 
-        String result = districtDAO.save(newDistrict);
+        String result = districtRepository.save(newDistrict);
 
         assertThat(result).contains("saved successfully");
     }
 
     @Test
     public void testFindById() {
-        DistrictEntity foundDistrict = districtDAO.findById(district1.getDistrictId());
+        DistrictEntity foundDistrict = districtRepository.findById(district1.getDistrictId());
 
         assertThat(foundDistrict).isNotNull();
         assertThat(foundDistrict.getDistrict()).isEqualTo(district1.getDistrict());
@@ -115,13 +115,13 @@ public class DistrictRepositoryImplTest {
 
     @Test
     public void testFindById_NotFound() {
-        DistrictEntity foundDistrict = districtDAO.findById(999);
+        DistrictEntity foundDistrict = districtRepository.findById(999);
         assertThat(foundDistrict).isNull();
     }
 
     @Test
     public void testDeleteDistrict() {
-        String result = districtDAO.delete(district1.getDistrictId());
+        String result = districtRepository.delete(district1.getDistrictId());
 
         assertThat(result).isEqualTo("District successfully deleted");
 
@@ -132,6 +132,6 @@ public class DistrictRepositoryImplTest {
 
     @Test
     public void testDeleteDistrict_NotFound() {
-        assertThrows(RuntimeException.class, () -> districtDAO.delete(999));
+        assertThrows(RuntimeException.class, () -> districtRepository.delete(999));
     }
 }

@@ -55,7 +55,7 @@ public class PopulationServiceImpl implements PopulationService {
         if (population == null) {
             throw new EntityNotFoundException("Population not found");
         }
-        return convertToDTO(population);
+        return convertToModel(population);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class PopulationServiceImpl implements PopulationService {
         return populationRepository.delete(id);
     }
 
-    public PopulationModel convertToDTO(PopulationEntity population) {
+    public PopulationModel convertToModel(PopulationEntity population) {
 
         DistrictModel districtModel = new DistrictModel();
 
@@ -161,7 +161,7 @@ public class PopulationServiceImpl implements PopulationService {
             populations = populationRepository.findAll(pageable, sort);
         }
 
-        List<PopulationModel> content = populations.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<PopulationModel> content = populations.stream().map(this::convertToModel).collect(Collectors.toList());
 
         return new PopulationResponse(
                 content, populations.getNumber(), populations.getSize(), populations.getTotalElements(), populations.getTotalPages(), populations.isLast()

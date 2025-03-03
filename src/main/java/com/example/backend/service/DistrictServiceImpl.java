@@ -52,7 +52,7 @@ public class DistrictServiceImpl implements DistrictService {
         if (district == null) {
             throw new EntityNotFoundException("District not found");
         }
-        return convertToDTO(district);
+        return convertToModel(district);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class DistrictServiceImpl implements DistrictService {
         return districtRepository.delete(id);
     }
 
-    public DistrictModel convertToDTO(DistrictEntity district) {
+    public DistrictModel convertToModel(DistrictEntity district) {
 
         VoivodeshipEntity voivodeship = district.getVoivodeship();
 
@@ -123,7 +123,7 @@ public class DistrictServiceImpl implements DistrictService {
             districts = districtRepository.findAllInVoivodeship(pageable, sort, voivodeshipId);
         }
 
-        List<DistrictModel> content = districts.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<DistrictModel> content = districts.stream().map(this::convertToModel).collect(Collectors.toList());
 
         return new DistrictResponse(
                 content, districts.getNumber(), districts.getSize(), districts.getTotalElements(), districts.getTotalPages(), districts.isLast()

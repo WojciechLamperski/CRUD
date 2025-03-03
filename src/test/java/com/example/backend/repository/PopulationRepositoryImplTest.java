@@ -28,7 +28,7 @@ public class PopulationRepositoryImplTest {
     private EntityManager entityManager;
 
     @Autowired
-    private PopulationRepositoryImpl populationDAO;
+    private PopulationRepositoryImpl populationRepository;
 
     private PopulationEntity population1;
 
@@ -62,7 +62,7 @@ public class PopulationRepositoryImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<PopulationEntity> population = populationDAO.findAll(pageable, sort);
+        Page<PopulationEntity> population = populationRepository.findAll(pageable, sort);
 
         // Check that the result is not null
         assertThat(population).isNotNull();
@@ -88,7 +88,7 @@ public class PopulationRepositoryImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<PopulationEntity> population = populationDAO.findAllInVoivodeship(pageable, sort, voivodeshipId);
+        Page<PopulationEntity> population = populationRepository.findAllInVoivodeship(pageable, sort, voivodeshipId);
 
         // Check that the result is not null
         assertThat(population).isNotNull();
@@ -114,7 +114,7 @@ public class PopulationRepositoryImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<PopulationEntity> population = populationDAO.findAllInDistrict(pageable, sort, districtId);
+        Page<PopulationEntity> population = populationRepository.findAllInDistrict(pageable, sort, districtId);
 
         // Check that the result is not null
         assertThat(population).isNotNull();
@@ -140,7 +140,7 @@ public class PopulationRepositoryImplTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Sort sort = Sort.by(direction, sortBy);
 
-        Page<PopulationEntity> population = populationDAO.findAllInDistrict(pageable, sort, yearId);
+        Page<PopulationEntity> population = populationRepository.findAllInDistrict(pageable, sort, yearId);
 
 
         // Check that the result is not null
@@ -165,14 +165,14 @@ public class PopulationRepositoryImplTest {
         newPopulation.setMen(3333);
         newPopulation.setWomen(3333);
 
-        String result = populationDAO.save(newPopulation);
+        String result = populationRepository.save(newPopulation);
 
         assertThat(result).contains("saved successfully");
     }
 
     @Test
     public void testFindById() {
-        PopulationEntity foundPopulation = populationDAO.findById(population1.getPopulationId());
+        PopulationEntity foundPopulation = populationRepository.findById(population1.getPopulationId());
 
         assertThat(foundPopulation).isNotNull();
         assertThat(foundPopulation.getMen()).isEqualTo(population1.getMen());
@@ -181,14 +181,14 @@ public class PopulationRepositoryImplTest {
 
     @Test
     public void testFindById_NotFound() {
-        PopulationEntity foundPopulation = populationDAO.findById(9000000);
+        PopulationEntity foundPopulation = populationRepository.findById(9000000);
 
         assertThat(foundPopulation).isNull();
     }
 
     @Test
     public void testDeletePopulation() {
-        String result = populationDAO.delete(population1.getPopulationId());
+        String result = populationRepository.delete(population1.getPopulationId());
 
         assertThat(result).isEqualTo("Population successfully deleted");
 
@@ -199,6 +199,6 @@ public class PopulationRepositoryImplTest {
 
     @Test
     public void testDeletePopulation_NotFound() {
-        assertThrows(RuntimeException.class, () -> populationDAO.delete(9000000));
+        assertThrows(RuntimeException.class, () -> populationRepository.delete(9000000));
     }
 }
