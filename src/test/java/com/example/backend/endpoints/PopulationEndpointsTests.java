@@ -1,6 +1,7 @@
 package com.example.backend.endpoints;
 
 import com.example.backend.model.PopulationModel;
+import com.example.backend.repository.PopulationRepositoryImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.example.backend.entity.PopulationEntity;
 import java.util.List;
+
 import com.example.backend.model.PopulationResponse;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,9 @@ public class PopulationEndpointsTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private PopulationRepositoryImpl populationRepositoryImpl;
+
 
     @Test
     public void testGetAllPopulationsIsPopulated() throws Exception {

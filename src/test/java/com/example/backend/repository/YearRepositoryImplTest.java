@@ -34,12 +34,13 @@ public class YearRepositoryImplTest {
 
     @BeforeEach
     void setUp() {
+
         // Create and persist test data
         year1 = new YearEntity();
-        year1.setYear(2020);
+        year1.setYear(1234);
 
         YearEntity year2 = new YearEntity();
-        year2.setYear(2021);
+        year2.setYear(4321);
 
         entityManager.persist(year1);
         entityManager.persist(year2);
@@ -50,7 +51,7 @@ public class YearRepositoryImplTest {
     public void testFindAllYears() {
         // Arrange
         int pageNumber = 1;
-        int pageSize = 15;
+        int pageSize = 1;
         String sortBy = "year";
         Sort.Direction direction = Sort.Direction.ASC;
 
@@ -83,7 +84,7 @@ public class YearRepositoryImplTest {
     @Test
     public void testSaveYear() {
         YearEntity newYear = new YearEntity();
-        newYear.setYear(2022);
+        newYear.setYear(3333);
 
         String result = yearRepository.save(newYear);
 

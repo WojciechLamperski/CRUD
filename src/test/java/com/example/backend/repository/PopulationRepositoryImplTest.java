@@ -1,6 +1,9 @@
 package com.example.backend.repository;
 
+import com.example.backend.entity.DistrictEntity;
 import com.example.backend.entity.PopulationEntity;
+import com.example.backend.entity.VoivodeshipEntity;
+import com.example.backend.entity.YearEntity;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,31 +34,45 @@ public class PopulationRepositoryImplTest {
     private PopulationRepositoryImpl populationRepository;
 
     private PopulationEntity population1;
+    private DistrictEntity district1;
+    private VoivodeshipEntity voivodeship1;
+    private YearEntity year1;
 
     @BeforeEach
     void setUp() {
+        voivodeship1 = new VoivodeshipEntity();
+        voivodeship1.setVoivodeship("WYMYŚLONY");
+        entityManager.persist(voivodeship1);
+
+        district1 = new DistrictEntity();
+        district1.setDistrict("wymyślony");
+        district1.setVoivodeshipId(voivodeship1.getVoivodeshipId());
+        entityManager.persist(district1);
+
+        year1 = new YearEntity();
+        year1.setYear(1222);
+        entityManager.persist(year1);
+
         // Create and persist test data
         population1 = new PopulationEntity();
-        population1.setDistrictId(1);
-        population1.setYearId(1);
+        population1.setDistrictId(district1.getDistrictId());
+        population1.setYearId(year1.getYearId());
         population1.setMen(1234);
         population1.setWomen(4321);
+        entityManager.persist(population1);
 
         PopulationEntity population2 = new PopulationEntity();
-        population2.setDistrictId(2);
-        population2.setYearId(2);
         population2.setMen(9876);
         population2.setWomen(6789);
-
-        entityManager.persist(population1);
         entityManager.persist(population2);
+
         entityManager.flush();
     }
 
     @Test
     public void testFindAllPopulations() {
         int pageNumber = 1;
-        int pageSize = 15;
+        int pageSize = 1;
         String sortBy = "populationId";
         Sort.Direction direction = Sort.Direction.ASC;
 
@@ -79,9 +96,9 @@ public class PopulationRepositoryImplTest {
 
     @Test
     public void testFindAllPopulationsInVoivodeship(){
-        int pageNumber = 1;
-        int pageSize = 15;
-        int voivodeshipId = 1;
+        int pageNumber = 0;
+        int pageSize = 1;
+        int voivodeshipId = voivodeship1.getVoivodeshipId();
         String sortBy = "populationId";
         Sort.Direction direction = Sort.Direction.ASC;
 
@@ -105,9 +122,9 @@ public class PopulationRepositoryImplTest {
 
     @Test
     public void testFindAllPopulationsInDistrict(){
-        int pageNumber = 1;
-        int pageSize = 15;
-        int districtId = 1;
+        int pageNumber = 0;
+        int pageSize = 1;
+        int districtId = district1.getDistrictId();
         String sortBy = "populationId";
         Sort.Direction direction = Sort.Direction.ASC;
 
@@ -131,9 +148,9 @@ public class PopulationRepositoryImplTest {
 
     @Test
     public void testFindAllPopulationsInYear(){
-        int pageNumber = 1;
-        int pageSize = 15;
-        int yearId = 1;
+        int pageNumber = 0;
+        int pageSize = 1;
+        int yearId = year1.getYearId();
         String sortBy = "populationId";
         Sort.Direction direction = Sort.Direction.ASC;
 
@@ -160,8 +177,6 @@ public class PopulationRepositoryImplTest {
     @Test
     public void testSavePopulation() {
         PopulationEntity newPopulation = new PopulationEntity();
-        newPopulation.setDistrictId(3);
-        newPopulation.setYearId(3);
         newPopulation.setMen(3333);
         newPopulation.setWomen(3333);
 
