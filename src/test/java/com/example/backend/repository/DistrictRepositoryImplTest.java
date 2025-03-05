@@ -1,6 +1,7 @@
 package com.example.backend.repository;
 
 import com.example.backend.entity.DistrictEntity;
+import com.example.backend.entity.VoivodeshipEntity;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,12 +32,20 @@ public class DistrictRepositoryImplTest {
     private DistrictRepositoryImpl districtRepository;
 
     private DistrictEntity district1;
+    private VoivodeshipEntity voivodeship1;
 
     @BeforeEach
     void setUp() {
         // Create and persist test data
+
+        voivodeship1 = new VoivodeshipEntity();
+        voivodeship1.setVoivodeship("WYMYŚLONY");
+
+        entityManager.persist(voivodeship1);
+
         district1 = new DistrictEntity();
         district1.setDistrict("wymyślony");
+        district1.setVoivodeshipId(voivodeship1.getVoivodeshipId());
 
         DistrictEntity district2 = new DistrictEntity();
         district2.setDistrict("wymyślony2");
@@ -49,7 +58,7 @@ public class DistrictRepositoryImplTest {
     @Test
     public void testFindAllDistricts() {
         int pageNumber = 1;
-        int pageSize = 15;
+        int pageSize = 1;
         String sortBy = "district";
         Sort.Direction direction = Sort.Direction.ASC;
 
@@ -69,11 +78,15 @@ public class DistrictRepositoryImplTest {
         assertThat(content).isNotEmpty();
     }
 
+
+    @Autowired
+    private VoivodeshipRepositoryImpl voivodeshipRepository;
+
     @Test
     public void testFindAllDistrictsInVoivodeship(){
-        int pageNumber = 1;
-        int pageSize = 15;
-        int VoivodeshipId = 1;
+        int pageNumber = 0;
+        int pageSize = 1;
+        int VoivodeshipId = voivodeship1.getVoivodeshipId();
         String sortBy = "district";
         Sort.Direction direction = Sort.Direction.ASC;
 

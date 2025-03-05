@@ -50,7 +50,7 @@ public class VoivodeshipRepositoryImplTest {
     public void testFindAllVoivodeships() {
         // Arrange
         int pageNumber = 1;
-        int pageSize = 15;
+        int pageSize = 1;
         String sortBy = "voivodeship";
         Sort.Direction direction = Sort.Direction.ASC;
 
