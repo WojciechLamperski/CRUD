@@ -8,6 +8,8 @@ import com.example.backend.entity.VoivodeshipEntity;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.InvalidSortFieldException;
 import com.example.backend.exception.ReferencedEntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @Service
 public class DistrictServiceImpl implements DistrictService {
 
+    private Logger logger = LoggerFactory.getLogger(DistrictServiceImpl.class);
+
     private final DistrictRepository districtRepository;
 
     public DistrictServiceImpl(DistrictRepository theDistrictRepository) {
@@ -33,7 +37,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     @Transactional
     public String save(DistrictEntity district) {
-
+        logger.info("service received request to save / update district {}", district);
         if(district.getDistrictId() != 0 && districtRepository.findById(district.getDistrictId()) == null){
             throw new EntityNotFoundException("District which you're trying to update was not found");
         }
@@ -47,7 +51,7 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public DistrictModel findById(int id) {
-
+        logger.info("service received request to find district by Id");
         DistrictEntity district = districtRepository.findById(id);
         if (district == null) {
             throw new EntityNotFoundException("District not found");
@@ -57,7 +61,7 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public DistrictResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
-
+        logger.info("service received request to find all districts");
         if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
             throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
         }
@@ -67,7 +71,7 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public DistrictResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection){
-
+        logger.info("service received request to find all districts in specified voivodeship");
         if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
             throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
         }
@@ -78,7 +82,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     @Transactional
     public String delete(int id) {
-
+        logger.info("service received request to delete district");
         DistrictEntity district = districtRepository.findById(id);
         if (district == null) {
             throw new EntityNotFoundException("District not found");
@@ -87,7 +91,7 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     public DistrictModel convertToModel(DistrictEntity district) {
-
+        logger.info("converting district to model in service");
         VoivodeshipEntity voivodeship = district.getVoivodeship();
 
         DistrictModel districtModel = new DistrictModel();
@@ -106,6 +110,7 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     public DistrictResponse convertToResponse(Integer voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+        logger.info("finding all districts and converting them to response in service");
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
 

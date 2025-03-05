@@ -2,12 +2,16 @@ package com.example.backend.controller;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class CustomErrorController implements ErrorController {
+
+    private Logger logger = LoggerFactory.getLogger(CustomErrorController.class);
 
     // Return the custom error page (404.html)
     @RequestMapping("/error")
@@ -18,12 +22,15 @@ public class CustomErrorController implements ErrorController {
             int statusCode = Integer.parseInt(status.toString());
 
             if (statusCode == 400) {
+                logger.error("status 400 error request");
                 return "400";  // Load 400.html from templates
             }
             if (statusCode == 404) {
+                logger.error("status 404 error request");
                 return "404";  // Load 404.html from templates
             }
             if (statusCode == 500) {
+                logger.error("status 500 error request");
                 return "500";  // Load 500.html from templates
             }
         }
