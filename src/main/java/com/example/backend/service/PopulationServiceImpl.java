@@ -8,6 +8,8 @@ import com.example.backend.entity.PopulationEntity;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.InvalidSortFieldException;
 import com.example.backend.exception.ReferencedEntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 public class PopulationServiceImpl implements PopulationService {
 
+    private Logger logger = LoggerFactory.getLogger(PopulationServiceImpl.class);
+
     private final PopulationRepository populationRepository;
 
     public PopulationServiceImpl(PopulationRepository thePopulationRepository) {
@@ -32,7 +36,7 @@ public class PopulationServiceImpl implements PopulationService {
     @Override
     @Transactional
     public String save(PopulationEntity population) {
-
+        logger.info("service received request to save / update population {}", population);
         if(population.getPopulationId() != 0 && populationRepository.findById(population.getPopulationId()) == null){
             throw new EntityNotFoundException("Population which you're trying to update was not found");
         }
@@ -51,6 +55,7 @@ public class PopulationServiceImpl implements PopulationService {
 
     @Override
     public PopulationModel findById(int id) {
+        logger.info("service received request to find population by Id");
         PopulationEntity population = populationRepository.findById(id);
         if (population == null) {
             throw new EntityNotFoundException("Population not found");
@@ -60,7 +65,7 @@ public class PopulationServiceImpl implements PopulationService {
 
     @Override
     public PopulationResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
-
+        logger.info("service received request to find all populations");
         if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
             throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
         }
@@ -70,7 +75,7 @@ public class PopulationServiceImpl implements PopulationService {
 
     @Override
     public PopulationResponse findAllInDistrict(int districtId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
-
+        logger.info("service received request to find all populations in specified district");
         if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
             throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
         }
@@ -80,7 +85,7 @@ public class PopulationServiceImpl implements PopulationService {
 
     @Override
     public PopulationResponse findAllInYear(int yearId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
-
+        logger.info("service received request to find all populations in specified year");
         if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
             throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
         }
@@ -90,7 +95,7 @@ public class PopulationServiceImpl implements PopulationService {
 
     @Override
     public PopulationResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
-
+        logger.info("service received request to find all populations in specified voivodeship");
         if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
             throw new InvalidSortFieldException("Invalid sort field: " + sortBy + ". Allowed fields: " + ALLOWED_SORT_FIELDS);
         }
@@ -101,7 +106,7 @@ public class PopulationServiceImpl implements PopulationService {
     @Override
     @Transactional
     public String delete(int id) {
-
+        logger.info("service received request to delete population");
         PopulationEntity population = populationRepository.findById(id);
         if (population == null) {
             throw new EntityNotFoundException("District not found");
@@ -110,7 +115,7 @@ public class PopulationServiceImpl implements PopulationService {
     }
 
     public PopulationModel convertToModel(PopulationEntity population) {
-
+        logger.info("converting district to model in population");
         DistrictModel districtModel = new DistrictModel();
 
         // Check since district can be null in populations
@@ -140,6 +145,7 @@ public class PopulationServiceImpl implements PopulationService {
     }
 
     public PopulationResponse convertToResponse(Integer districtId, Integer yearId, Integer voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+        logger.info("finding all populations and converting them to response in service");
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
 

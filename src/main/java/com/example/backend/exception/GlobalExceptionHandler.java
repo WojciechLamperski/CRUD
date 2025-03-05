@@ -1,5 +1,8 @@
 package com.example.backend.exception;
 
+import com.example.backend.repository.DistrictRepositoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +22,12 @@ import java.util.Objects;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     // Custom error from Service implementations
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorObject> handleEntityNotFoundException(EntityNotFoundException ex) {
+        logger.info("EntityNotFoundException is being handled");
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
@@ -34,6 +40,7 @@ public class GlobalExceptionHandler {
     // Handles incorrect types in URL (invalid parameter types)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorObject> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        logger.info("MethodArgumentTypeMismatchException is being handled");
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorObject.setMessage("Invalid parameter type: " + ex.getName() +
@@ -46,6 +53,7 @@ public class GlobalExceptionHandler {
     // Handle Invalid Sort Field Exception
     @ExceptionHandler(InvalidSortFieldException.class)
     public ResponseEntity<ErrorObject> handleInvalidSortFieldException(InvalidSortFieldException ex) {
+        logger.info("InvalidSortFieldException is being handled");
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorObject.setMessage(ex.getMessage());
@@ -58,6 +66,7 @@ public class GlobalExceptionHandler {
     // Handles incorrect types in request body (like null or boolean errors) with a custom message
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorObject> handleHttpMessageNotReadable() {
+        logger.info("HttpMessageNotReadableException is being handled");
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -70,6 +79,7 @@ public class GlobalExceptionHandler {
     // Handles validation errors from Jakarta validation
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorObject> handleValidationException(MethodArgumentNotValidException ex) {
+        logger.info("MethodArgumentNotValidException is being handled");
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -82,6 +92,7 @@ public class GlobalExceptionHandler {
     // Handles the case when a row doesn't exist during an update or creation requiring a reference
     @ExceptionHandler(ReferencedEntityNotFoundException.class)
     public ResponseEntity<ErrorObject> handleReferencedEntityNotFoundException(ReferencedEntityNotFoundException ex) {
+        logger.info("ReferencedEntityNotFoundException is being handled");
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
@@ -94,6 +105,7 @@ public class GlobalExceptionHandler {
     // Handles the case when a requested object/page does not exist (e.g., 404 for resources or pages)
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ErrorObject> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+        logger.info("NoHandlerFoundException is being handled");
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
@@ -106,6 +118,7 @@ public class GlobalExceptionHandler {
     // Handles database constraint violations (e.g., unique, foreign key, null constraint)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorObject> handleDataIntegrityViolationException() {
+        logger.info("DataIntegrityViolationException is being handled");
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.CONFLICT.value());
@@ -118,6 +131,7 @@ public class GlobalExceptionHandler {
     // Handles SQL Integrity Constraint Violations (e.g., trying to insert a duplicate key)
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<ErrorObject> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
+        logger.info("SQLIntegrityConstraintViolationException is being handled");
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.CONFLICT.value());
@@ -130,6 +144,7 @@ public class GlobalExceptionHandler {
     // Handles cases where the database is unavailable (e.g., server down, connectivity issues)
     @ExceptionHandler(CannotCreateTransactionException.class)
     public ResponseEntity<ErrorObject> handleDatabaseUnavailable() {
+        logger.info("CannotCreateTransactionException is being handled");
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());

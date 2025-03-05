@@ -5,6 +5,8 @@ import com.example.backend.model.DistrictResponse;
 import com.example.backend.entity.DistrictEntity;
 import com.example.backend.service.DistrictService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 public class DistrictRestController {
+
+    private Logger logger = LoggerFactory.getLogger(DistrictRestController.class);
 
     private final DistrictService districtService;
 
@@ -26,6 +30,7 @@ public class DistrictRestController {
             @RequestParam(value = "sortBy", defaultValue = "districtId", required = false) String sortBy,
             @RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
     ) {
+        logger.info("find all districts incoming request");
         return districtService.findAll(pageNumber, pageSize, sortBy, sortDirection);
     }
 
@@ -37,11 +42,13 @@ public class DistrictRestController {
             @RequestParam(value = "sortBy", defaultValue = "districtId", required = false) String sortBy,
             @RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
     ) {
+        logger.info("find all districts in a specified voivodeship incoming request");
         return districtService.findAllInVoivodeship(voivodeshipId, pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @GetMapping("/districts/{districtId}")
     public DistrictModel findById(@PathVariable int districtId) {
+        logger.info("find district by Id incoming request");
         return districtService.findById(districtId);
     }
 
@@ -50,17 +57,20 @@ public class DistrictRestController {
     public String save(@Valid @RequestBody DistrictEntity theDistrict) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
+        logger.info("save district incoming request {}", theDistrict);
         theDistrict.setDistrictId(0);
         return districtService.save(theDistrict);
     }
 
     @PutMapping("/districts")
     public String update(@Valid @RequestBody DistrictEntity theDistrict) {
+        logger.info("update district incoming request {}", theDistrict);
         return districtService.save(theDistrict);
     }
 
     @DeleteMapping("/districts/{districtId}")
     public String delete(@PathVariable int districtId) {
+        logger.info("delete district incoming request");
         return districtService.delete(districtId);
     }
 
