@@ -70,26 +70,30 @@ public class InitialDataLoad {
 
                 System.out.println("check");
 
+//                YearEntity yearEntity = new YearEntity();
+//                yearEntity.setYear(model.getYear());
+//                System.out.println("year: " + yearEntity);
+//                yearService.save(yearEntity);
+
                 YearEntity yearEntity = new YearEntity();
                 yearEntity.setYear(model.getYear());
-                System.out.println("year: " + yearEntity);
-                yearService.save(yearEntity);
+                entityManager.persist(yearEntity);
 
-//                VoivodeshipEntity voivodeshipEntity = new VoivodeshipEntity();
-//                voivodeshipEntity.setVoivodeship(model.getVoivodeship());
-//                entityManager.persist(voivodeshipEntity);
-//
-//                DistrictEntity districtEntity = new DistrictEntity();
-//                districtEntity.setDistrict(model.getDistrict());
-//                districtEntity.setVoivodeshipId(voivodeshipEntity.getVoivodeshipId());
-//                entityManager.persist(districtEntity);
-//
-//                PopulationEntity populationEntity = new PopulationEntity();
-//                populationEntity.setMen(model.getMen());
-//                populationEntity.setWomen(model.getWomen());
-//                populationEntity.setYearId(yearEntity.getYear());
-//                populationEntity.setDistrictId(districtEntity.getDistrictId());
-//                entityManager.persist(populationEntity);
+                VoivodeshipEntity voivodeshipEntity = new VoivodeshipEntity();
+                voivodeshipEntity.setVoivodeship(model.getVoivodeship());
+                entityManager.persist(voivodeshipEntity);
+
+                DistrictEntity districtEntity = new DistrictEntity();
+                districtEntity.setDistrict(model.getDistrict());
+                districtEntity.setVoivodeshipId(voivodeshipEntity.getVoivodeshipId());
+                entityManager.persist(districtEntity);
+
+                PopulationEntity populationEntity = new PopulationEntity();
+                populationEntity.setMen(model.getMen());
+                populationEntity.setWomen(model.getWomen());
+                populationEntity.setYearId(yearEntity.getYearId());
+                populationEntity.setDistrictId(districtEntity.getDistrictId());
+                entityManager.persist(populationEntity);
 
             }
 
