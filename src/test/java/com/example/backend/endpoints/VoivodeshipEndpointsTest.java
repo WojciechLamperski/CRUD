@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
-public class VoivodeshipEndpointsTests {
+public class VoivodeshipEndpointsTest {
 
     @Autowired
     private MockMvc mockMvc;
