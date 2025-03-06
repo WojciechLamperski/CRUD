@@ -10,20 +10,23 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class TempModel {
-//    Rok => Year
-//    Województwo => voivodeship =>
-//    Powiat => District
-//    Kobiety => women
-//    Mężczyźni => men
-
+    // Rok => Year
     @JsonProperty("Rok")
     private Integer year;
+
+    // Powiat => District
     @JsonProperty("Powiat")
     private String district;
+
+    // Województwo => voivodeship
     @JsonProperty("Województwo")
     private String voivodeship;
+
+    // Kobiety => women
     @JsonProperty("Kobiety")
     private Integer women;
+
+    // Mężczyźni => men
     @JsonProperty("Mężczyźni")
     private Integer men;
 }
