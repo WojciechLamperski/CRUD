@@ -45,6 +45,7 @@ public class YearRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(yearRestController).build();
     }
 
+    // TODO Change the name
     @Test
     void givenAllYears_WhenGetRequestIsMade_ThenReturnYearList() throws Exception {
         // Setup mock behavior
@@ -55,23 +56,32 @@ public class YearRestControllerTest {
         yearResponse.setContent(List.of(yearModel));
         yearResponse.setPageNumber(0);
         yearResponse.setPageSize(1);
+        yearResponse.setTotalElements(1);
         yearResponse.setTotalPages(1);
         yearResponse.setLast(true);
 
-        // Assuming getAllYears() is a method in your YearService
+        // Mock service response
         when(yearService.findAll(0, 20, "yearId", "asc")).thenReturn(yearResponse);
 
         // Perform the GET request using MockMvc
         mockMvc.perform(get("/api/years")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())  // Assert that status is OK
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                // TODO Get response and check pagenumber, szie and so on
-                // TODO Get content and cehck if year equals 2025, and id equals 1
+
+                // Validate response structure
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].year").value(2025))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].yearId").isNumber())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].year").isNumber());  // Assert the year value
+
+                // Validate pagination properties
+                .andExpect(MockMvcResultMatchers.jsonPath("$.pageNumber").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.pageSize").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.last").value(true));
     }
+
 
 //    @Test
 //    void givenYear_WhenPostRequestIsMade_ThenYearIsCreated() throws Exception {
