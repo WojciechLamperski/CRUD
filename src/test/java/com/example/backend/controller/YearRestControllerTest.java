@@ -6,8 +6,6 @@ import com.example.backend.model.YearModel;
 import com.example.backend.model.YearResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.waracle.services.cakemgr.Application;
-//import com.waracle.services.cakemgr.model.Cake;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +43,6 @@ public class YearRestControllerTest {
     private TestRestTemplate rest;
 
     private static String url;
-//    private static List<TempModel> models;
 
     @BeforeEach
     public void setup() throws IOException {
@@ -54,9 +50,7 @@ public class YearRestControllerTest {
     }
 
     @Test
-    public void givenAllCakesAreAvailable_WhenISendGetRequest_ThenIGetAllCakesDetails() throws Exception {
-
-        System.out.println(url);
+    public void givenAllYearsAreAvailable_WhenISendGetRequest_ThenIGetAllYearsDetails() throws Exception {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -76,36 +70,7 @@ public class YearRestControllerTest {
             actualYears.add(model.getYear());
         }
 
-        System.out.println("Actual Years: " + actualYears);
-
         assertEquals(getYears("testdata.json"), actualYears);
-    }
-
-    private List<Integer> getYears(String filePath) throws Exception {
-
-        System.out.println("Inside getYears method");
-
-        ClassPathResource resource = new ClassPathResource(filePath);
-        InputStream inputStream = resource.getInputStream();
-
-        List<TempModel> models = new ObjectMapper().readValue(inputStream, new TypeReference<>() {});
-        System.out.println("Models: " + models);
-
-        // TODO Use a HashMap to get rid of duplicates
-        ArrayList<Integer> expectedYears = new ArrayList<>();
-        Set<Integer> expectedYearsDuplicatesCheck = new HashSet<>(expectedYears);
-
-
-        for (TempModel model : models) {
-            if (!expectedYearsDuplicatesCheck.contains(model.getYear())) {
-                expectedYears.add(model.getYear());
-                expectedYearsDuplicatesCheck.add(model.getYear());
-            }
-        }
-
-        System.out.println("Expected Years: " + expectedYears);
-
-        return expectedYears;
     }
 
 //    @Test
@@ -139,5 +104,23 @@ public class YearRestControllerTest {
 //        return expectedCakes;
 //
 //    }
+
+    private List<Integer> getYears(String filePath) throws Exception {
+
+        ClassPathResource resource = new ClassPathResource(filePath);
+        InputStream inputStream = resource.getInputStream();
+        List<TempModel> models = new ObjectMapper().readValue(inputStream, new TypeReference<>() {});
+        ArrayList<Integer> expectedYears = new ArrayList<>();
+        Set<Integer> expectedYearsDuplicatesCheck = new HashSet<>(expectedYears);
+
+        for (TempModel model : models) {
+            if (!expectedYearsDuplicatesCheck.contains(model.getYear())) {
+                expectedYears.add(model.getYear());
+                expectedYearsDuplicatesCheck.add(model.getYear());
+            }
+        }
+
+        return expectedYears;
+    }
 
 }
