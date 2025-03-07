@@ -3,7 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.entity.YearEntity;
 import com.example.backend.model.YearModel;
 import com.example.backend.model.YearResponse;
-import com.example.backend.service.YearService; // Assuming you have a service to be mocked
+import com.example.backend.service.YearService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,13 +45,13 @@ public class YearRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(yearRestController).build();
     }
 
-    // TODO Change the name
     @Test
-    void givenAllYears_WhenGetRequestIsMade_ThenReturnYearList() throws Exception {
+    void givenMockedYearInDatabase_WhenGetRequestIsMade_ThenReturnResponseWithMockedYear() throws Exception {
         // Setup mock behavior
         YearModel yearModel = new YearModel();
         yearModel.setYear(2025);
 
+        // TODO make them variables that you reference below, instead of repeating yourself 2 times
         YearResponse yearResponse = new YearResponse();
         yearResponse.setContent(List.of(yearModel));
         yearResponse.setPageNumber(0);
@@ -72,7 +72,7 @@ public class YearRestControllerTest {
                 // Validate response structure
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].year").value(2025))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].yearId").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].yearId").value(0))
 
                 // Validate pagination properties
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageNumber").value(0))
@@ -82,6 +82,33 @@ public class YearRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.last").value(true));
     }
 
+    // findByID
+    @Test
+    void givenMockedYearInDatabase_WhenGetRequestIsMade_ThenReturnMockedYear() throws Exception {
+        // Setup mock behavior
+        int mockYearId = 0;
+        YearModel mockedYear = new YearModel();
+        mockedYear.setYearId(0);
+        mockedYear.setYear(2025);
+
+        YearEntity yearEntity = new YearEntity();
+        yearEntity.setYear(2025);
+        yearEntity.setYearId(0);
+
+        when(yearService.findById(mockYearId)).thenReturn(yearEntity);
+
+        // Perform the GET request using MockMvc
+        mockMvc.perform(get("/api/years/{id}", mockYearId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())  // Ensure response status is 200 OK
+                .andExpect(MockMvcResultMatchers.jsonPath("$.yearId").value(mockYearId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.year").value(2025)); // Ensure correct year value
+    }
+
+    @Test
+    void givenNoYearInDatabase_WhenPostRequestIsMade_ThenReturnAddedYear() throws Exception {
+
+    }
 
 //    @Test
 //    void givenYear_WhenPostRequestIsMade_ThenYearIsCreated() throws Exception {
