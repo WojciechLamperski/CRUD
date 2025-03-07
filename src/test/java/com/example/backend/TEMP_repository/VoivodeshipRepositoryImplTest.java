@@ -1,6 +1,7 @@
-package com.example.backend.repository;
+package com.example.backend.TEMP_repository;
 
 import com.example.backend.entity.VoivodeshipEntity;
+import com.example.backend.repository.VoivodeshipRepositoryImpl;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

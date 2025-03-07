@@ -1,4 +1,4 @@
-package com.example.backend.endpoints;
+package com.example.backend.TEMP_endpoints;
 
 import com.example.backend.model.VoivodeshipModel;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,9 +1,10 @@
-package com.example.backend.repository;
+package com.example.backend.TEMP_repository;
 
 import com.example.backend.entity.DistrictEntity;
 import com.example.backend.entity.PopulationEntity;
 import com.example.backend.entity.VoivodeshipEntity;
 import com.example.backend.entity.YearEntity;
+import com.example.backend.repository.PopulationRepositoryImpl;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
