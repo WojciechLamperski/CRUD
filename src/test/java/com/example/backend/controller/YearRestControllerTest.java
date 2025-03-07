@@ -16,6 +16,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -73,37 +74,46 @@ public class YearRestControllerTest {
         assertEquals(getYears("testdata.json"), actualYears);
     }
 
-//    @Test
-//    public void givenAllCakesAreAvailable_WhenISendPostRequest_ThenNewCakeGetsAdded() throws Exception {
-//        String requestBodyJson = new String(Files.readAllBytes(Paths.get(getClass()
-//                .getResource("/testdata/request/cake.json").toURI())));
-//        Cake expectedCake =  new ObjectMapper().readValue(requestBodyJson, new TypeReference<Cake>() {});
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        HttpEntity<String> entity = new HttpEntity<String>(requestBodyJson,headers);
-//
-//        ResponseEntity<String> response = rest.exchange(url+"/cakes",
-//                HttpMethod.POST, entity, new ParameterizedTypeReference<String>() {
-//                });
-//
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        entity = new HttpEntity<String>(headers);
-//        ResponseEntity<List<Cake>> actualResponse = rest.exchange(url+"/cakes",
-//                HttpMethod.GET, entity, new ParameterizedTypeReference<List<Cake>>() {
-//                });
-//
-//        assertNotNull(response.getBody());
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-//        assertThat(response.getBody()).contains("Successfully created cake");
-//        assertThat(actualResponse.getBody()).contains(expectedCake);
-//    }
-//
-//    private List<Cake> getCakes(String filePath) throws Exception {
-//        URL fileUrl = getClass().getResource(filePath);
-//        List<Cake> expectedCakes = new ObjectMapper().readValue(fileUrl, new TypeReference<List<Cake>>() {});
-//        return expectedCakes;
-//
-//    }
+    @Test
+    public void givenAllYearsAreAvailable_WhenISendPostRequest_ThenNewYearGetsAdded() throws Exception {
+        // Create the request body
+        YearModel newYear = new YearModel();
+        newYear.setYear(2025); // Example year
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBodyJson = objectMapper.writeValueAsString(newYear);
+
+        // Set headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Create request entity
+        HttpEntity<String> entity = new HttpEntity<>(requestBodyJson, headers);
+
+        // Send POST request
+        ResponseEntity<String> response = rest.exchange(url + "/api/years",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
+
+        // Validate response
+        assertNotNull(response.getBody());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).contains("object with id:");
+        assertThat(response.getBody()).contains(" saved successfully");
+
+        // Fetch all years and validate the new one was added
+        ResponseEntity<YearResponse> getResponse = rest.exchange(url + "/api/years",
+                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
+
+        assertNotNull(getResponse.getBody());
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        List<YearModel> yearModels = getResponse.getBody().getContent();
+        List<Integer> actualYears = new ArrayList<>();
+        for (YearModel model : yearModels) {
+            actualYears.add(model.getYear());
+        }
+
+        assertThat(actualYears).contains(2025);
+    }
 
     private List<Integer> getYears(String filePath) throws Exception {
 
