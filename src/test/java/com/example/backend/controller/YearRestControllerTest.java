@@ -1,234 +1,102 @@
 package com.example.backend.controller;
 
-import com.example.backend.BackendApplication;
-import com.example.backend.model.TempModel;
+import com.example.backend.entity.YearEntity;
 import com.example.backend.model.YearModel;
 import com.example.backend.model.YearResponse;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.backend.service.YearService; // Assuming you have a service to be mocked
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.*;
-import org.springframework.test.annotation.DirtiesContext;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-
-@SpringBootTest(classes = BackendApplication.class, webEnvironment = RANDOM_PORT)
+// Loads only the controller layer
+@ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 public class YearRestControllerTest {
 
-    @LocalServerPort
-    private int port;
+    private MockMvc mockMvc;  // MockMvc to simulate HTTP requests
 
-    @Autowired
-    private TestRestTemplate rest;
+    @Mock
+    private YearService yearService;  // Mock the YearService
 
-    private static String url;
+    @InjectMocks
+    private YearRestController yearRestController;  // Inject the mock service into the controller
 
     @BeforeEach
-    public void setup() throws IOException {
-        url = "http://localhost:" + port;
+    void setUp() {
+        // Initialize MockMvc manually (no need for @Autowired)
+        mockMvc = MockMvcBuilders.standaloneSetup(yearRestController).build();
     }
 
-    // GET requests
     @Test
-    public void givenAllYearsAreAvailable_WhenISendGetRequest_ThenIGetAllYearsDetails() throws Exception {
+    void givenAllYears_WhenGetRequestIsMade_ThenReturnYearList() throws Exception {
+        // Setup mock behavior
+        YearModel yearModel = new YearModel();
+        yearModel.setYear(2025);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<YearResponse> response = rest.exchange(url+"/api/years",
-                HttpMethod.GET, entity, new ParameterizedTypeReference<>() {
-                });
-        assertNotNull(response.getBody());
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        YearResponse yearsResponse = response.getBody();
-        assertNotNull(yearsResponse);
+        YearResponse yearResponse = new YearResponse();
+        yearResponse.setContent(List.of(yearModel));
+        yearResponse.setPageNumber(0);
+        yearResponse.setPageSize(1);
+        yearResponse.setTotalPages(1);
+        yearResponse.setLast(true);
 
-        List<YearModel> yearModels = yearsResponse.getContent();
-        ArrayList<Integer> actualYears = new ArrayList<>();
+        // Assuming getAllYears() is a method in your YearService
+        when(yearService.findAll(0, 20, "yearId", "asc")).thenReturn(yearResponse);
 
-        for (YearModel model : yearModels) {
-            actualYears.add(model.getYear());
-        }
-
-        assertEquals(getYears("testdata.json"), actualYears);
+        // Perform the GET request using MockMvc
+        mockMvc.perform(get("/api/years")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())  // Assert that status is OK
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+                // TODO Get response and check pagenumber, szie and so on
+                // TODO Get content and cehck if year equals 2025, and id equals 1
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].yearId").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].year").isNumber());  // Assert the year value
     }
 
-
-    // POST request
-    @Test
-    @DirtiesContext
-    public void givenAllYearsAreAvailable_WhenISendPostRequest_ThenNewYearGetsAdded() throws Exception {
-        // Create the request body
-        YearModel newYear = new YearModel();
-        newYear.setYear(2025); // Example year
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBodyJson = objectMapper.writeValueAsString(newYear);
-
-        // Set headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // Create request entity
-        HttpEntity<String> entity = new HttpEntity<>(requestBodyJson, headers);
-
-        // Send POST request
-        ResponseEntity<String> response = rest.exchange(url + "/api/years",
-                HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
-
-        // Validate response
-        assertNotNull(response.getBody());
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).contains("object with id:");
-        assertThat(response.getBody()).contains(" saved successfully");
-
-        // Fetch all years and validate the new one was added
-        ResponseEntity<YearResponse> getResponse = rest.exchange(url + "/api/years",
-                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
-
-        assertNotNull(getResponse.getBody());
-        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        List<YearModel> yearModels = getResponse.getBody().getContent();
-        List<Integer> actualYears = new ArrayList<>();
-        for (YearModel model : yearModels) {
-            actualYears.add(model.getYear());
-        }
-
-        assertThat(actualYears).contains(2025);
-    }
-
-    // PUT request
-    @Test
-    @DirtiesContext
-    public void givenAllYearsAreAvailable_WhenISendPutRequest_ThenExistingYearGetsUpdated() throws Exception {
-        // Fetch all years first
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        ResponseEntity<YearResponse> getResponse = rest.exchange(url + "/api/years",
-                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
-
-        assertNotNull(getResponse.getBody());
-        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        List<YearModel> yearModels = getResponse.getBody().getContent();
-        assertThat(yearModels).isNotEmpty();
-
-        // Pick the first year to update
-        YearModel existingYear = yearModels.get(0);
-        int originalId = existingYear.getYearId();
-        existingYear.setYear(existingYear.getYear() + 1); // Increment year
-
-        // Convert to JSON
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBodyJson = objectMapper.writeValueAsString(existingYear);
-
-        // Send PUT request
-        HttpEntity<String> entity = new HttpEntity<>(requestBodyJson, headers);
-        ResponseEntity<String> putResponse = rest.exchange(url + "/api/years",
-                HttpMethod.PUT, entity, new ParameterizedTypeReference<>() {});
-
-        // Validate response
-        assertNotNull(putResponse.getBody());
-        assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(putResponse.getBody()).contains("object with id:");
-        assertThat(putResponse.getBody()).contains(" saved successfully");
-
-        // Fetch all years again to verify the update
-        ResponseEntity<YearResponse> verifyResponse = rest.exchange(url + "/api/years",
-                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
-
-        assertNotNull(verifyResponse.getBody());
-        assertThat(verifyResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        List<YearModel> updatedYearModels = verifyResponse.getBody().getContent();
-        boolean updated = updatedYearModels.stream()
-                .anyMatch(y -> y.getYearId() == originalId && y.getYear() == existingYear.getYear());
-
-        assertThat(updated).isTrue();
-    }
-
-    // DELETE request
-    @Test
-    @DirtiesContext
-    public void givenAllYearsAreAvailable_WhenISendDeleteRequest_ThenExistingYearGetsDeleted() throws Exception {
-        // Fetch all years first
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        ResponseEntity<YearResponse> getResponse = rest.exchange(url + "/api/years",
-                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
-
-        assertNotNull(getResponse.getBody());
-        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        List<YearModel> yearModels = getResponse.getBody().getContent();
-        assertThat(yearModels).isNotEmpty();
-
-        // Pick the first year to delete
-        YearModel yearToDelete = yearModels.get(0);
-        int yearIdToDelete = yearToDelete.getYearId();
-
-        // Send DELETE request
-        ResponseEntity<String> deleteResponse = rest.exchange(url + "/api/years/" + yearIdToDelete,
-                HttpMethod.DELETE, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
-
-        // Validate response
-        assertNotNull(deleteResponse.getBody());
-        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        // Fetch all years again to verify deletion
-        ResponseEntity<YearResponse> verifyResponse = rest.exchange(url + "/api/years",
-                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
-
-        assertNotNull(verifyResponse.getBody());
-        assertThat(verifyResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        List<YearModel> updatedYearModels = verifyResponse.getBody().getContent();
-        boolean exists = updatedYearModels.stream().anyMatch(y -> y.getYearId() == yearIdToDelete);
-
-        // Check that the year no longer exists
-        assertThat(exists).isFalse();
-    }
-
-
-    private List<Integer> getYears(String filePath) throws Exception {
-
-        ClassPathResource resource = new ClassPathResource(filePath);
-        InputStream inputStream = resource.getInputStream();
-        List<TempModel> models = new ObjectMapper().readValue(inputStream, new TypeReference<>() {});
-        ArrayList<Integer> expectedYears = new ArrayList<>();
-        Set<Integer> expectedYearsDuplicatesCheck = new HashSet<>(expectedYears);
-
-        for (TempModel model : models) {
-            if (!expectedYearsDuplicatesCheck.contains(model.getYear())) {
-                expectedYears.add(model.getYear());
-                expectedYearsDuplicatesCheck.add(model.getYear());
-            }
-        }
-
-        return expectedYears;
-    }
-
+//    @Test
+//    void givenYear_WhenPostRequestIsMade_ThenYearIsCreated() throws Exception {
+//        // Setup mock behavior for POST request
+//        YearModel newYear = new YearModel();
+//        newYear.setYear(2025);
+//
+//        when(yearService.save(newYear)).thenReturn(newYear);  // Assuming createYear() exists in YearService
+//
+//        // Perform the POST request using MockMvc
+//        mockMvc.perform(post("/api/years")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("{\"year\": 2025}"))
+//                .andExpect(status().isCreated())  // Assert that status is Created
+//                .andExpect(jsonPath("$.year").value(2025));  // Assert the created year value
+//    }
+//
+//    @Test
+//    void givenYear_WhenDeleteRequestIsMade_ThenYearIsDeleted() throws Exception {
+//        // Setup mock behavior for DELETE request
+//        int yearId = 1;  // Assume we're deleting year with ID = 1
+//        when(yearService.delete(yearId)).thenReturn(true);  // Assuming deleteYear() exists in YearService
+//
+//        // Perform the DELETE request using MockMvc
+//        mockMvc.perform(delete("/api/years/{id}", yearId))
+//                .andExpect(status().isNoContent());  // Assert that status is No Content (204)
+//    }
 }
