@@ -15,6 +15,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +51,7 @@ public class YearRestControllerTest {
         url = "http://localhost:" + port;
     }
 
+    // GET requests
     @Test
     public void givenAllYearsAreAvailable_WhenISendGetRequest_ThenIGetAllYearsDetails() throws Exception {
 
@@ -74,7 +76,10 @@ public class YearRestControllerTest {
         assertEquals(getYears("testdata.json"), actualYears);
     }
 
+
+    // POST request
     @Test
+    @DirtiesContext
     public void givenAllYearsAreAvailable_WhenISendPostRequest_ThenNewYearGetsAdded() throws Exception {
         // Create the request body
         YearModel newYear = new YearModel();
@@ -114,6 +119,99 @@ public class YearRestControllerTest {
 
         assertThat(actualYears).contains(2025);
     }
+
+    // PUT request
+    @Test
+    @DirtiesContext
+    public void givenAllYearsAreAvailable_WhenISendPutRequest_ThenExistingYearGetsUpdated() throws Exception {
+        // Fetch all years first
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        ResponseEntity<YearResponse> getResponse = rest.exchange(url + "/api/years",
+                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
+
+        assertNotNull(getResponse.getBody());
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        List<YearModel> yearModels = getResponse.getBody().getContent();
+        assertThat(yearModels).isNotEmpty();
+
+        // Pick the first year to update
+        YearModel existingYear = yearModels.get(0);
+        int originalId = existingYear.getYearId();
+        existingYear.setYear(existingYear.getYear() + 1); // Increment year
+
+        // Convert to JSON
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBodyJson = objectMapper.writeValueAsString(existingYear);
+
+        // Send PUT request
+        HttpEntity<String> entity = new HttpEntity<>(requestBodyJson, headers);
+        ResponseEntity<String> putResponse = rest.exchange(url + "/api/years",
+                HttpMethod.PUT, entity, new ParameterizedTypeReference<>() {});
+
+        // Validate response
+        assertNotNull(putResponse.getBody());
+        assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(putResponse.getBody()).contains("object with id:");
+        assertThat(putResponse.getBody()).contains(" saved successfully");
+
+        // Fetch all years again to verify the update
+        ResponseEntity<YearResponse> verifyResponse = rest.exchange(url + "/api/years",
+                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
+
+        assertNotNull(verifyResponse.getBody());
+        assertThat(verifyResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        List<YearModel> updatedYearModels = verifyResponse.getBody().getContent();
+        boolean updated = updatedYearModels.stream()
+                .anyMatch(y -> y.getYearId() == originalId && y.getYear() == existingYear.getYear());
+
+        assertThat(updated).isTrue();
+    }
+
+    // DELETE request
+    @Test
+    @DirtiesContext
+    public void givenAllYearsAreAvailable_WhenISendDeleteRequest_ThenExistingYearGetsDeleted() throws Exception {
+        // Fetch all years first
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        ResponseEntity<YearResponse> getResponse = rest.exchange(url + "/api/years",
+                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
+
+        assertNotNull(getResponse.getBody());
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        List<YearModel> yearModels = getResponse.getBody().getContent();
+        assertThat(yearModels).isNotEmpty();
+
+        // Pick the first year to delete
+        YearModel yearToDelete = yearModels.get(0);
+        int yearIdToDelete = yearToDelete.getYearId();
+
+        // Send DELETE request
+        ResponseEntity<String> deleteResponse = rest.exchange(url + "/api/years/" + yearIdToDelete,
+                HttpMethod.DELETE, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
+
+        // Validate response
+        assertNotNull(deleteResponse.getBody());
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Fetch all years again to verify deletion
+        ResponseEntity<YearResponse> verifyResponse = rest.exchange(url + "/api/years",
+                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
+
+        assertNotNull(verifyResponse.getBody());
+        assertThat(verifyResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        List<YearModel> updatedYearModels = verifyResponse.getBody().getContent();
+        boolean exists = updatedYearModels.stream().anyMatch(y -> y.getYearId() == yearIdToDelete);
+
+        // Check that the year no longer exists
+        assertThat(exists).isFalse();
+    }
+
 
     private List<Integer> getYears(String filePath) throws Exception {
 
