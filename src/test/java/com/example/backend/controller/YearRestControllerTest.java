@@ -1,6 +1,8 @@
 package com.example.backend.controller;
 
 import com.example.backend.BackendApplication;
+import com.example.backend.model.TempModel;
+import com.example.backend.model.YearModel;
 import com.example.backend.model.YearResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,29 +14,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
-@SpringBootTest(classes = BackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = BackendApplication.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
 public class YearRestControllerTest {
 
@@ -45,9 +46,10 @@ public class YearRestControllerTest {
     private TestRestTemplate rest;
 
     private static String url;
+//    private static List<TempModel> models;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         url = "http://localhost:" + port;
     }
 
@@ -63,10 +65,47 @@ public class YearRestControllerTest {
                 HttpMethod.GET, entity, new ParameterizedTypeReference<>() {
                 });
         assertNotNull(response.getBody());
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        List<Cake> actualCakes = response.getBody();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        YearResponse yearsResponse = response.getBody();
+        assertNotNull(yearsResponse);
 
-//        assertEquals(getCakes("testdata.json"), actualCakes);
+        List<YearModel> yearModels = yearsResponse.getContent();
+        ArrayList<Integer> actualYears = new ArrayList<>();
+
+        for (YearModel model : yearModels) {
+            actualYears.add(model.getYear());
+        }
+
+        System.out.println("Actual Years: " + actualYears);
+
+        assertEquals(getYears("testdata.json"), actualYears);
+    }
+
+    private List<Integer> getYears(String filePath) throws Exception {
+
+        System.out.println("Inside getYears method");
+
+        ClassPathResource resource = new ClassPathResource(filePath);
+        InputStream inputStream = resource.getInputStream();
+
+        List<TempModel> models = new ObjectMapper().readValue(inputStream, new TypeReference<>() {});
+        System.out.println("Models: " + models);
+
+        // TODO Use a HashMap to get rid of duplicates
+        ArrayList<Integer> expectedYears = new ArrayList<>();
+        Set<Integer> expectedYearsDuplicatesCheck = new HashSet<>(expectedYears);
+
+
+        for (TempModel model : models) {
+            if (!expectedYearsDuplicatesCheck.contains(model.getYear())) {
+                expectedYears.add(model.getYear());
+                expectedYearsDuplicatesCheck.add(model.getYear());
+            }
+        }
+
+        System.out.println("Expected Years: " + expectedYears);
+
+        return expectedYears;
     }
 
 //    @Test
