@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 
 
 public interface VoivodeshipRepository {
-    String save(VoivodeshipEntity voivodeship);
+    VoivodeshipEntity save(VoivodeshipEntity voivodeship);
     VoivodeshipEntity findById(int id);
     Page<VoivodeshipEntity> findAll(Pageable pageable, Sort sort);
     String delete(int id);

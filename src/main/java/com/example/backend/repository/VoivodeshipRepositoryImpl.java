@@ -28,11 +28,11 @@ public class VoivodeshipRepositoryImpl implements VoivodeshipRepository {
     }
 
     @Override
-    public String save(VoivodeshipEntity theVoivodeship) {
+    public VoivodeshipEntity save(VoivodeshipEntity theVoivodeship) {
         try {
             logger.info("saving voivodeship into database");
             VoivodeshipEntity dbyVoivodeship = entityManager.merge(theVoivodeship);
-            return ("object with id:" + dbyVoivodeship.getVoivodeshipId() + " saved successfully");
+            return dbyVoivodeship;
         } catch (DataIntegrityViolationException e) {
             logger.info("DataIntegrityViolationException, while trying to save voivodeship into database");
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save Voivodeship due to database constraints.");

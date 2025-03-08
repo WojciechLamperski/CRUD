@@ -25,6 +25,7 @@ public class VoivodeshipRestController {
 
 
     @GetMapping("/voivodeships")
+    @ResponseStatus(HttpStatus.OK)
     public VoivodeshipResponse findAll(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
@@ -36,6 +37,7 @@ public class VoivodeshipRestController {
     }
 
     @GetMapping("/voivodeships/{voivodeshipId}")
+    @ResponseStatus(HttpStatus.OK)
     public VoivodeshipEntity findById(@PathVariable int voivodeshipId) {
         logger.info("find voivodeship by Id incoming request");
         return voivodeshipService.findById(voivodeshipId);
@@ -43,7 +45,7 @@ public class VoivodeshipRestController {
 
     @PostMapping("/voivodeships")
     @ResponseStatus(HttpStatus.CREATED)
-    public String save(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
+    public VoivodeshipEntity save(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         logger.info("save voivodeship incoming request {}", theVoivodeship);
@@ -52,12 +54,14 @@ public class VoivodeshipRestController {
     }
 
     @PutMapping("/voivodeships")
-    public String update(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
+    @ResponseStatus(HttpStatus.OK)
+    public VoivodeshipEntity update(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
         logger.info("update voivodeship incoming request {}", theVoivodeship);
         return voivodeshipService.save(theVoivodeship);
     }
 
     @DeleteMapping("/voivodeships/{voivodeshipId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public String delete(@PathVariable int voivodeshipId) {
         logger.info("delete voivodeship incoming request");
         return voivodeshipService.delete(voivodeshipId);
