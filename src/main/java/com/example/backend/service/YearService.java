@@ -5,7 +5,7 @@ import com.example.backend.entity.YearEntity;
 
 
 public interface YearService {
-    String save(YearEntity year);
+    YearEntity save(YearEntity year);
     YearEntity findById(int id);
     YearResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection);
     String delete(int id);

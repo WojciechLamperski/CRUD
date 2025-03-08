@@ -1,0 +1,30 @@
+[
+  {
+    "Rok": "1999",
+    "Województwo": "DOLNOŚLĄSKIE",
+    "Powiat": "bolesławiecki",
+    "Kobiety": "500",
+    "Mężczyźni": "480"
+  },
+  {
+    "Rok": "1999",
+    "Województwo": "WIELKOPOLSKIE",
+    "Powiat": "poznański",
+    "Kobiety": "600",
+    "Mężczyźni": "590"
+  },
+  {
+    "Rok": "2005",
+    "Województwo": "DOLNOŚLĄSKIE",
+    "Powiat": "wrocławski",
+    "Kobiety": "700",
+    "Mężczyźni": "680"
+  },
+  {
+    "Rok": "2005",
+    "Województwo": "WIELKOPOLSKIE",
+    "Powiat": "gnieźnieński",
+    "Kobiety": "550",
+    "Mężczyźni": "530"
+  }
+]
