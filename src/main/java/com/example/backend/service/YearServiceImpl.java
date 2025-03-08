@@ -34,24 +34,24 @@ public class YearServiceImpl implements YearService {
 
     @Override
     @Transactional
-    public YearEntity save(YearEntity year) {
+    public YearModel save(YearEntity year) {
         logger.info("service received request to save / update year {}", year);
         if(year.getYearId() != 0 && yearRepository.findById(year.getYearId()) == null){
             logger.info("can't update because year with this id doesn't exists");
             throw new EntityNotFoundException("Year which you're trying to update was not found");
         }
-        return yearRepository.save(year);
+        return convertToModel(yearRepository.save(year));
     }
 
     @Override
-    public YearEntity findById(int id) {
+    public YearModel findById(int id) {
         logger.info("service received request to find year by Id");
         YearEntity year = yearRepository.findById(id);
         if (year == null) {
             logger.info("year not found");
             throw new EntityNotFoundException("Year not found");
         }
-        return yearRepository.findById(id);
+        return convertToModel(yearRepository.findById(id));
     }
 
     @Override
