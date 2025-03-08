@@ -4,13 +4,13 @@ import com.example.backend.entity.YearEntity;
 import com.example.backend.model.YearModel;
 import com.example.backend.model.YearResponse;
 import com.example.backend.service.YearService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,11 +20,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 
 // Loads only the controller layer
 @ExtendWith(MockitoExtension.class)
@@ -87,13 +85,9 @@ public class YearRestControllerTest {
     void givenMockedYearInDatabase_WhenGetRequestIsMade_ThenReturnMockedYear() throws Exception {
         // Setup mock behavior
         int mockYearId = 0;
-        YearModel mockedYear = new YearModel();
-        mockedYear.setYearId(0);
-        mockedYear.setYear(2025);
 
         YearEntity yearEntity = new YearEntity();
         yearEntity.setYear(2025);
-        yearEntity.setYearId(0);
 
         when(yearService.findById(mockYearId)).thenReturn(yearEntity);
 
@@ -107,33 +101,92 @@ public class YearRestControllerTest {
 
     @Test
     void givenNoYearInDatabase_WhenPostRequestIsMade_ThenReturnAddedYear() throws Exception {
+        // Setup mock behavior
+        YearEntity inputYearEntity = new YearEntity();
+        inputYearEntity.setYear(2025);
+
+        YearEntity outputYearEntity = new YearEntity();
+        outputYearEntity.setYear(2025);
+        outputYearEntity.setYearId(1);
+
+        when(yearService.save(inputYearEntity)).thenReturn(outputYearEntity);
+
+        // Perform the GET request using MockMvc
+        mockMvc.perform(post("/api/years")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(inputYearEntity)))
+                .andExpect(status().isCreated())  // Ensure response status is 200 OK
+                .andExpect(MockMvcResultMatchers.jsonPath("$.year").value(2025)) // Ensure correct year value
+                .andExpect(MockMvcResultMatchers.jsonPath("$.yearId").value(1));
 
     }
 
-//    @Test
-//    void givenYear_WhenPostRequestIsMade_ThenYearIsCreated() throws Exception {
-//        // Setup mock behavior for POST request
-//        YearModel newYear = new YearModel();
-//        newYear.setYear(2025);
-//
-//        when(yearService.save(newYear)).thenReturn(newYear);  // Assuming createYear() exists in YearService
-//
-//        // Perform the POST request using MockMvc
-//        mockMvc.perform(post("/api/years")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("{\"year\": 2025}"))
-//                .andExpect(status().isCreated())  // Assert that status is Created
-//                .andExpect(jsonPath("$.year").value(2025));  // Assert the created year value
-//    }
-//
-//    @Test
-//    void givenYear_WhenDeleteRequestIsMade_ThenYearIsDeleted() throws Exception {
-//        // Setup mock behavior for DELETE request
-//        int yearId = 1;  // Assume we're deleting year with ID = 1
-//        when(yearService.delete(yearId)).thenReturn(true);  // Assuming deleteYear() exists in YearService
-//
-//        // Perform the DELETE request using MockMvc
-//        mockMvc.perform(delete("/api/years/{id}", yearId))
-//                .andExpect(status().isNoContent());  // Assert that status is No Content (204)
-//    }
+    @Test
+    void givenYearInDatabase_WhenPutRequestIsMade_ThenReturnUpdatedYear() throws Exception {
+        // Setup mock behavior
+        YearEntity updatedYearEntity = new YearEntity();
+        updatedYearEntity.setYearId(1);
+        updatedYearEntity.setYear(2030); // Updated year value
+
+        when(yearService.save(updatedYearEntity)).thenReturn(updatedYearEntity);
+
+        // Perform the PUT request using MockMvc
+        mockMvc.perform(put("/api/years")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updatedYearEntity)))
+                .andExpect(status().isOk())  // Ensure response status is 200 OK
+                .andExpect(MockMvcResultMatchers.jsonPath("$.yearId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.year").value(2030)); // Ensure correct updated year value
+    }
+
+    @Test
+    void givenYearInDatabase_WhenDeleteRequestIsMade_ThenReturnNoYears() throws Exception {
+        // Setup mock behavior
+        int yearIdToDelete = 1;
+        when(yearService.delete(yearIdToDelete)).thenReturn("Year deleted successfully");
+
+        // Perform the DELETE request using MockMvc
+        mockMvc.perform(delete("/api/years/{yearId}", yearIdToDelete)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());  // Ensure response status is 204 No Content
+    }
+
+    @Test
+    void givenMultipleYearsInDatabase_WhenGetRequestWithSortingAndPagingIsMade_ThenReturnPagedAndSortedResponse() throws Exception {
+        // Setup mock behavior
+        YearModel yearModel1 = new YearModel();
+        yearModel1.setYearId(1);
+        yearModel1.setYear(2025);
+
+        YearModel yearModel2 = new YearModel();
+        yearModel2.setYearId(2);
+        yearModel2.setYear(2030);
+
+        YearResponse yearResponse = new YearResponse();
+        yearResponse.setContent(List.of(yearModel2)); // Expecting only the highest year (2030) due to sorting
+        yearResponse.setPageNumber(0);
+        yearResponse.setPageSize(1);
+        yearResponse.setTotalElements(2);
+        yearResponse.setTotalPages(2);
+        yearResponse.setLast(false); // Since we are limiting to 1 per page, it's not the last page
+
+        // Mock service response
+        when(yearService.findAll(0, 1, "year", "desc")).thenReturn(yearResponse);
+
+        // Perform the GET request using MockMvc
+        mockMvc.perform(get("/api/years")
+                        .param("pageNumber", "0")
+                        .param("pageSize", "1")
+                        .param("sortBy", "year")
+                        .param("sortDirection", "desc")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())  // Ensure response status is 200 OK
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].year").value(2030)) // Expecting highest year due to desc sorting
+                .andExpect(MockMvcResultMatchers.jsonPath("$.pageNumber").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.pageSize").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.last").value(false)); // Not the last page
+    }
 }
