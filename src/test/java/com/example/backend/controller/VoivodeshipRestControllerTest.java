@@ -86,10 +86,10 @@ public class VoivodeshipRestControllerTest {
         // Setup mock behavior
         int mockVoivodeshipId = 0;
 
-        VoivodeshipEntity voivodeshipEntity = new VoivodeshipEntity();
-        voivodeshipEntity.setVoivodeship("Wielkopolska");
+        VoivodeshipModel voivodeshipModel = new VoivodeshipModel();
+        voivodeshipModel.setVoivodeship("Wielkopolska");
 
-        when(voivodeshipService.findById(mockVoivodeshipId)).thenReturn(voivodeshipEntity);
+        when(voivodeshipService.findById(mockVoivodeshipId)).thenReturn(voivodeshipModel);
 
         // Perform the GET request using MockMvc
         mockMvc.perform(get("/api/voivodeships/{id}", mockVoivodeshipId)
@@ -105,11 +105,11 @@ public class VoivodeshipRestControllerTest {
         VoivodeshipEntity inputVoivodeshipEntity = new VoivodeshipEntity();
         inputVoivodeshipEntity.setVoivodeship("Wielkopolska");
 
-        VoivodeshipEntity outputVoivodeshipEntity = new VoivodeshipEntity();
-        outputVoivodeshipEntity.setVoivodeship("Wielkopolska");
-        outputVoivodeshipEntity.setVoivodeshipId(1);
+        VoivodeshipModel outputVoivodeshipModel = new VoivodeshipModel();
+        outputVoivodeshipModel.setVoivodeship("Wielkopolska");
+        outputVoivodeshipModel.setVoivodeshipId(1);
 
-        when(voivodeshipService.save(inputVoivodeshipEntity)).thenReturn(outputVoivodeshipEntity);
+        when(voivodeshipService.save(inputVoivodeshipEntity)).thenReturn(outputVoivodeshipModel);
 
         // Perform the GET request using MockMvc
         mockMvc.perform(post("/api/voivodeships")
@@ -126,14 +126,18 @@ public class VoivodeshipRestControllerTest {
         // Setup mock behavior
         VoivodeshipEntity updatedVoivodeshipEntity = new VoivodeshipEntity();
         updatedVoivodeshipEntity.setVoivodeshipId(1);
-        updatedVoivodeshipEntity.setVoivodeship("Mazowsze"); // Updated voivodeship value
+        updatedVoivodeshipEntity.setVoivodeship("Mazowsze");
 
-        when(voivodeshipService.save(updatedVoivodeshipEntity)).thenReturn(updatedVoivodeshipEntity);
+        VoivodeshipModel updatedVoivodeshipModel = new VoivodeshipModel();
+        updatedVoivodeshipModel.setVoivodeshipId(1);
+        updatedVoivodeshipModel.setVoivodeship("Mazowsze");
+
+        when(voivodeshipService.save(updatedVoivodeshipEntity)).thenReturn(updatedVoivodeshipModel);
 
         // Perform the PUT request using MockMvc
         mockMvc.perform(put("/api/voivodeships")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(updatedVoivodeshipEntity)))
+                        .content(new ObjectMapper().writeValueAsString(updatedVoivodeshipModel)))
                 .andExpect(status().isOk())  // Ensure response status is 200 OK
                 .andExpect(MockMvcResultMatchers.jsonPath("$.voivodeshipId").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.voivodeship").value("Mazowsze")); // Ensure correct updated voivodeship value

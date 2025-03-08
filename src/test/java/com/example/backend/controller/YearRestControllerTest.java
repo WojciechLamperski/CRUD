@@ -86,10 +86,10 @@ public class YearRestControllerTest {
         // Setup mock behavior
         int mockYearId = 0;
 
-        YearEntity yearEntity = new YearEntity();
-        yearEntity.setYear(2025);
+        YearModel yearModel = new YearModel();
+        yearModel.setYear(2025);
 
-        when(yearService.findById(mockYearId)).thenReturn(yearEntity);
+        when(yearService.findById(mockYearId)).thenReturn(yearModel);
 
         // Perform the GET request using MockMvc
         mockMvc.perform(get("/api/years/{id}", mockYearId)
@@ -105,11 +105,11 @@ public class YearRestControllerTest {
         YearEntity inputYearEntity = new YearEntity();
         inputYearEntity.setYear(2025);
 
-        YearEntity outputYearEntity = new YearEntity();
-        outputYearEntity.setYear(2025);
-        outputYearEntity.setYearId(1);
+        YearModel outputYearModel = new YearModel();
+        outputYearModel.setYear(2025);
+        outputYearModel.setYearId(1);
 
-        when(yearService.save(inputYearEntity)).thenReturn(outputYearEntity);
+        when(yearService.save(inputYearEntity)).thenReturn(outputYearModel);
 
         // Perform the GET request using MockMvc
         mockMvc.perform(post("/api/years")
@@ -126,9 +126,13 @@ public class YearRestControllerTest {
         // Setup mock behavior
         YearEntity updatedYearEntity = new YearEntity();
         updatedYearEntity.setYearId(1);
-        updatedYearEntity.setYear(2030); // Updated year value
+        updatedYearEntity.setYear(2030);
 
-        when(yearService.save(updatedYearEntity)).thenReturn(updatedYearEntity);
+        YearModel updatedYearModel = new YearModel();
+        updatedYearModel.setYearId(1);
+        updatedYearModel.setYear(2030);
+
+        when(yearService.save(updatedYearEntity)).thenReturn(updatedYearModel);
 
         // Perform the PUT request using MockMvc
         mockMvc.perform(put("/api/years")
