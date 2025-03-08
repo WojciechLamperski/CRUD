@@ -6,7 +6,7 @@ import com.example.backend.entity.PopulationEntity;
 
 
 public interface PopulationService{
-    String save(PopulationEntity population);
+    PopulationModel save(PopulationEntity population);
     PopulationModel findById(int id);
     PopulationResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection);
     PopulationResponse findAllInDistrict(int districtId, int pageNumber, int pageSize, String sortBy, String sortDirection);

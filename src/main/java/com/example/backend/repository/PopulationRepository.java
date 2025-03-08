@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 
 
 public interface PopulationRepository {
-    String save(PopulationEntity population);
+    PopulationEntity save(PopulationEntity population);
     PopulationEntity findById(int id);
     Page<PopulationEntity> findAll(Pageable pageable, Sort sort);
     Page<PopulationEntity> findAllInVoivodeship(Pageable pageable, Sort sort, int voivodeshipId);
