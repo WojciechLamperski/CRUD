@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 
 
 public interface DistrictRepository {
-    String save(DistrictEntity district);
+    DistrictEntity save(DistrictEntity district);
     DistrictEntity findById(int id);
     Page<DistrictEntity> findAll(Pageable pageable, Sort sort);
     Page<DistrictEntity> findAllInVoivodeship(Pageable pageable, Sort sort, int voivodeshipId);

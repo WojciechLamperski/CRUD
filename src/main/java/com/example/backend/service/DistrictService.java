@@ -6,7 +6,7 @@ import com.example.backend.entity.DistrictEntity;
 
 
 public interface DistrictService {
-    String save(DistrictEntity district);
+    DistrictModel save(DistrictEntity district);
     DistrictModel findById(int id);
     DistrictResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection);
     DistrictResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection);

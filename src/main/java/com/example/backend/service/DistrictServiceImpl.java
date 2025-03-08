@@ -36,7 +36,7 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     @Transactional
-    public String save(DistrictEntity district) {
+    public DistrictModel save(DistrictEntity district) {
         logger.info("service received request to save / update district {}", district);
         if(district.getDistrictId() != 0 && districtRepository.findById(district.getDistrictId()) == null){
             throw new EntityNotFoundException("District which you're trying to update was not found");
@@ -46,7 +46,7 @@ public class DistrictServiceImpl implements DistrictService {
                 throw new ReferencedEntityNotFoundException("Voivodeship with this Id not found");
             }
         }
-        return districtRepository.save(district);
+        return convertToModel(districtRepository.save(district));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.example.backend.repository;
 
-import com.example.backend.controller.YearRestController;
 import com.example.backend.entity.DistrictEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -29,11 +28,11 @@ public class DistrictRepositoryImpl implements DistrictRepository {
     }
 
     @Override
-    public String save(DistrictEntity theDistrict) {
+    public DistrictEntity save(DistrictEntity theDistrict) {
         try {
             logger.info("saving district into database");
             DistrictEntity dbDistrict = entityManager.merge(theDistrict);
-            return ("object with id:" + dbDistrict.getDistrictId() + " saved successfully");
+            return dbDistrict;
         } catch (DataIntegrityViolationException e) {
             logger.info("DataIntegrityViolationException, while trying to save district into database");
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save District due to database constraints.");

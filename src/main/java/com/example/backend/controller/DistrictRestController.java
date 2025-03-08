@@ -24,6 +24,7 @@ public class DistrictRestController {
     }
 
     @GetMapping("/districts")
+    @ResponseStatus(HttpStatus.OK)
     public DistrictResponse findAll(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
@@ -35,6 +36,7 @@ public class DistrictRestController {
     }
 
     @GetMapping("/voivodeships/{voivodeshipId}/districts")
+    @ResponseStatus(HttpStatus.OK)
     public DistrictResponse findAllInVoivodeship(
             @PathVariable int voivodeshipId,
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
@@ -47,6 +49,7 @@ public class DistrictRestController {
     }
 
     @GetMapping("/districts/{districtId}")
+    @ResponseStatus(HttpStatus.OK)
     public DistrictModel findById(@PathVariable int districtId) {
         logger.info("find district by Id incoming request");
         return districtService.findById(districtId);
@@ -54,7 +57,7 @@ public class DistrictRestController {
 
     @PostMapping("/districts")
     @ResponseStatus(HttpStatus.CREATED)
-    public String save(@Valid @RequestBody DistrictEntity theDistrict) {
+    public DistrictModel save(@Valid @RequestBody DistrictEntity theDistrict) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         logger.info("save district incoming request {}", theDistrict);
@@ -63,12 +66,14 @@ public class DistrictRestController {
     }
 
     @PutMapping("/districts")
-    public String update(@Valid @RequestBody DistrictEntity theDistrict) {
+    @ResponseStatus(HttpStatus.OK)
+    public DistrictModel update(@Valid @RequestBody DistrictEntity theDistrict) {
         logger.info("update district incoming request {}", theDistrict);
         return districtService.save(theDistrict);
     }
 
     @DeleteMapping("/districts/{districtId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public String delete(@PathVariable int districtId) {
         logger.info("delete district incoming request");
         return districtService.delete(districtId);
