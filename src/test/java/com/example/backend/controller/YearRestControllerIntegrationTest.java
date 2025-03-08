@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.BackendApplication;
+import com.example.backend.entity.YearEntity;
 import com.example.backend.model.TempModel;
 import com.example.backend.model.YearModel;
 import com.example.backend.model.YearResponse;
@@ -18,6 +19,7 @@ import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 
@@ -29,8 +31,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest(classes = BackendApplication.class, webEnvironment = RANDOM_PORT)
@@ -50,7 +50,7 @@ public class YearRestControllerIntegrationTest {
         url = "http://localhost:" + port;
     }
 
-    // GET requests
+    // GET
     @Test
     public void givenAllYearsAreAvailable_WhenISendGetRequest_ThenIGetAllYearsDetails() throws Exception {
 
@@ -71,39 +71,15 @@ public class YearRestControllerIntegrationTest {
         for (YearModel model : yearModels) {
             actualYears.add(model.getYear());
         }
-
         assertEquals(getYears("testdata.json"), actualYears);
     }
 
-
-    // POST request
+    // GET one
     @Test
-    @DirtiesContext
-    public void givenAllYearsAreAvailable_WhenISendPostRequest_ThenNewYearGetsAdded() throws Exception {
-        // Create the request body
-        YearModel newYear = new YearModel();
-        newYear.setYear(2025); // Example year
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBodyJson = objectMapper.writeValueAsString(newYear);
-
-        // Set headers
+    public void givenYearExists_WhenISendGetRequestForThatYear_ThenIGetYearDetails() throws Exception {
+        // Fetch all years first
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // Create request entity
-        HttpEntity<String> entity = new HttpEntity<>(requestBodyJson, headers);
-
-        // Send POST request
-        ResponseEntity<String> response = rest.exchange(url + "/api/years",
-                HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
-
-        // Validate response
-        assertNotNull(response.getBody());
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).contains("object with id:");
-        assertThat(response.getBody()).contains(" saved successfully");
-
-        // Fetch all years and validate the new one was added
         ResponseEntity<YearResponse> getResponse = rest.exchange(url + "/api/years",
                 HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
 
@@ -111,15 +87,64 @@ public class YearRestControllerIntegrationTest {
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         List<YearModel> yearModels = getResponse.getBody().getContent();
-        List<Integer> actualYears = new ArrayList<>();
-        for (YearModel model : yearModels) {
-            actualYears.add(model.getYear());
-        }
+        assertThat(yearModels).isNotEmpty();
 
-        assertThat(actualYears).contains(2025);
+        // Pick the first year to fetch individually
+        YearModel expectedYear = yearModels.get(0);
+        int yearId = expectedYear.getYearId();
+
+        // Send GET request for a specific year
+        ResponseEntity<YearModel> response = rest.exchange(url + "/api/years/" + yearId,
+                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
+
+        // Validate response
+        assertNotNull(response.getBody());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        YearModel actualYear = response.getBody();
+        assertThat(actualYear.getYearId()).isEqualTo(expectedYear.getYearId());
+        assertThat(actualYear.getYear()).isEqualTo(expectedYear.getYear());
     }
 
-    // PUT request
+    // POST
+    @Test
+    @DirtiesContext
+    public void givenAllYearsAreAvailable_WhenISendPostRequest_ThenNewYearGetsAdded() throws Exception {
+
+        // Create the request body
+        YearModel newYear = new YearModel();
+        newYear.setYear(2025); // Example year
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBodyJson = objectMapper.writeValueAsString(newYear);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(requestBodyJson, headers);
+
+        // Send POST request
+        ResponseEntity<String> response = rest.exchange(url + "/api/years",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
+
+        // Validate there is a Body, and correct HTTP status
+        assertNotNull(response.getBody());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        // Validate Body
+        YearEntity yearEntity = new ObjectMapper().readValue(response.getBody(), new TypeReference<>() {});
+        assertThat(yearEntity.getYear()).isEqualTo(2025);
+        assertThat(yearEntity.getYearId()).isEqualTo(getYears("testdata.json").size() + 1);
+
+        // Fetch all years and validate the new one was added
+        ResponseEntity<YearResponse> getResponse = rest.exchange(url + "/api/years",
+                HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
+        assertNotNull(getResponse.getBody());
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        List<YearModel> yearModels = getResponse.getBody().getContent();
+        assertThat(yearModels.get(yearModels.size()-1).getYearId()).isEqualTo(yearEntity.getYearId());
+        assertThat(yearModels.get(yearModels.size()-1).getYear()).isEqualTo(yearEntity.getYear());
+
+    }
+
+    // PUT
     @Test
     @DirtiesContext
     public void givenAllYearsAreAvailable_WhenISendPutRequest_ThenExistingYearGetsUpdated() throws Exception {
@@ -138,11 +163,15 @@ public class YearRestControllerIntegrationTest {
         // Pick the first year to update
         YearModel existingYear = yearModels.get(0);
         int originalId = existingYear.getYearId();
-        existingYear.setYear(existingYear.getYear() + 1); // Increment year
+        int newYearValue = existingYear.getYear() + 1;
+
+        YearModel toBeUpdateYearModel = new YearModel();
+        toBeUpdateYearModel.setYear(newYearValue);
+        toBeUpdateYearModel.setYearId(existingYear.getYearId());
 
         // Convert to JSON
         ObjectMapper objectMapper = new ObjectMapper();
-        String requestBodyJson = objectMapper.writeValueAsString(existingYear);
+        String requestBodyJson = objectMapper.writeValueAsString(toBeUpdateYearModel);
 
         // Send PUT request
         HttpEntity<String> entity = new HttpEntity<>(requestBodyJson, headers);
@@ -152,8 +181,10 @@ public class YearRestControllerIntegrationTest {
         // Validate response
         assertNotNull(putResponse.getBody());
         assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(putResponse.getBody()).contains("object with id:");
-        assertThat(putResponse.getBody()).contains(" saved successfully");
+
+        YearEntity yearEntity = new ObjectMapper().readValue(putResponse.getBody(), new TypeReference<>() {});
+        assertThat(yearEntity.getYear()).isEqualTo(newYearValue);
+        assertThat(yearEntity.getYearId()).isEqualTo(originalId);
 
         // Fetch all years again to verify the update
         ResponseEntity<YearResponse> verifyResponse = rest.exchange(url + "/api/years",
@@ -164,12 +195,12 @@ public class YearRestControllerIntegrationTest {
 
         List<YearModel> updatedYearModels = verifyResponse.getBody().getContent();
         boolean updated = updatedYearModels.stream()
-                .anyMatch(y -> y.getYearId() == originalId && y.getYear() == existingYear.getYear());
+                .anyMatch(y -> y.getYearId() == originalId && y.getYear() == newYearValue);
 
         assertThat(updated).isTrue();
     }
 
-    // DELETE request
+    // DELETE
     @Test
     @DirtiesContext
     public void givenAllYearsAreAvailable_WhenISendDeleteRequest_ThenExistingYearGetsDeleted() throws Exception {
@@ -194,10 +225,10 @@ public class YearRestControllerIntegrationTest {
                 HttpMethod.DELETE, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
 
         // Validate response
-        assertNotNull(deleteResponse.getBody());
-        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(deleteResponse.getBody()).isNull();
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        // Fetch all years again to verify deletion
+        // Fetch all years to verify deletion
         ResponseEntity<YearResponse> verifyResponse = rest.exchange(url + "/api/years",
                 HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {});
 
@@ -229,5 +260,7 @@ public class YearRestControllerIntegrationTest {
 
         return expectedYears;
     }
+
+    // TODO add error checks
 
 }
