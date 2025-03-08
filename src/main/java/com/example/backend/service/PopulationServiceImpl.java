@@ -35,7 +35,7 @@ public class PopulationServiceImpl implements PopulationService {
 
     @Override
     @Transactional
-    public String save(PopulationEntity population) {
+    public PopulationModel save(PopulationEntity population) {
         logger.info("service received request to save / update population {}", population);
         if(population.getPopulationId() != 0 && populationRepository.findById(population.getPopulationId()) == null){
             throw new EntityNotFoundException("Population which you're trying to update was not found");
@@ -50,7 +50,7 @@ public class PopulationServiceImpl implements PopulationService {
                 throw new ReferencedEntityNotFoundException("District with this Id not found");
             }
         }
-        return populationRepository.save(population);
+        return convertToModel(populationRepository.save(population));
     }
 
     @Override
