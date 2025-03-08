@@ -34,7 +34,7 @@ public class YearServiceImpl implements YearService {
 
     @Override
     @Transactional
-    public String save(YearEntity year) {
+    public YearEntity save(YearEntity year) {
         logger.info("service received request to save / update year {}", year);
         if(year.getYearId() != 0 && yearRepository.findById(year.getYearId()) == null){
             logger.info("can't update because year with this id doesn't exists");

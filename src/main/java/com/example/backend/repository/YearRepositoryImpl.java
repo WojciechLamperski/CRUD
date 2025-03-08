@@ -28,11 +28,11 @@ public class YearRepositoryImpl implements YearRepository {
     }
 
     @Override
-    public String save(YearEntity theYear) {
+    public YearEntity save(YearEntity theYear) {
         try {
             logger.info("saving year into database");
             YearEntity dbyYear = entityManager.merge(theYear);
-            return ("object with id:" + dbyYear.getYearId() + " saved successfully");
+            return dbyYear;
         } catch (DataIntegrityViolationException e) {
             logger.info("DataIntegrityViolationException, while trying to save year into database");
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save Year due to database constraints.");

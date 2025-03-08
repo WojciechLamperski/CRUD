@@ -23,6 +23,7 @@ public class YearRestController {
     }
 
     @GetMapping("/years")
+    @ResponseStatus(HttpStatus.OK)
     public YearResponse findAll(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
@@ -34,6 +35,7 @@ public class YearRestController {
     }
 
     @GetMapping("/years/{yearId}")
+    @ResponseStatus(HttpStatus.OK)
     public YearEntity findById(@PathVariable int yearId) {
         logger.info("find year by Id incoming request");
         return yearService.findById(yearId);
@@ -41,7 +43,7 @@ public class YearRestController {
 
     @PostMapping("/years")
     @ResponseStatus(HttpStatus.CREATED)
-    public String save(@Valid @RequestBody YearEntity theYear) {
+    public YearEntity save(@Valid @RequestBody YearEntity theYear) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         logger.info("save year incoming request {}", theYear);
@@ -50,12 +52,14 @@ public class YearRestController {
     }
 
     @PutMapping("/years")
-    public String update(@Valid @RequestBody YearEntity theYear) {
+    @ResponseStatus(HttpStatus.OK)
+    public YearEntity update(@Valid @RequestBody YearEntity theYear) {
         logger.info("update year incoming request {}", theYear);
         return yearService.save(theYear);
     }
 
     @DeleteMapping("/years/{yearId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public String delete(@PathVariable int yearId) {
         logger.info("delete year incoming request");
         return yearService.delete(yearId);

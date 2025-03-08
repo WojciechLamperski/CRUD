@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 
 
 public interface YearRepository {
-    String save(YearEntity year);
+    YearEntity save(YearEntity year);
     YearEntity findById(int id);
     Page<YearEntity> findAll(Pageable pageable, Sort sort);
     String delete(int id);
