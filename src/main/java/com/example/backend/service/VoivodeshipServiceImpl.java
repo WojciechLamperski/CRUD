@@ -33,22 +33,22 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
 
     @Override
     @Transactional
-    public VoivodeshipEntity save(VoivodeshipEntity voivodeship) {
+    public VoivodeshipModel save(VoivodeshipEntity voivodeship) {
         logger.info("service received request to save / update voivodeship {}", voivodeship);
         if(voivodeship.getVoivodeshipId() != 0 && voivodeshipRepository.findById(voivodeship.getVoivodeshipId()) == null){
             throw new EntityNotFoundException("Voivodeship which you're trying to update was not found");
         }
-        return voivodeshipRepository.save(voivodeship);
+        return convertToModel(voivodeshipRepository.save(voivodeship));
     }
 
     @Override
-    public VoivodeshipEntity findById(int id) {
+    public VoivodeshipModel findById(int id) {
         logger.info("service received request to find voivodeship by Id");
         VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id);
         if (voivodeship == null) {
             throw new EntityNotFoundException("Voivodeship not found");
         }
-        return voivodeshipRepository.findById(id);
+        return convertToModel(voivodeshipRepository.findById(id));
     }
 
     @Override

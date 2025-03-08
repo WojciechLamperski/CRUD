@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 
+import com.example.backend.model.VoivodeshipModel;
 import com.example.backend.model.VoivodeshipResponse;
 import com.example.backend.entity.VoivodeshipEntity;
 import com.example.backend.service.VoivodeshipService;
@@ -38,14 +39,14 @@ public class VoivodeshipRestController {
 
     @GetMapping("/voivodeships/{voivodeshipId}")
     @ResponseStatus(HttpStatus.OK)
-    public VoivodeshipEntity findById(@PathVariable int voivodeshipId) {
+    public VoivodeshipModel findById(@PathVariable int voivodeshipId) {
         logger.info("find voivodeship by Id incoming request");
         return voivodeshipService.findById(voivodeshipId);
     }
 
     @PostMapping("/voivodeships")
     @ResponseStatus(HttpStatus.CREATED)
-    public VoivodeshipEntity save(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
+    public VoivodeshipModel save(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         logger.info("save voivodeship incoming request {}", theVoivodeship);
@@ -55,7 +56,7 @@ public class VoivodeshipRestController {
 
     @PutMapping("/voivodeships")
     @ResponseStatus(HttpStatus.OK)
-    public VoivodeshipEntity update(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
+    public VoivodeshipModel update(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
         logger.info("update voivodeship incoming request {}", theVoivodeship);
         return voivodeshipService.save(theVoivodeship);
     }
