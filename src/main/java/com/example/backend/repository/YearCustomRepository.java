@@ -7,5 +7,4 @@ import org.springframework.data.domain.Sort;
 
 public interface YearCustomRepository {
     Page<YearEntity> findAll(Pageable pageable, Sort sort);
-
 }
