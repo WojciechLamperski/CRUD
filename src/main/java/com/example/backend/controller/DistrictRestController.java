@@ -75,9 +75,9 @@ public class DistrictRestController {
 
     @DeleteMapping("/districts/{districtId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String delete(@PathVariable int districtId) {
+    public void delete(@PathVariable int districtId) {
         logger.info("delete district incoming request");
-        return districtService.delete(districtId);
+        districtService.delete(districtId);
     }
 
 }

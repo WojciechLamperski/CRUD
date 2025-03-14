@@ -50,7 +50,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public DistrictModel findById(int id) {
         logger.info("service received request to find district by Id");
-        DistrictEntity district = districtRepository.findById(id);
+        DistrictEntity district = districtRepository.findById(id).orElse(null);
         if (district == null) {
             throw new EntityNotFoundException("District not found");
         }
@@ -79,13 +79,13 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     @Transactional
-    public String delete(int id) {
+    public void delete(int id) {
         logger.info("service received request to delete district");
-        DistrictEntity district = districtRepository.findById(id);
+        DistrictEntity district = districtRepository.findById(id).orElse(null);
         if (district == null) {
             throw new EntityNotFoundException("District not found");
         }
-        return districtRepository.delete(id);
+        districtRepository.delete(district);
     }
 
     public DistrictEntity convertToEntity(DistrictRequest district) {

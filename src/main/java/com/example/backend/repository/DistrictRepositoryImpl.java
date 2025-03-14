@@ -15,8 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public class DistrictRepositoryImpl implements DistrictRepository {
+public class DistrictRepositoryImpl implements DistrictCustomRepository {
 
     private Logger logger = LoggerFactory.getLogger(DistrictRepositoryImpl.class);
 
@@ -27,7 +26,6 @@ public class DistrictRepositoryImpl implements DistrictRepository {
         entityManager = theEntityManager;
     }
 
-    @Override
     public DistrictEntity save(DistrictEntity theDistrict) {
         try {
             logger.info("saving district into database");
@@ -43,7 +41,6 @@ public class DistrictRepositoryImpl implements DistrictRepository {
         }
     }
 
-    @Override
     public DistrictEntity findById(int district_id) {
         try {
             logger.info("finding district by Id in database");
@@ -122,7 +119,6 @@ public class DistrictRepositoryImpl implements DistrictRepository {
         }
     }
 
-    @Override
     public String delete(int district_id) {
         try{
             logger.info("deleting district from database");

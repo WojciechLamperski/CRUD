@@ -130,7 +130,7 @@ public class PopulationServiceImpl implements PopulationService {
         YearEntity yearEntity = null;
 
         if(population.getDistrictId() != null){
-            districtEntity = districtRepository.findById(population.getDistrictId());
+            districtEntity = districtRepository.findById(population.getDistrictId()).orElse(null);
         }
         if(population.getDistrictId() != null & voivodeshipEntity == null){
             throw new ReferencedEntityNotFoundException("District with this Id not found");
