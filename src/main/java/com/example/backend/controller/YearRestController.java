@@ -62,9 +62,9 @@ public class YearRestController {
 
     @DeleteMapping("/years/{yearId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String delete(@PathVariable int yearId) {
+    public void delete(@PathVariable int yearId) {
         logger.info("delete year incoming request");
-        return yearService.delete(yearId);
+        yearService.delete(yearId);
     }
 
 }

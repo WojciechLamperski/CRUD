@@ -11,12 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
-@Repository
-public class YearRepositoryImpl implements YearRepository {
+public class YearRepositoryImpl implements YearCustomRepository {
 
     private Logger logger = LoggerFactory.getLogger(YearRepositoryImpl.class);
 
@@ -27,7 +24,6 @@ public class YearRepositoryImpl implements YearRepository {
         entityManager = theEntityManager;
     }
 
-    @Override
     public YearEntity save(YearEntity theYear) {
         try {
             logger.info("saving year into database");
@@ -43,7 +39,6 @@ public class YearRepositoryImpl implements YearRepository {
         }
     }
 
-    @Override
     public YearEntity findById(int year_id) {
         try {
             logger.info("finding year by Id in database");
@@ -89,7 +84,6 @@ public class YearRepositoryImpl implements YearRepository {
         }
     }
 
-    @Override
     public String delete(int year_id) {
         try{
             logger.info("deleting years from database");

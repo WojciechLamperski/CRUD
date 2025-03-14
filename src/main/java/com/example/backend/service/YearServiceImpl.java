@@ -47,12 +47,12 @@ public class YearServiceImpl implements YearService {
     @Override
     public YearModel findById(int id) {
         logger.info("service received request to find year by Id");
-        YearEntity year = yearRepository.findById(id);
+        YearEntity year = yearRepository.findById(id).orElse(null);
         if (year == null) {
             logger.info("year not found");
             throw new EntityNotFoundException("Year not found");
         }
-        return convertToModel(yearRepository.findById(id));
+        return convertToModel(yearRepository.findById(id).orElse(null));
     }
 
     @Override
@@ -81,14 +81,14 @@ public class YearServiceImpl implements YearService {
 
     @Override
     @Transactional
-    public String delete(int id) {
+    public void delete(int id) {
         logger.info("service received request to delete year");
-        YearEntity year = yearRepository.findById(id);
+        YearEntity year = yearRepository.findById(id).orElse(null);
         if (year == null) {
             logger.info("year not found in service");
             throw new EntityNotFoundException("Year not found");
         }
-        return yearRepository.delete(id);
+        yearRepository.delete(year);
     }
 
     public YearEntity convertToEntity(YearRequest yearRequest) {

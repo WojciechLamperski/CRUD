@@ -9,6 +9,6 @@ public interface YearService {
     YearModel save(YearRequest year);
     YearModel findById(int id);
     YearResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection);
-    String delete(int id);
+    void delete(int id);
 }
 

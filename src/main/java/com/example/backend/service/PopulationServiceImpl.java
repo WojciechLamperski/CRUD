@@ -1,5 +1,8 @@
 package com.example.backend.service;
 
+import com.example.backend.entity.DistrictEntity;
+import com.example.backend.entity.VoivodeshipEntity;
+import com.example.backend.entity.YearEntity;
 import com.example.backend.model.PopulationRequest;
 import com.example.backend.repository.DistrictRepository;
 import com.example.backend.repository.PopulationRepository;
@@ -13,6 +16,7 @@ import com.example.backend.exception.ReferencedEntityNotFoundException;
 import com.example.backend.repository.YearRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +37,7 @@ public class PopulationServiceImpl implements PopulationService {
     private final DistrictRepository districtRepository;
 
 
+    @Autowired
     public PopulationServiceImpl(
             PopulationRepository thePopulationRepository,
             YearRepository theYearRepository,
@@ -120,22 +125,28 @@ public class PopulationServiceImpl implements PopulationService {
         logger.info("converting population request to entity in population");
 
         PopulationEntity populationEntity = new PopulationEntity();
+        VoivodeshipEntity voivodeshipEntity = null;
+        DistrictEntity districtEntity = null;
+        YearEntity yearEntity = null;
 
-        if(population.getYearId() != null && yearRepository.findById(population.getYearId()) == null){
-            throw new ReferencedEntityNotFoundException("Year with this Id not found");
-        } else{
-            populationEntity.setYear(yearRepository.findById(population.getYearId()));
+        if(population.getDistrictId() != null){
+            districtEntity = districtRepository.findById(population.getDistrictId());
         }
-
-        if(population.getDistrictId() != null &&  districtRepository.findById(population.getDistrictId()) == null){
+        if(population.getDistrictId() != null & voivodeshipEntity == null){
             throw new ReferencedEntityNotFoundException("District with this Id not found");
-        } else{
-            populationEntity.setDistrict(districtRepository.findById(population.getDistrictId()));
+        }
+        if(population.getYearId() != null){
+            yearEntity = yearRepository.findById(population.getYearId()).orElse(null);
+        }
+        if(population.getYearId() != null & voivodeshipEntity == null){
+            throw new ReferencedEntityNotFoundException("Year with this Id not found");
         }
 
         populationEntity.setPopulationId(population.getPopulationId());
         populationEntity.setMen(population.getMen());
         populationEntity.setWomen(population.getWomen());
+        populationEntity.setDistrict(districtEntity);
+        populationEntity.setYear(yearEntity);
 
         populationEntity.setYearId(population.getYearId());
         populationEntity.setDistrictId(population.getDistrictId());
@@ -149,7 +160,6 @@ public class PopulationServiceImpl implements PopulationService {
         logger.info("converting district to model in population");
         DistrictModel districtModel = new DistrictModel();
 
-        // TODO check if this makes sense
         // Check since district can be null in populations
         if(population.getDistrict() != null) {
             districtModel.setDistrictId(population.getDistrictId());
