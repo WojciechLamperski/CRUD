@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,11 +43,6 @@ public class DistrictServiceImpl implements DistrictService {
         logger.info("service received request to save / update district {}", district);
         if(district.getDistrictId() != 0 && districtRepository.findById(district.getDistrictId()) == null){
             throw new EntityNotFoundException("District which you're trying to update was not found");
-        }
-        if(district.getVoivodeshipId() != null){
-            if(district.getDistrictId() != 0 & districtRepository.findById(district.getVoivodeshipId()) == null){
-                throw new ReferencedEntityNotFoundException("Voivodeship with this Id not found");
-            }
         }
         return convertToModel(districtRepository.save(convertToEntity(district)));
     }
@@ -102,11 +96,8 @@ public class DistrictServiceImpl implements DistrictService {
         if(district.getVoivodeshipId() != null){
             voivodeship = voivodeshipRepository.findById(district.getVoivodeshipId());
         }
-
-
         if(district.getVoivodeshipId() != null & voivodeship == null){
-            logger.error("AN ERROR SHOULD HAPPEN HERE");
-            //  TODO Throw error
+            throw new ReferencedEntityNotFoundException("Voivodeship with this Id not found");
         }
 
         DistrictEntity districtEntity = new DistrictEntity();
