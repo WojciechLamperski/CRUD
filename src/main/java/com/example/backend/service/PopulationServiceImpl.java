@@ -63,7 +63,7 @@ public class PopulationServiceImpl implements PopulationService {
     @Override
     public PopulationModel findById(int id) {
         logger.info("service received request to find population by Id");
-        PopulationEntity population = populationRepository.findById(id);
+        PopulationEntity population = populationRepository.findById(id).orElse(null);
         if (population == null) {
             throw new EntityNotFoundException("Population not found");
         }
@@ -112,13 +112,13 @@ public class PopulationServiceImpl implements PopulationService {
 
     @Override
     @Transactional
-    public String delete(int id) {
+    public void delete(int id) {
         logger.info("service received request to delete population");
-        PopulationEntity population = populationRepository.findById(id);
+        PopulationEntity population = populationRepository.findById(id).orElse(null);
         if (population == null) {
             throw new EntityNotFoundException("District not found");
         }
-        return populationRepository.delete(id);
+        populationRepository.delete(population);
     }
 
     public PopulationEntity convertToEntity(PopulationRequest population) {

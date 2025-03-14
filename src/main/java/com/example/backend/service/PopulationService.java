@@ -12,5 +12,5 @@ public interface PopulationService{
     PopulationResponse findAllInDistrict(int districtId, int pageNumber, int pageSize, String sortBy, String sortDirection);
     PopulationResponse findAllInYear(int yearId, int pageNumber, int pageSize, String sortBy, String sortDirection);
     PopulationResponse findAllInVoivodeship(int voivodeshipId, int pageNumber, int pageSize, String sortBy, String sortDirection);
-    String delete(int id);
+    void delete(int id);
 }

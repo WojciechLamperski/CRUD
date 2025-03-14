@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class PopulationRepositoryImpl implements PopulationRepository {
+public class PopulationRepositoryImpl implements PopulationCustomRepository {
 
     private Logger logger = LoggerFactory.getLogger(PopulationRepositoryImpl.class);
 
@@ -27,7 +27,6 @@ public class PopulationRepositoryImpl implements PopulationRepository {
         entityManager = theEntityManager;
     }
 
-    @Override
     public PopulationEntity save(PopulationEntity thePopulation) {
         try {
             logger.info("saving population into database");
@@ -44,7 +43,6 @@ public class PopulationRepositoryImpl implements PopulationRepository {
 
     }
 
-    @Override
     public PopulationEntity findById(int population_id) {
         try {
             logger.info("finding population by Id in database");
@@ -182,7 +180,6 @@ public class PopulationRepositoryImpl implements PopulationRepository {
         }
     }
 
-    @Override
     public String delete(int population_id) {
         try{
             logger.info("deleting population from database");

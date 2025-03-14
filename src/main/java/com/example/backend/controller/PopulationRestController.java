@@ -100,9 +100,9 @@ public class PopulationRestController {
 
     @DeleteMapping("/populations/{populationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String delete(@PathVariable int populationId) {
+    public void delete(@PathVariable int populationId) {
         logger.info("delete population incoming request");
-        return populationService.delete(populationId);
+        populationService.delete(populationId);
     }
 
 }
