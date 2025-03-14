@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.model.DistrictRequest;
 import com.example.backend.repository.DistrictRepository;
 import com.example.backend.model.DistrictModel;
 import com.example.backend.model.DistrictResponse;
@@ -8,6 +9,7 @@ import com.example.backend.entity.VoivodeshipEntity;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.InvalidSortFieldException;
 import com.example.backend.exception.ReferencedEntityNotFoundException;
+import com.example.backend.repository.VoivodeshipRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -27,16 +29,18 @@ public class DistrictServiceImpl implements DistrictService {
     private Logger logger = LoggerFactory.getLogger(DistrictServiceImpl.class);
 
     private final DistrictRepository districtRepository;
+    private final VoivodeshipRepository voivodeshipRepository;
 
-    public DistrictServiceImpl(DistrictRepository theDistrictRepository) {
+    public DistrictServiceImpl(DistrictRepository theDistrictRepository, VoivodeshipRepository theVoivodeshipRepository) {
         districtRepository = theDistrictRepository;
+        voivodeshipRepository = theVoivodeshipRepository;
     }
 
     private static final List<String> ALLOWED_SORT_FIELDS = List.of("districtId", "district");
 
     @Override
     @Transactional
-    public DistrictModel save(DistrictEntity district) {
+    public DistrictModel save(DistrictRequest district) {
         logger.info("service received request to save / update district {}", district);
         if(district.getDistrictId() != 0 && districtRepository.findById(district.getDistrictId()) == null){
             throw new EntityNotFoundException("District which you're trying to update was not found");
@@ -46,7 +50,7 @@ public class DistrictServiceImpl implements DistrictService {
                 throw new ReferencedEntityNotFoundException("Voivodeship with this Id not found");
             }
         }
-        return convertToModel(districtRepository.save(district));
+        return convertToModel(districtRepository.save(convertToEntity(district)));
     }
 
     @Override
@@ -90,6 +94,34 @@ public class DistrictServiceImpl implements DistrictService {
         return districtRepository.delete(id);
     }
 
+    public DistrictEntity convertToEntity(DistrictRequest district) {
+        logger.info("converting district request to entity in service");
+
+        VoivodeshipEntity voivodeship = null;
+
+        if(district.getVoivodeshipId() != null){
+            voivodeship = voivodeshipRepository.findById(district.getVoivodeshipId());
+        }
+
+
+        if(district.getVoivodeshipId() != null & voivodeship == null){
+            logger.error("AN ERROR SHOULD HAPPEN HERE");
+            //  TODO Throw error
+        }
+
+        DistrictEntity districtEntity = new DistrictEntity();
+        districtEntity.setDistrictId(district.getDistrictId());
+        districtEntity.setDistrict(district.getDistrict());
+        // Check since district can be null in populations
+        if(voivodeship != null) {
+            districtEntity.setVoivodeship(voivodeship);
+        }else{
+            districtEntity.setVoivodeship(null);
+        }
+
+        return districtEntity;
+    }
+
     public DistrictModel convertToModel(DistrictEntity district) {
         logger.info("converting district to model in service");
         VoivodeshipEntity voivodeship = district.getVoivodeship();
@@ -97,7 +129,6 @@ public class DistrictServiceImpl implements DistrictService {
         DistrictModel districtModel = new DistrictModel();
         districtModel.setDistrictId(district.getDistrictId());
         districtModel.setDistrict(district.getDistrict());
-
         // Check since district can be null in populations
         if(voivodeship != null) {
             districtModel.setVoivodeship(voivodeship.getVoivodeship());
@@ -105,7 +136,6 @@ public class DistrictServiceImpl implements DistrictService {
             districtModel.setVoivodeship(null);
         }
 
-        districtModel.setVoivodeship(Objects.requireNonNull(voivodeship).getVoivodeship());
         return districtModel;
     }
 
