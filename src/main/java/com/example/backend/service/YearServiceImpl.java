@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.entity.YearEntity;
 import com.example.backend.model.YearModel;
+import com.example.backend.model.YearRequest;
 import com.example.backend.model.YearResponse;
 import com.example.backend.repository.YearRepository;
 import com.example.backend.exception.EntityNotFoundException;
@@ -34,13 +35,13 @@ public class YearServiceImpl implements YearService {
 
     @Override
     @Transactional
-    public YearModel save(YearEntity year) {
+    public YearModel save(YearRequest year) {
         logger.info("service received request to save / update year {}", year);
         if(year.getYearId() != 0 && yearRepository.findById(year.getYearId()) == null){
             logger.info("can't update because year with this id doesn't exists");
             throw new EntityNotFoundException("Year which you're trying to update was not found");
         }
-        return convertToModel(yearRepository.save(year));
+        return convertToModel(yearRepository.save(convertToEntity(year)));
     }
 
     @Override
@@ -90,12 +91,23 @@ public class YearServiceImpl implements YearService {
         return yearRepository.delete(id);
     }
 
+    public YearEntity convertToEntity(YearRequest yearRequest) {
+        logger.info("converting year request to entity in service");
 
-    public YearModel convertToModel(YearEntity district) {
-        logger.info("converting year to model in service");
+        YearEntity yearEntity = new YearEntity();
+
+        yearEntity.setYearId(yearRequest.getYearId());
+        yearEntity.setYear(yearRequest.getYear());
+
+        return yearEntity;
+    }
+
+
+    public YearModel convertToModel(YearEntity year) {
+        logger.info("converting year entity to model in service");
         YearModel voivodeshipModel = new YearModel();
-        voivodeshipModel.setYearId(district.getYearId());
-        voivodeshipModel.setYear(district.getYear());
+        voivodeshipModel.setYearId(year.getYearId());
+        voivodeshipModel.setYear(year.getYear());
 
         return voivodeshipModel;
     }

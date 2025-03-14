@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.YearModel;
+import com.example.backend.model.YearRequest;
 import com.example.backend.model.YearResponse;
 import com.example.backend.entity.YearEntity;
 import com.example.backend.service.YearService;
@@ -44,17 +45,17 @@ public class YearRestController {
 
     @PostMapping("/years")
     @ResponseStatus(HttpStatus.CREATED)
-    public YearModel save(@Valid @RequestBody YearEntity theYear) {
+    public YearModel save(@Valid @RequestBody YearRequest theYear) {
+        theYear.setYearId(0);
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         logger.info("save year incoming request {}", theYear);
-        theYear.setYearId(0);
         return yearService.save(theYear);
     }
 
     @PutMapping("/years")
     @ResponseStatus(HttpStatus.OK)
-    public YearModel update(@Valid @RequestBody YearEntity theYear) {
+    public YearModel update(@Valid @RequestBody YearRequest theYear) {
         logger.info("update year incoming request {}", theYear);
         return yearService.save(theYear);
     }
