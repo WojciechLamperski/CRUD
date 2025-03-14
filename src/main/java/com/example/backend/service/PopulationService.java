@@ -1,12 +1,12 @@
 package com.example.backend.service;
 
 import com.example.backend.model.PopulationModel;
+import com.example.backend.model.PopulationRequest;
 import com.example.backend.model.PopulationResponse;
-import com.example.backend.entity.PopulationEntity;
 
 
 public interface PopulationService{
-    PopulationModel save(PopulationEntity population);
+    PopulationModel save(PopulationRequest population);
     PopulationModel findById(int id);
     PopulationResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection);
     PopulationResponse findAllInDistrict(int districtId, int pageNumber, int pageSize, String sortBy, String sortDirection);

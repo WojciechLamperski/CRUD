@@ -2,7 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.model.PopulationModel;
 import com.example.backend.model.PopulationResponse;
-import com.example.backend.entity.PopulationEntity;
+import com.example.backend.model.PopulationRequest;
 import com.example.backend.service.PopulationService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -83,7 +83,7 @@ public class PopulationRestController {
 
     @PostMapping("/populations")
     @ResponseStatus(HttpStatus.CREATED)
-    public PopulationModel save(@Valid @RequestBody PopulationEntity thePopulation) {
+    public PopulationModel save(@Valid @RequestBody PopulationRequest thePopulation) {
         logger.info("save population incoming request {}", thePopulation);
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
@@ -93,7 +93,7 @@ public class PopulationRestController {
 
     @PutMapping("/populations")
     @ResponseStatus(HttpStatus.OK)
-    public PopulationModel update(@Valid @RequestBody PopulationEntity thePopulation) {
+    public PopulationModel update(@Valid @RequestBody PopulationRequest thePopulation) {
         logger.info("update population incoming request {}", thePopulation);
         return populationService.save(thePopulation);
     }

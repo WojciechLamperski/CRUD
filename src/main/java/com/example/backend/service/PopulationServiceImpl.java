@@ -1,5 +1,7 @@
 package com.example.backend.service;
 
+import com.example.backend.model.PopulationRequest;
+import com.example.backend.repository.DistrictRepository;
 import com.example.backend.repository.PopulationRepository;
 import com.example.backend.model.DistrictModel;
 import com.example.backend.model.PopulationResponse;
@@ -8,6 +10,7 @@ import com.example.backend.entity.PopulationEntity;
 import com.example.backend.exception.EntityNotFoundException;
 import com.example.backend.exception.InvalidSortFieldException;
 import com.example.backend.exception.ReferencedEntityNotFoundException;
+import com.example.backend.repository.YearRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,31 +29,30 @@ public class PopulationServiceImpl implements PopulationService {
     private Logger logger = LoggerFactory.getLogger(PopulationServiceImpl.class);
 
     private final PopulationRepository populationRepository;
+    private final YearRepository yearRepository;
+    private final DistrictRepository districtRepository;
 
-    public PopulationServiceImpl(PopulationRepository thePopulationRepository) {
+
+    public PopulationServiceImpl(
+            PopulationRepository thePopulationRepository,
+            YearRepository theYearRepository,
+            DistrictRepository theDistrictRepository
+    ) {
         populationRepository = thePopulationRepository;
+        yearRepository = theYearRepository;
+        districtRepository = theDistrictRepository;
     }
 
     private static final List<String> ALLOWED_SORT_FIELDS = List.of("populationId", "yearId", "districtId", "men", "women");
 
     @Override
     @Transactional
-    public PopulationModel save(PopulationEntity population) {
+    public PopulationModel save(PopulationRequest population) {
         logger.info("service received request to save / update population {}", population);
         if(population.getPopulationId() != 0 && populationRepository.findById(population.getPopulationId()) == null){
             throw new EntityNotFoundException("Population which you're trying to update was not found");
         }
-        if(population.getYearId() != null){
-            if(population.getPopulationId() != 0 & populationRepository.findById(population.getYearId()) == null) {
-                throw new ReferencedEntityNotFoundException("Year with this Id not found");
-            }
-        }
-        if(population.getDistrictId() != null){
-            if(population.getPopulationId() != 0 &  populationRepository.findById(population.getDistrictId()) == null){
-                throw new ReferencedEntityNotFoundException("District with this Id not found");
-            }
-        }
-        return convertToModel(populationRepository.save(population));
+        return convertToModel(populationRepository.save(convertToEntity(population)));
     }
 
     @Override
@@ -114,13 +116,43 @@ public class PopulationServiceImpl implements PopulationService {
         return populationRepository.delete(id);
     }
 
+    public PopulationEntity convertToEntity(PopulationRequest population) {
+        logger.info("converting population request to entity in population");
+
+        PopulationEntity populationEntity = new PopulationEntity();
+
+        if(population.getYearId() != null && yearRepository.findById(population.getYearId()) == null){
+            throw new ReferencedEntityNotFoundException("Year with this Id not found");
+        } else{
+            populationEntity.setYear(yearRepository.findById(population.getYearId()));
+        }
+
+        if(population.getDistrictId() != null &&  districtRepository.findById(population.getDistrictId()) == null){
+            throw new ReferencedEntityNotFoundException("District with this Id not found");
+        } else{
+            populationEntity.setDistrict(districtRepository.findById(population.getDistrictId()));
+        }
+
+        populationEntity.setPopulationId(population.getPopulationId());
+        populationEntity.setMen(population.getMen());
+        populationEntity.setWomen(population.getWomen());
+
+        populationEntity.setYearId(population.getYearId());
+        populationEntity.setDistrictId(population.getDistrictId());
+
+        return populationEntity;
+
+    }
+
+
     public PopulationModel convertToModel(PopulationEntity population) {
         logger.info("converting district to model in population");
         DistrictModel districtModel = new DistrictModel();
 
+        // TODO check if this makes sense
         // Check since district can be null in populations
         if(population.getDistrict() != null) {
-            districtModel.setDistrictId(population.getDistrict().getDistrictId());
+            districtModel.setDistrictId(population.getDistrictId());
             districtModel.setDistrict(population.getDistrict().getDistrict());
             districtModel.setVoivodeship(population.getDistrict().getVoivodeship().getVoivodeship());
         }else{
