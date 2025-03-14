@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.entity.YearEntity;
 import com.example.backend.model.*;
 import com.example.backend.repository.VoivodeshipRepository;
 import com.example.backend.entity.VoivodeshipEntity;
@@ -33,12 +34,12 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
 
     @Override
     @Transactional
-    public VoivodeshipModel save(VoivodeshipEntity voivodeship) {
+    public VoivodeshipModel save(VoivodeshipRequest voivodeship) {
         logger.info("service received request to save / update voivodeship {}", voivodeship);
         if(voivodeship.getVoivodeshipId() != 0 && voivodeshipRepository.findById(voivodeship.getVoivodeshipId()) == null){
             throw new EntityNotFoundException("Voivodeship which you're trying to update was not found");
         }
-        return convertToModel(voivodeshipRepository.save(voivodeship));
+        return convertToModel(voivodeshipRepository.save(convertToEntity(voivodeship)));
     }
 
     @Override
@@ -86,6 +87,18 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
         return voivodeshipRepository.delete(id);
 
     }
+
+    public VoivodeshipEntity convertToEntity(VoivodeshipRequest voivodeshipRequest) {
+        logger.info("converting voivodeship request to entity in service");
+
+        VoivodeshipEntity voivodeshipEntity = new VoivodeshipEntity();
+
+        voivodeshipEntity.setVoivodeshipId(voivodeshipRequest.getVoivodeshipId());
+        voivodeshipEntity.setVoivodeship(voivodeshipRequest.getVoivodeship());
+
+        return voivodeshipEntity;
+    }
+
 
     public VoivodeshipModel convertToModel(VoivodeshipEntity district) {
         logger.info("converting voivodeship to model in service");
