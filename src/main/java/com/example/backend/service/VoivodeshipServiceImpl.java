@@ -45,11 +45,11 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
     @Override
     public VoivodeshipModel findById(int id) {
         logger.info("service received request to find voivodeship by Id");
-        VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id);
+        VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id).orElse(null);
         if (voivodeship == null) {
             throw new EntityNotFoundException("Voivodeship not found");
         }
-        return convertToModel(voivodeshipRepository.findById(id));
+        return convertToModel(voivodeshipRepository.findById(id).orElse(null));
     }
 
     @Override
@@ -77,14 +77,14 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
 
     @Override
     @Transactional
-    public String delete(int id) {
+    public void delete(int id) {
         logger.info("service received request to delete voivodeship");
-        VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id);
+        VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id).orElse(null);
         if (voivodeship == null) {
             logger.info("voivodeship not found in service");
             throw new EntityNotFoundException("Voivodeship not found");
         }
-        return voivodeshipRepository.delete(id);
+        voivodeshipRepository.delete(voivodeship);
 
     }
 

@@ -9,5 +9,5 @@ public interface VoivodeshipService {
     VoivodeshipModel save(VoivodeshipRequest voivodeship);
     VoivodeshipModel findById(int id);
     VoivodeshipResponse findAll(int pageNumber, int pageSize, String sortBy, String sortDirection);
-    String delete(int id);
+    void delete(int id);
 }

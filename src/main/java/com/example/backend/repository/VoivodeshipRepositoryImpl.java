@@ -15,8 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public class VoivodeshipRepositoryImpl implements VoivodeshipRepository {
+public class VoivodeshipRepositoryImpl implements VoivodeshipCustomRepository {
 
     private Logger logger = LoggerFactory.getLogger(VoivodeshipRepositoryImpl.class);
 
@@ -27,7 +26,6 @@ public class VoivodeshipRepositoryImpl implements VoivodeshipRepository {
         entityManager = theEntityManager;
     }
 
-    @Override
     public VoivodeshipEntity save(VoivodeshipEntity theVoivodeship) {
         try {
             logger.info("saving voivodeship into database");
@@ -43,7 +41,6 @@ public class VoivodeshipRepositoryImpl implements VoivodeshipRepository {
         }
     }
 
-    @Override
     public VoivodeshipEntity findById(int voivodeship_id) {
         try{
             logger.info("finding voivodeship by Id in database");
@@ -88,7 +85,6 @@ public class VoivodeshipRepositoryImpl implements VoivodeshipRepository {
         }
     }
 
-    @Override
     public String delete(int voivodeship_id) {
         try{
             logger.info("deleting voivodeship from database");

@@ -64,9 +64,9 @@ public class VoivodeshipRestController {
 
     @DeleteMapping("/voivodeships/{voivodeshipId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String delete(@PathVariable int voivodeshipId) {
+    public void delete(@PathVariable int voivodeshipId) {
         logger.info("delete voivodeship incoming request");
-        return voivodeshipService.delete(voivodeshipId);
+        voivodeshipService.delete(voivodeshipId);
     }
 
 }

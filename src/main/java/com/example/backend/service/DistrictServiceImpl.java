@@ -94,7 +94,7 @@ public class DistrictServiceImpl implements DistrictService {
         VoivodeshipEntity voivodeship = null;
 
         if(district.getVoivodeshipId() != null){
-            voivodeship = voivodeshipRepository.findById(district.getVoivodeshipId());
+            voivodeship = voivodeshipRepository.findById(district.getVoivodeshipId()).orElse(null);
         }
         if(district.getVoivodeshipId() != null & voivodeship == null){
             throw new ReferencedEntityNotFoundException("Voivodeship with this Id not found");
