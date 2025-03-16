@@ -11,14 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public class VoivodeshipRepositoryImpl implements VoivodeshipRepository {
+public class VoivodeshipRepositoryImpl implements VoivodeshipCustomRepository {
 
-    private Logger logger = LoggerFactory.getLogger(VoivodeshipRepositoryImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(VoivodeshipRepositoryImpl.class);
 
     private final EntityManager entityManager;
 
@@ -27,12 +25,10 @@ public class VoivodeshipRepositoryImpl implements VoivodeshipRepository {
         entityManager = theEntityManager;
     }
 
-    @Override
-    public String save(VoivodeshipEntity theVoivodeship) {
+    public VoivodeshipEntity save(VoivodeshipEntity theVoivodeship) {
         try {
             logger.info("saving voivodeship into database");
-            VoivodeshipEntity dbyVoivodeship = entityManager.merge(theVoivodeship);
-            return ("object with id:" + dbyVoivodeship.getVoivodeshipId() + " saved successfully");
+            return entityManager.merge(theVoivodeship);
         } catch (DataIntegrityViolationException e) {
             logger.info("DataIntegrityViolationException, while trying to save voivodeship into database");
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save Voivodeship due to database constraints.");
@@ -43,7 +39,6 @@ public class VoivodeshipRepositoryImpl implements VoivodeshipRepository {
         }
     }
 
-    @Override
     public VoivodeshipEntity findById(int voivodeship_id) {
         try{
             logger.info("finding voivodeship by Id in database");
@@ -88,7 +83,6 @@ public class VoivodeshipRepositoryImpl implements VoivodeshipRepository {
         }
     }
 
-    @Override
     public String delete(int voivodeship_id) {
         try{
             logger.info("deleting voivodeship from database");

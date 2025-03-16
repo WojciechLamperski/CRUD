@@ -1,6 +1,5 @@
 package com.example.backend.repository;
 
-import com.example.backend.controller.YearRestController;
 import com.example.backend.entity.DistrictEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -12,14 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public class DistrictRepositoryImpl implements DistrictRepository {
+public class DistrictRepositoryImpl implements DistrictCustomRepository {
 
-    private Logger logger = LoggerFactory.getLogger(DistrictRepositoryImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(DistrictRepositoryImpl.class);
 
     private final EntityManager entityManager;
 
@@ -28,12 +25,10 @@ public class DistrictRepositoryImpl implements DistrictRepository {
         entityManager = theEntityManager;
     }
 
-    @Override
-    public String save(DistrictEntity theDistrict) {
+    public DistrictEntity save(DistrictEntity theDistrict) {
         try {
             logger.info("saving district into database");
-            DistrictEntity dbDistrict = entityManager.merge(theDistrict);
-            return ("object with id:" + dbDistrict.getDistrictId() + " saved successfully");
+            return entityManager.merge(theDistrict);
         } catch (DataIntegrityViolationException e) {
             logger.info("DataIntegrityViolationException, while trying to save district into database");
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save District due to database constraints.");
@@ -44,7 +39,6 @@ public class DistrictRepositoryImpl implements DistrictRepository {
         }
     }
 
-    @Override
     public DistrictEntity findById(int district_id) {
         try {
             logger.info("finding district by Id in database");
@@ -123,7 +117,6 @@ public class DistrictRepositoryImpl implements DistrictRepository {
         }
     }
 
-    @Override
     public String delete(int district_id) {
         try{
             logger.info("deleting district from database");

@@ -1,6 +1,5 @@
 package com.example.backend.exception;
 
-import com.example.backend.repository.DistrictRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,7 +21,7 @@ import java.util.Objects;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     // Custom error from Service implementations
     @ExceptionHandler(EntityNotFoundException.class)

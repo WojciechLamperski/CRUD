@@ -1,14 +1,11 @@
 package com.example.backend.repository;
 
 import com.example.backend.entity.YearEntity;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 
-public interface YearRepository {
-    String save(YearEntity year);
-    YearEntity findById(int id);
-    Page<YearEntity> findAll(Pageable pageable, Sort sort);
-    String delete(int id);
+@Repository
+public interface YearRepository extends CrudRepository<YearEntity, Integer>, YearCustomRepository {
+
 }

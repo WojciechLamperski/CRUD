@@ -15,13 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
 @Service
 public class VoivodeshipServiceImpl implements VoivodeshipService {
 
-    private Logger logger = LoggerFactory.getLogger(VoivodeshipServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(VoivodeshipServiceImpl.class);
 
     private final VoivodeshipRepository voivodeshipRepository;
 
@@ -33,22 +34,22 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
 
     @Override
     @Transactional
-    public String save(VoivodeshipEntity voivodeship) {
+    public VoivodeshipModel save(VoivodeshipRequest voivodeship) {
         logger.info("service received request to save / update voivodeship {}", voivodeship);
-        if(voivodeship.getVoivodeshipId() != 0 && voivodeshipRepository.findById(voivodeship.getVoivodeshipId()) == null){
-            throw new EntityNotFoundException("Voivodeship which you're trying to update was not found");
+        if (voivodeship.getVoivodeshipId() != 0) {
+            voivodeshipRepository.findById(voivodeship.getVoivodeshipId());
         }
-        return voivodeshipRepository.save(voivodeship);
+        return convertToModel(voivodeshipRepository.save(convertToEntity(voivodeship)));
     }
 
     @Override
-    public VoivodeshipEntity findById(int id) {
+    public VoivodeshipModel findById(int id) {
         logger.info("service received request to find voivodeship by Id");
-        VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id);
+        VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id).orElse(null);
         if (voivodeship == null) {
             throw new EntityNotFoundException("Voivodeship not found");
         }
-        return voivodeshipRepository.findById(id);
+        return convertToModel(Objects.requireNonNull(voivodeshipRepository.findById(id).orElse(null)));
     }
 
     @Override
@@ -62,30 +63,33 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
 
-        // Determine sorting direction
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<VoivodeshipEntity> voivodeships = voivodeshipRepository.findAll(pageable, sort);
-        List<VoivodeshipEntity> content = voivodeships.stream().collect(Collectors.toList());
-
         return convertToResponse(pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     @Transactional
-    public String delete(int id) {
+    public void delete(int id) {
         logger.info("service received request to delete voivodeship");
-        VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id);
+        VoivodeshipEntity voivodeship = voivodeshipRepository.findById(id).orElse(null);
         if (voivodeship == null) {
             logger.info("voivodeship not found in service");
             throw new EntityNotFoundException("Voivodeship not found");
         }
-        return voivodeshipRepository.delete(id);
+        voivodeshipRepository.delete(voivodeship);
 
     }
+
+    public VoivodeshipEntity convertToEntity(VoivodeshipRequest voivodeshipRequest) {
+        logger.info("converting voivodeship request to entity in service");
+
+        VoivodeshipEntity voivodeshipEntity = new VoivodeshipEntity();
+
+        voivodeshipEntity.setVoivodeshipId(voivodeshipRequest.getVoivodeshipId());
+        voivodeshipEntity.setVoivodeship(voivodeshipRequest.getVoivodeship());
+
+        return voivodeshipEntity;
+    }
+
 
     public VoivodeshipModel convertToModel(VoivodeshipEntity district) {
         logger.info("converting voivodeship to model in service");

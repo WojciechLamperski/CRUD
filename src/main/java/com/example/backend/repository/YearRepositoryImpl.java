@@ -11,14 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
-@Repository
-public class YearRepositoryImpl implements YearRepository {
+public class YearRepositoryImpl implements YearCustomRepository {
 
-    private Logger logger = LoggerFactory.getLogger(YearRepositoryImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(YearRepositoryImpl.class);
 
     private final EntityManager entityManager;
 
@@ -27,12 +24,10 @@ public class YearRepositoryImpl implements YearRepository {
         entityManager = theEntityManager;
     }
 
-    @Override
-    public String save(YearEntity theYear) {
+    public YearEntity save(YearEntity theYear) {
         try {
             logger.info("saving year into database");
-            YearEntity dbyYear = entityManager.merge(theYear);
-            return ("object with id:" + dbyYear.getYearId() + " saved successfully");
+            return entityManager.merge(theYear);
         } catch (DataIntegrityViolationException e) {
             logger.info("DataIntegrityViolationException, while trying to save year into database");
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save Year due to database constraints.");
@@ -43,7 +38,6 @@ public class YearRepositoryImpl implements YearRepository {
         }
     }
 
-    @Override
     public YearEntity findById(int year_id) {
         try {
             logger.info("finding year by Id in database");
@@ -89,7 +83,6 @@ public class YearRepositoryImpl implements YearRepository {
         }
     }
 
-    @Override
     public String delete(int year_id) {
         try{
             logger.info("deleting years from database");

@@ -11,6 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
@@ -26,9 +27,10 @@ import java.util.Set;
 @Component
 public class InitialDataLoad {
 
-    private Logger logger = LoggerFactory.getLogger(InitialDataLoad.class);
+    private final Logger logger = LoggerFactory.getLogger(InitialDataLoad.class);
 
-    private static final String DATA = "data.json";
+    @Value("${init.data.file.path}")
+    private String DATA;
 
     @PersistenceContext
     private EntityManager entityManager;

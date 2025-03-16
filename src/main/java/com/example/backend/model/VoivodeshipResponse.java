@@ -1,6 +1,5 @@
 package com.example.backend.model;
 
-import com.example.backend.entity.VoivodeshipEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,9 @@
 package com.example.backend.controller;
 
 
+import com.example.backend.model.VoivodeshipModel;
+import com.example.backend.model.VoivodeshipRequest;
 import com.example.backend.model.VoivodeshipResponse;
-import com.example.backend.entity.VoivodeshipEntity;
 import com.example.backend.service.VoivodeshipService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class VoivodeshipRestController {
 
-    private Logger logger = LoggerFactory.getLogger(VoivodeshipRestController.class);
+    private final Logger logger = LoggerFactory.getLogger(VoivodeshipRestController.class);
 
     private final VoivodeshipService voivodeshipService;
 
@@ -25,6 +26,7 @@ public class VoivodeshipRestController {
 
 
     @GetMapping("/voivodeships")
+    @ResponseStatus(HttpStatus.OK)
     public VoivodeshipResponse findAll(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
@@ -36,14 +38,15 @@ public class VoivodeshipRestController {
     }
 
     @GetMapping("/voivodeships/{voivodeshipId}")
-    public VoivodeshipEntity findById(@PathVariable int voivodeshipId) {
+    @ResponseStatus(HttpStatus.OK)
+    public VoivodeshipModel findById(@PathVariable int voivodeshipId) {
         logger.info("find voivodeship by Id incoming request");
         return voivodeshipService.findById(voivodeshipId);
     }
 
     @PostMapping("/voivodeships")
     @ResponseStatus(HttpStatus.CREATED)
-    public String save(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
+    public VoivodeshipModel save(@Valid @RequestBody VoivodeshipRequest theVoivodeship) {
         // just in case JSON is passed -> set id to 0
         // this is to force a save of new item instead of an update
         logger.info("save voivodeship incoming request {}", theVoivodeship);
@@ -52,15 +55,17 @@ public class VoivodeshipRestController {
     }
 
     @PutMapping("/voivodeships")
-    public String update(@Valid @RequestBody VoivodeshipEntity theVoivodeship) {
+    @ResponseStatus(HttpStatus.OK)
+    public VoivodeshipModel update(@Valid @RequestBody VoivodeshipRequest theVoivodeship) {
         logger.info("update voivodeship incoming request {}", theVoivodeship);
         return voivodeshipService.save(theVoivodeship);
     }
 
     @DeleteMapping("/voivodeships/{voivodeshipId}")
-    public String delete(@PathVariable int voivodeshipId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int voivodeshipId) {
         logger.info("delete voivodeship incoming request");
-        return voivodeshipService.delete(voivodeshipId);
+        voivodeshipService.delete(voivodeshipId);
     }
 
 }

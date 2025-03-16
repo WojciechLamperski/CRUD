@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.entity.YearEntity;
 import com.example.backend.model.YearModel;
+import com.example.backend.model.YearRequest;
 import com.example.backend.model.YearResponse;
 import com.example.backend.repository.YearRepository;
 import com.example.backend.exception.EntityNotFoundException;
@@ -16,13 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
 @Service
 public class YearServiceImpl implements YearService {
 
-    private Logger logger = LoggerFactory.getLogger(YearServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(YearServiceImpl.class);
 
     private final YearRepository yearRepository;
 
@@ -34,24 +36,23 @@ public class YearServiceImpl implements YearService {
 
     @Override
     @Transactional
-    public String save(YearEntity year) {
+    public YearModel save(YearRequest year) {
         logger.info("service received request to save / update year {}", year);
-        if(year.getYearId() != 0 && yearRepository.findById(year.getYearId()) == null){
-            logger.info("can't update because year with this id doesn't exists");
-            throw new EntityNotFoundException("Year which you're trying to update was not found");
+        if (year.getYearId() != 0) {
+            yearRepository.findById(year.getYearId());
         }
-        return yearRepository.save(year);
+        return convertToModel(yearRepository.save(convertToEntity(year)));
     }
 
     @Override
-    public YearEntity findById(int id) {
+    public YearModel findById(int id) {
         logger.info("service received request to find year by Id");
-        YearEntity year = yearRepository.findById(id);
+        YearEntity year = yearRepository.findById(id).orElse(null);
         if (year == null) {
             logger.info("year not found");
             throw new EntityNotFoundException("Year not found");
         }
-        return yearRepository.findById(id);
+        return convertToModel(Objects.requireNonNull(yearRepository.findById(id).orElse(null)));
     }
 
     @Override
@@ -65,37 +66,38 @@ public class YearServiceImpl implements YearService {
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
 
-
-        // Determine sorting direction
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<YearEntity> year = yearRepository.findAll(pageable, sort);
-        List<YearEntity> content = year.stream().collect(Collectors.toList());
-
         return convertToResponse(pageNumber, pageSize, sortBy, sortDirection);
     }
 
     @Override
     @Transactional
-    public String delete(int id) {
+    public void delete(int id) {
         logger.info("service received request to delete year");
-        YearEntity year = yearRepository.findById(id);
+        YearEntity year = yearRepository.findById(id).orElse(null);
         if (year == null) {
             logger.info("year not found in service");
             throw new EntityNotFoundException("Year not found");
         }
-        return yearRepository.delete(id);
+        yearRepository.delete(year);
+    }
+
+    public YearEntity convertToEntity(YearRequest yearRequest) {
+        logger.info("converting year request to entity in service");
+
+        YearEntity yearEntity = new YearEntity();
+
+        yearEntity.setYearId(yearRequest.getYearId());
+        yearEntity.setYear(yearRequest.getYear());
+
+        return yearEntity;
     }
 
 
-    public YearModel convertToModel(YearEntity district) {
-        logger.info("converting year to model in service");
+    public YearModel convertToModel(YearEntity year) {
+        logger.info("converting year entity to model in service");
         YearModel voivodeshipModel = new YearModel();
-        voivodeshipModel.setYearId(district.getYearId());
-        voivodeshipModel.setYear(district.getYear());
+        voivodeshipModel.setYearId(year.getYearId());
+        voivodeshipModel.setYear(year.getYear());
 
         return voivodeshipModel;
     }
