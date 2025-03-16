@@ -11,14 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public class PopulationRepositoryImpl implements PopulationCustomRepository {
 
-    private Logger logger = LoggerFactory.getLogger(PopulationRepositoryImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(PopulationRepositoryImpl.class);
 
     private final EntityManager entityManager;
 
@@ -30,8 +28,7 @@ public class PopulationRepositoryImpl implements PopulationCustomRepository {
     public PopulationEntity save(PopulationEntity thePopulation) {
         try {
             logger.info("saving population into database");
-            PopulationEntity dbyPopulation = entityManager.merge(thePopulation);
-            return dbyPopulation;
+            return entityManager.merge(thePopulation);
         } catch (DataIntegrityViolationException e) {
             logger.info("DataIntegrityViolationException, while trying to save population into database");
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save Population due to database constraints.");

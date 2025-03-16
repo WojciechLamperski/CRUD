@@ -11,13 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 public class DistrictRepositoryImpl implements DistrictCustomRepository {
 
-    private Logger logger = LoggerFactory.getLogger(DistrictRepositoryImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(DistrictRepositoryImpl.class);
 
     private final EntityManager entityManager;
 
@@ -29,8 +28,7 @@ public class DistrictRepositoryImpl implements DistrictCustomRepository {
     public DistrictEntity save(DistrictEntity theDistrict) {
         try {
             logger.info("saving district into database");
-            DistrictEntity dbDistrict = entityManager.merge(theDistrict);
-            return dbDistrict;
+            return entityManager.merge(theDistrict);
         } catch (DataIntegrityViolationException e) {
             logger.info("DataIntegrityViolationException, while trying to save district into database");
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save District due to database constraints.");

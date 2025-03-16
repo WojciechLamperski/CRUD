@@ -1,6 +1,5 @@
 package com.example.backend.entity;
 
-import com.example.backend.entity.PopulationEntity;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,7 +41,7 @@ public class PopulationEntityTest {
         populationEntity2.setMen(men);
         populationEntity2.setWomen(women);
 
-        assertTrue(populationEntity1.equals(populationEntity2));
+        assertEquals(populationEntity1, populationEntity2);
     }
 
     @Test
@@ -70,7 +69,7 @@ public class PopulationEntityTest {
         populationEntity.setMen(men);
         populationEntity.setWomen(women);
 
-        assertTrue(populationEntity.equals(populationEntity));
+        assertEquals(populationEntity, populationEntity);
     }
 
     @Test

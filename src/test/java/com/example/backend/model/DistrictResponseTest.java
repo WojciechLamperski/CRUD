@@ -33,7 +33,7 @@ public class DistrictResponseTest {
         assertEquals(totalPages, districtResponse.getTotalPages());
         assertTrue(districtResponse.isLast());
         assertEquals(1, districtResponse.getContent().size());
-        assertEquals(districtModel, districtResponse.getContent().get(0));
+        assertEquals(districtModel, districtResponse.getContent().getFirst());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class DistrictResponseTest {
         DistrictResponse districtResponse = new DistrictResponse(
                 List.of(districtModel), pageNumber, pageSize, totalElements, totalPages, last);
 
-        assertTrue(districtResponse.equals(districtResponse));
+        assertEquals(districtResponse, districtResponse);
     }
 
     @Test
@@ -60,6 +60,6 @@ public class DistrictResponseTest {
         assertEquals(totalPages, districtResponse.getTotalPages());
         assertTrue(districtResponse.isLast());
         assertEquals(1, districtResponse.getContent().size());
-        assertEquals(districtModel, districtResponse.getContent().get(0));
+        assertEquals(districtModel, districtResponse.getContent().getFirst());
     }
 }

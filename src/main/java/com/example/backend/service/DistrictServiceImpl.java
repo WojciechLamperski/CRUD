@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class DistrictServiceImpl implements DistrictService {
 
-    private Logger logger = LoggerFactory.getLogger(DistrictServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(DistrictServiceImpl.class);
 
     private final DistrictRepository districtRepository;
     private final VoivodeshipRepository voivodeshipRepository;
@@ -41,7 +41,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Transactional
     public DistrictModel save(DistrictRequest district) {
         logger.info("service received request to save / update district {}", district);
-        if(district.getDistrictId() != 0 && districtRepository.findById(district.getDistrictId()) == null){
+        if(district.getDistrictId() != 0 && districtRepository.findById(district.getDistrictId()).isEmpty()){
             throw new EntityNotFoundException("District which you're trying to update was not found");
         }
         return convertToModel(districtRepository.save(convertToEntity(district)));
@@ -104,11 +104,7 @@ public class DistrictServiceImpl implements DistrictService {
         districtEntity.setDistrictId(district.getDistrictId());
         districtEntity.setDistrict(district.getDistrict());
         // Check since district can be null in populations
-        if(voivodeship != null) {
-            districtEntity.setVoivodeship(voivodeship);
-        }else{
-            districtEntity.setVoivodeship(null);
-        }
+        districtEntity.setVoivodeship(voivodeship);
 
         return districtEntity;
     }

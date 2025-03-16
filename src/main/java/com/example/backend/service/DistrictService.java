@@ -3,7 +3,6 @@ package com.example.backend.service;
 import com.example.backend.model.DistrictModel;
 import com.example.backend.model.DistrictRequest;
 import com.example.backend.model.DistrictResponse;
-import com.example.backend.entity.DistrictEntity;
 
 
 public interface DistrictService {

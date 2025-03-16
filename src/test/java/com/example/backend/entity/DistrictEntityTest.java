@@ -31,7 +31,7 @@ public class DistrictEntityTest {
         districtEntity2.setDistrict(districtName);
         districtEntity2.setVoivodeshipId(voivodeshipId);
 
-        assertTrue(districtEntity1.equals(districtEntity2));
+        assertEquals(districtEntity1, districtEntity2);
     }
 
     @Test

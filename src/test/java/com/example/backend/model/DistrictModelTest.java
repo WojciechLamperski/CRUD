@@ -3,7 +3,6 @@ package com.example.backend.model;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DistrictModelTest {
 
@@ -30,7 +29,7 @@ public class DistrictModelTest {
         districtModel.setDistrict(district);
         districtModel.setVoivodeship(voivodeship);
 
-        assertTrue(districtModel.equals(districtModel));
+        assertEquals(districtModel, districtModel);
     }
 
 }

@@ -27,7 +27,7 @@ import java.util.Set;
 @Component
 public class InitialDataLoad {
 
-    private Logger logger = LoggerFactory.getLogger(InitialDataLoad.class);
+    private final Logger logger = LoggerFactory.getLogger(InitialDataLoad.class);
 
     @Value("${init.data.file.path}")
     private String DATA;

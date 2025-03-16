@@ -3,7 +3,6 @@ package com.example.backend.controller;
 import com.example.backend.model.DistrictModel;
 import com.example.backend.model.DistrictRequest;
 import com.example.backend.model.DistrictResponse;
-import com.example.backend.entity.DistrictEntity;
 import com.example.backend.service.DistrictService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class DistrictRestController {
 
-    private Logger logger = LoggerFactory.getLogger(DistrictRestController.class);
+    private final Logger logger = LoggerFactory.getLogger(DistrictRestController.class);
 
     private final DistrictService districtService;
 

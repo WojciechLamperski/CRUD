@@ -32,7 +32,7 @@ public class YearResponseTest {
         assertEquals(totalPages, yearResponse.getTotalPages());
         assertTrue(yearResponse.isLast());
         assertEquals(1, yearResponse.getContent().size());
-        assertEquals(yearModel, yearResponse.getContent().get(0));
+        assertEquals(yearModel, yearResponse.getContent().getFirst());
     }
 
     @Test
@@ -51,7 +51,7 @@ public class YearResponseTest {
         assertEquals(totalPages, yearResponse.getTotalPages());
         assertTrue(yearResponse.isLast());
         assertEquals(1, yearResponse.getContent().size());
-        assertEquals(yearModel, yearResponse.getContent().get(0));
+        assertEquals(yearModel, yearResponse.getContent().getFirst());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class YearResponseTest {
         YearResponse yearResponse = new YearResponse(
                 List.of(yearModel), pageNumber, pageSize, totalElements, totalPages, last);
 
-        assertTrue(yearResponse.equals(yearResponse));
+        assertEquals(yearResponse, yearResponse);
     }
 }
 

@@ -3,7 +3,6 @@ package com.example.backend.model;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PopulationRequestTest {
 
@@ -38,6 +37,6 @@ public class PopulationRequestTest {
         populationRequest.setMen(men);
         populationRequest.setWomen(women);
 
-        assertTrue(populationRequest.equals(populationRequest));
+        assertEquals(populationRequest, populationRequest);
     }
 }

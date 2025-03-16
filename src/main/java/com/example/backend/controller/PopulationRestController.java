@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class PopulationRestController {
 
-    private Logger logger = LoggerFactory.getLogger(PopulationRestController.class);
+    private final Logger logger = LoggerFactory.getLogger(PopulationRestController.class);
 
     private final PopulationService populationService;
 

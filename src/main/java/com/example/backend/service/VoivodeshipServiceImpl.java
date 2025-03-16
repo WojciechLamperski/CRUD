@@ -1,6 +1,5 @@
 package com.example.backend.service;
 
-import com.example.backend.entity.YearEntity;
 import com.example.backend.model.*;
 import com.example.backend.repository.VoivodeshipRepository;
 import com.example.backend.entity.VoivodeshipEntity;
@@ -16,13 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
 @Service
 public class VoivodeshipServiceImpl implements VoivodeshipService {
 
-    private Logger logger = LoggerFactory.getLogger(VoivodeshipServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(VoivodeshipServiceImpl.class);
 
     private final VoivodeshipRepository voivodeshipRepository;
 
@@ -36,8 +36,8 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
     @Transactional
     public VoivodeshipModel save(VoivodeshipRequest voivodeship) {
         logger.info("service received request to save / update voivodeship {}", voivodeship);
-        if(voivodeship.getVoivodeshipId() != 0 && voivodeshipRepository.findById(voivodeship.getVoivodeshipId()) == null){
-            throw new EntityNotFoundException("Voivodeship which you're trying to update was not found");
+        if (voivodeship.getVoivodeshipId() != 0) {
+            voivodeshipRepository.findById(voivodeship.getVoivodeshipId());
         }
         return convertToModel(voivodeshipRepository.save(convertToEntity(voivodeship)));
     }
@@ -49,7 +49,7 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
         if (voivodeship == null) {
             throw new EntityNotFoundException("Voivodeship not found");
         }
-        return convertToModel(voivodeshipRepository.findById(id).orElse(null));
+        return convertToModel(Objects.requireNonNull(voivodeshipRepository.findById(id).orElse(null)));
     }
 
     @Override
@@ -62,15 +62,6 @@ public class VoivodeshipServiceImpl implements VoivodeshipService {
 
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
-
-        // Determine sorting direction
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<VoivodeshipEntity> voivodeships = voivodeshipRepository.findAll(pageable, sort);
-        List<VoivodeshipEntity> content = voivodeships.stream().collect(Collectors.toList());
 
         return convertToResponse(pageNumber, pageSize, sortBy, sortDirection);
     }

@@ -3,7 +3,6 @@ package com.example.backend.model;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VoivodeshipModelTest {
 
@@ -26,7 +25,7 @@ public class VoivodeshipModelTest {
         voivodeshipModel.setVoivodeshipId(voivodeshipId);
         voivodeshipModel.setVoivodeship(voivodeship);
 
-        assertTrue(voivodeshipModel.equals(voivodeshipModel));
+        assertEquals(voivodeshipModel, voivodeshipModel);
     }
 
 }

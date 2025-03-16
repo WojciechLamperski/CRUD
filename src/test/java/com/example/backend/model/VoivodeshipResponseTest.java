@@ -32,7 +32,7 @@ public class VoivodeshipResponseTest {
         assertEquals(totalPages, voivodeshipResponse.getTotalPages());
         assertTrue(voivodeshipResponse.isLast());
         assertEquals(1, voivodeshipResponse.getContent().size());
-        assertEquals(voivodeshipModel, voivodeshipResponse.getContent().get(0));
+        assertEquals(voivodeshipModel, voivodeshipResponse.getContent().getFirst());
     }
 
     @Test
@@ -40,7 +40,7 @@ public class VoivodeshipResponseTest {
         VoivodeshipResponse voivodeshipResponse = new VoivodeshipResponse(
                 List.of(voivodeshipModel), pageNumber, pageSize, totalElements, totalPages, last);
 
-        assertTrue(voivodeshipResponse.equals(voivodeshipResponse));
+        assertEquals(voivodeshipResponse, voivodeshipResponse);
     }
 
     @Test
@@ -59,6 +59,6 @@ public class VoivodeshipResponseTest {
         assertEquals(totalPages, voivodeshipResponse.getTotalPages());
         assertTrue(voivodeshipResponse.isLast());
         assertEquals(1, voivodeshipResponse.getContent().size());
-        assertEquals(voivodeshipModel, voivodeshipResponse.getContent().get(0));
+        assertEquals(voivodeshipModel, voivodeshipResponse.getContent().getFirst());
     }
 }

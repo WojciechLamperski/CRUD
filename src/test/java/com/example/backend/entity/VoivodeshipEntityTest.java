@@ -25,7 +25,7 @@ public class VoivodeshipEntityTest {
         VoivodeshipEntity voivodeshipEntity2 = new VoivodeshipEntity();
         voivodeshipEntity2.setVoivodeship(voivodeshipName);
 
-        assertTrue(voivodeshipEntity1.equals(voivodeshipEntity2));
+        assertEquals(voivodeshipEntity1, voivodeshipEntity2);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class VoivodeshipEntityTest {
         VoivodeshipEntity voivodeshipEntity = new VoivodeshipEntity();
         voivodeshipEntity.setVoivodeship(voivodeshipName);
 
-        assertTrue(voivodeshipEntity.equals(voivodeshipEntity));
+        assertEquals(voivodeshipEntity, voivodeshipEntity);
     }
 
     @Test

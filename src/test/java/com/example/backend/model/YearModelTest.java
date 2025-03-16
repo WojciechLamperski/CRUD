@@ -3,7 +3,6 @@ package com.example.backend.model;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class YearModelTest {
 
@@ -26,7 +25,7 @@ public class YearModelTest {
         yearModel.setYearId(yearId);
         yearModel.setYear(year);
 
-        assertTrue(yearModel.equals(yearModel));
+        assertEquals(yearModel, yearModel);
     }
 
 }

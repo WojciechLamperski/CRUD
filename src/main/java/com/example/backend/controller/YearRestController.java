@@ -3,7 +3,6 @@ package com.example.backend.controller;
 import com.example.backend.model.YearModel;
 import com.example.backend.model.YearRequest;
 import com.example.backend.model.YearResponse;
-import com.example.backend.entity.YearEntity;
 import com.example.backend.service.YearService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class YearRestController {
 
-    private Logger logger = LoggerFactory.getLogger(YearRestController.class);
+    private final Logger logger = LoggerFactory.getLogger(YearRestController.class);
 
     private final YearService yearService;
 

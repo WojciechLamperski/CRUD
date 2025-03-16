@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class YearModel {
-    private int yearId;
-    private int year;
+    private int yearId;         // year_id
+    private int year;           // year
 }

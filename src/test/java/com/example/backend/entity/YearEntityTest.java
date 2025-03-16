@@ -26,7 +26,7 @@ public class YearEntityTest {
         YearEntity yearEntity2 = new YearEntity();
         yearEntity2.setYear(year);
 
-        assertTrue(yearEntity1.equals(yearEntity2));
+        assertEquals(yearEntity1, yearEntity2);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class YearEntityTest {
         YearEntity yearEntity = new YearEntity();
         yearEntity.setYear(year);
 
-        assertTrue(yearEntity.equals(yearEntity));
+        assertEquals(yearEntity, yearEntity);
     }
 
     @Test

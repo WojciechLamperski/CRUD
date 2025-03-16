@@ -11,13 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 public class VoivodeshipRepositoryImpl implements VoivodeshipCustomRepository {
 
-    private Logger logger = LoggerFactory.getLogger(VoivodeshipRepositoryImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(VoivodeshipRepositoryImpl.class);
 
     private final EntityManager entityManager;
 
@@ -29,8 +28,7 @@ public class VoivodeshipRepositoryImpl implements VoivodeshipCustomRepository {
     public VoivodeshipEntity save(VoivodeshipEntity theVoivodeship) {
         try {
             logger.info("saving voivodeship into database");
-            VoivodeshipEntity dbyVoivodeship = entityManager.merge(theVoivodeship);
-            return dbyVoivodeship;
+            return entityManager.merge(theVoivodeship);
         } catch (DataIntegrityViolationException e) {
             logger.info("DataIntegrityViolationException, while trying to save voivodeship into database");
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save Voivodeship due to database constraints.");

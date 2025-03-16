@@ -35,7 +35,7 @@ public class PopulationResponseTest {
         assertEquals(totalPages, populationResponse.getTotalPages());
         assertTrue(populationResponse.isLast());
         assertEquals(1, populationResponse.getContent().size());
-        assertEquals(populationModel, populationResponse.getContent().get(0));
+        assertEquals(populationModel, populationResponse.getContent().getFirst());
     }
 
     @Test
@@ -43,7 +43,7 @@ public class PopulationResponseTest {
         PopulationResponse populationResponse = new PopulationResponse(
                 List.of(populationModel), pageNumber, pageSize, totalElements, totalPages, last);
 
-        assertTrue(populationResponse.equals(populationResponse));
+        assertEquals(populationResponse, populationResponse);
     }
 
     @Test
@@ -62,6 +62,6 @@ public class PopulationResponseTest {
         assertEquals(totalPages, populationResponse.getTotalPages());
         assertTrue(populationResponse.isLast());
         assertEquals(1, populationResponse.getContent().size());
-        assertEquals(populationModel, populationResponse.getContent().get(0));
+        assertEquals(populationModel, populationResponse.getContent().getFirst());
     }
 }

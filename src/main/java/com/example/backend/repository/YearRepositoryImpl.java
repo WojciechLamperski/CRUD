@@ -15,7 +15,7 @@ import java.util.List;
 
 public class YearRepositoryImpl implements YearCustomRepository {
 
-    private Logger logger = LoggerFactory.getLogger(YearRepositoryImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(YearRepositoryImpl.class);
 
     private final EntityManager entityManager;
 
@@ -27,8 +27,7 @@ public class YearRepositoryImpl implements YearCustomRepository {
     public YearEntity save(YearEntity theYear) {
         try {
             logger.info("saving year into database");
-            YearEntity dbyYear = entityManager.merge(theYear);
-            return dbyYear;
+            return entityManager.merge(theYear);
         } catch (DataIntegrityViolationException e) {
             logger.info("DataIntegrityViolationException, while trying to save year into database");
             throw new DataIntegrityViolationException("Data integrity violation: Unable to save Year due to database constraints.");

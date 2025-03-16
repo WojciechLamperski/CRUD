@@ -17,13 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
 @Service
 public class YearServiceImpl implements YearService {
 
-    private Logger logger = LoggerFactory.getLogger(YearServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(YearServiceImpl.class);
 
     private final YearRepository yearRepository;
 
@@ -37,9 +38,8 @@ public class YearServiceImpl implements YearService {
     @Transactional
     public YearModel save(YearRequest year) {
         logger.info("service received request to save / update year {}", year);
-        if(year.getYearId() != 0 && yearRepository.findById(year.getYearId()) == null){
-            logger.info("can't update because year with this id doesn't exists");
-            throw new EntityNotFoundException("Year which you're trying to update was not found");
+        if (year.getYearId() != 0) {
+            yearRepository.findById(year.getYearId());
         }
         return convertToModel(yearRepository.save(convertToEntity(year)));
     }
@@ -52,7 +52,7 @@ public class YearServiceImpl implements YearService {
             logger.info("year not found");
             throw new EntityNotFoundException("Year not found");
         }
-        return convertToModel(yearRepository.findById(id).orElse(null));
+        return convertToModel(Objects.requireNonNull(yearRepository.findById(id).orElse(null)));
     }
 
     @Override
@@ -65,16 +65,6 @@ public class YearServiceImpl implements YearService {
 
         int maxPageSize = 100;  // Prevent excessive page sizes
         pageSize = Math.min(pageSize, maxPageSize);
-
-
-        // Determine sorting direction
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<YearEntity> year = yearRepository.findAll(pageable, sort);
-        List<YearEntity> content = year.stream().collect(Collectors.toList());
 
         return convertToResponse(pageNumber, pageSize, sortBy, sortDirection);
     }

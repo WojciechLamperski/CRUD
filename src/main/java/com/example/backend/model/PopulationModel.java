@@ -12,6 +12,6 @@ public class PopulationModel {
     private int populationId;  // population_id
     private Integer year;        // year_id
     private DistrictModel district;    // district_id
-    private int men;           // number of men
-    private int women;         // number of women
+    private int men;           // men
+    private int women;         // women
 }

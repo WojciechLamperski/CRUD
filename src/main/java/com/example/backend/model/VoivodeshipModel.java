@@ -10,6 +10,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class VoivodeshipModel {
-    private int voivodeshipId;
-    private String voivodeship;
+    private int voivodeshipId;      // voivodeship_id
+    private String voivodeship;     // voivodeship
 }

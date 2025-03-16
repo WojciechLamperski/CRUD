@@ -4,7 +4,6 @@ package com.example.backend.controller;
 import com.example.backend.model.VoivodeshipModel;
 import com.example.backend.model.VoivodeshipRequest;
 import com.example.backend.model.VoivodeshipResponse;
-import com.example.backend.entity.VoivodeshipEntity;
 import com.example.backend.service.VoivodeshipService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class VoivodeshipRestController {
 
-    private Logger logger = LoggerFactory.getLogger(VoivodeshipRestController.class);
+    private final Logger logger = LoggerFactory.getLogger(VoivodeshipRestController.class);
 
     private final VoivodeshipService voivodeshipService;
 
