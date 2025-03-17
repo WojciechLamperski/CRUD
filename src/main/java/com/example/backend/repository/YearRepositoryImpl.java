@@ -77,7 +77,7 @@ public class YearRepositoryImpl implements YearCustomRepository {
 
             return new PageImpl<>(year, pageable, totalRows);
 
-        } catch (Error e){
+        } catch (Exception e){
             logger.info("Error, while trying to find all years in database");
             throw new RuntimeException("An error occurred while retrieving the years. Please try again later." + e.getMessage());
         }
