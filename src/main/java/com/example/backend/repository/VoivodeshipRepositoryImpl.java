@@ -77,7 +77,7 @@ public class VoivodeshipRepositoryImpl implements VoivodeshipCustomRepository {
                     .getResultList();
 
             return new PageImpl<>(voivodeship, pageable, totalRows);
-        } catch (Error e){
+        } catch (Exception e){
             logger.info("Error, while trying to find all voivodeship in database");
             throw new RuntimeException("An error occurred while retrieving the voivodeships. Please try again later.");
         }
