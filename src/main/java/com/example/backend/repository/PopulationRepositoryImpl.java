@@ -77,7 +77,7 @@ public class PopulationRepositoryImpl implements PopulationCustomRepository {
                     .getResultList();
 
             return new PageImpl<>(populations, pageable, totalRows);
-        } catch (Error e){
+        } catch (Exception e){
             logger.info("Error, while trying to find all populations in database");
             throw new RuntimeException("An error occurred while retrieving the populations. Please try again later.");
         }
@@ -109,7 +109,7 @@ public class PopulationRepositoryImpl implements PopulationCustomRepository {
                     .getResultList();
 
             return new PageImpl<>(populations, pageable, totalRows);
-        } catch (Error e){
+        } catch (Exception e){
             logger.info("Error, while trying to find  all populations in specified voivodeship in database");
             throw new RuntimeException("An error occurred while retrieving the populations. Please try again later.");
         }
@@ -140,7 +140,7 @@ public class PopulationRepositoryImpl implements PopulationCustomRepository {
                     .getResultList();
 
             return new PageImpl<>(populations, pageable, totalRows);
-        } catch (Error e){
+        } catch (Exception e){
             logger.info("Error, while trying to find  all populations in specified district in database");
             throw new RuntimeException("An error occurred while retrieving the populations. Please try again later.");
         }
@@ -171,7 +171,7 @@ public class PopulationRepositoryImpl implements PopulationCustomRepository {
                     .getResultList();
 
             return new PageImpl<>(populations, pageable, totalRows);
-        } catch (Error e){
+        } catch (Exception e){
             logger.info("Error, while trying to find  all populations in specified year in database");
             throw new RuntimeException("An error occurred while retrieving the populations. Please try again later.");
         }
