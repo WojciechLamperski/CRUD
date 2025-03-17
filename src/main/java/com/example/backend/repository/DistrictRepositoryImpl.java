@@ -78,7 +78,7 @@ public class DistrictRepositoryImpl implements DistrictCustomRepository {
 
             return new PageImpl<>(districts, pageable, totalRows);
 
-        } catch (Error e){
+        } catch (Exception e){
             logger.info("Error, while trying to find all districts in database");
             throw new RuntimeException("An error occurred while retrieving the districts. Please try again later.");
         }
@@ -111,7 +111,7 @@ public class DistrictRepositoryImpl implements DistrictCustomRepository {
 
             return new PageImpl<>(districts, pageable, totalRows);
 
-        } catch (Error e){
+        } catch (Exception e){
             logger.info("Error, while trying to find  all districts in specified voivodeship in database");
             throw new RuntimeException("An error occurred while retrieving the districts. Please try again later.");
         }
