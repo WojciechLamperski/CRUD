@@ -8,6 +8,12 @@
 
 -----------------
 
+# USE THIS (In production):
+```
+  mvn spring-boot:run -Dspring-boot.run.profiles=prod
+```
+
+
 ## Project Setup Guide
 
 ### 1. Install and Set Up MySQL Workbench
