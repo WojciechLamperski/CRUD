@@ -26,7 +26,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: [ip-172-31-45-160]
+    runs-on: [self-hosted]
     steps:
       - name: Check Docker Installation
         run: |
