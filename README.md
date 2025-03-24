@@ -7,7 +7,7 @@ This application is a demo CRUD REST API built in Java, and Spring Boot.
 The application allows users to access, and modify records regarding population 
 in various polish districts and voivodeships via the use of endpoints 
 (albeit in production only GET endpoints are exposed). 
-The app uses H2 as its database, is hosted in AWS EC2, and implements CI/CD with Github Actions.
+The app uses H2 as its database, is hosted in AWS EC2, and implements CI/CD with GitHub Actions.
 
 -----------------
 
