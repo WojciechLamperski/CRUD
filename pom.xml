@@ -55,13 +55,6 @@
 			<scope>runtime</scope>
 			<version>9.1.0</version>
 		</dependency>
-		<!-- Spring Boot Starter Test -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<version>3.4.1</version>
-		</dependency>
 		<!-- Spring Boot DevTools -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
